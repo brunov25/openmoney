@@ -1,12 +1,12 @@
 # Open Money
 
-This software implements a web-based mobile-friendly interface to the open money database maintained at http://openmoney.ca/om/
+This software implements a web-based mobile-friendly interface to the open money database maintained at http://openmoney.ca/beta
 
-To learn more about what Open Money is and why you should use it, visit http://www.gmlets.u-net.com/design/dm1%5E1.html
+To learn more about what Open Money is and why you should use it, visit http://openmoney.editme.com/nowofmoney
 
 # License
 
-Copyright (C) 2012 Open Money Development Group
+Copyright (C) 2012-13 Open Money Development Group
 
 This program is free software; you can redistribute it and/or
 modify it under the terms of the GNU General Public License
