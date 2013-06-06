@@ -2,6 +2,8 @@
 
 This software implements Michael Linton's Open Money concept.  User Guide: http://tinyurl.com/lzmhpdc
 
+Copy config.php.template to config.php and edit the database credentials and admin emails etc
+
 To learn more about what Open Money is and why you should use it, visit http://openmoney.editme.com/nowofmoney
 
 # General Public License
