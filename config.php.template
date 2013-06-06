@@ -1,0 +1,14 @@
+<? //(c)GPL Bruno Vernier and Michael Linton -- Configuration File for OpenMoney 
+unset($CFG);  // Ignore this line                                                                                                           
+global $CFG;  // This is necessary here for PHPUnit execution         
+$CFG = new stdClass();
+           
+// fill in the uppercase variables
+
+$CFG->db2 = new PDO('mysql:host=127.0.0.1;dbname=DATABASE','USERNAME','PW',array(PDO::MYSQL_ATTR_USE_BUFFERED_QUERY=>1));
+$CFG->admin_email = 'EMAIL';
+$CFG->maintainer = 'EMAIL';
+
+$db2 = new PDO('mysql:host=127.0.0.1;dbname=DATABASE','USERNAME','PASSWORD',array(PDO::MYSQL_ATTR_USE_BUFFERED_QUERY=>1));
+
+?>
