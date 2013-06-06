@@ -1,10 +1,10 @@
 # Open Money
 
-This software implements a web-based mobile-friendly interface to the open money database maintained at http://openmoney.ca/beta
+This software implements Michael Linton's Open Money concept, usable on http://openmoney.ca/beta
 
 To learn more about what Open Money is and why you should use it, visit http://openmoney.editme.com/nowofmoney
 
-# License
+# General Public License
 
 Copyright (C) 2012-13 Open Money Development Group
 
