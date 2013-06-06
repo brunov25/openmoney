@@ -1,6 +1,6 @@
 # Open Money
 
-This software implements Michael Linton's Open Money concept, usable on http://openmoney.ca/beta
+This software implements Michael Linton's Open Money concept.  User Guide: http://tinyurl.com/lzmhpdc
 
 To learn more about what Open Money is and why you should use it, visit http://openmoney.editme.com/nowofmoney
 
