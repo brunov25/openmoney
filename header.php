@@ -18,6 +18,8 @@ require_once('connect.php'); ?>
   </head><body><div class="container-fluid"><center>
 <?
 
+$user_name = isset($_SESSION['user_name'])?$_SESSION['user_name']:'';
+if (!$user_name) {header('Location: logout.php');}
 $account = isset($_SESSION['account'])?$_SESSION['account']:'';
 $index = basename($_SERVER['REQUEST_URI'])=='index.php'?TRUE:FALSE;
 //$signup = preg_match('signup.php',basename($_SERVER['REQUEST_URI'])=='signup.php'?TRUE:FALSE;

@@ -23,6 +23,8 @@
     </form>
     <a href="signup.php">Request a new account</a>
    <br> <a href="signup.php?newpw=1">Request a new password</a>
+   <br>
+   <br> <a href="http://tinyurl.com/mjz4wbm">user guide to open money</a>
   </div>
 </center>
 <? require('footer.php'); ?>
