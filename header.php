@@ -19,7 +19,6 @@ require_once('connect.php'); ?>
 <?
 
 $user_name = isset($_SESSION['user_name'])?$_SESSION['user_name']:'';
-if (!$user_name) {header('Location: logout.php');}
 $account = isset($_SESSION['account'])?$_SESSION['account']:'';
 $index = basename($_SERVER['REQUEST_URI'])=='index.php'?TRUE:FALSE;
 //$signup = preg_match('signup.php',basename($_SERVER['REQUEST_URI'])=='signup.php'?TRUE:FALSE;
@@ -35,9 +34,9 @@ if (isset($_SESSION['admin']) AND $_SESSION['admin']) {$menu .= "
  | <a href='fft.php'>fft</a> 
  | <a href='menu.php'>Menu</a> ";
 }
-echo "<center>$menu</center>";
+if ($user_name) {echo "<center>$menu</center>";};
 
-if (!($account OR $signup)) {
+if (!($account OR $signup OR $user_name)) {
   echo " you are not allowed here!";
   header("Location: index.php");
   exit;

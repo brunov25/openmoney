@@ -1,7 +1,7 @@
 <? //(c) GPL 2013 bruno vernier and Michael Linton
-  require('header.php');
+//  require('header.php');
   echo "</center><h3>Check User Ids</h3>";
-  $results = exec_sql("SELECT * FROM user_journal where user_id='' or user_id='0'",array(),"checking if there is anything in user_journal");
+  $results = exec_sql("SELECT * FROM user_journal where user_id='' or user_id='0' or user_id is null",array(),"check ids in user_journal");
   $check = '';
   foreach($results as $row) {
     $tid =  $row['tid'];
@@ -9,7 +9,7 @@
     $userid =  $row['user_id'];
     $trading = $row['trading_account'];
     $report = exec_sql("select * from FULL_QUERY where user_name=? and currency=?",array($trading, $currency),"details of full query");
-    $check = " <br><font color=red><b>No Match</b></font> for $trading using $currency in uac";
+    $check = " <br><font color=red><b>No Match</b></font> for tid:$tid $trading ($userid)1;2802;0c using $currency in uac ".count($report);
     foreach ($report as $row2) {
       $uid = $row2['user_id'];
       $account = $row2['user_name'];
@@ -36,5 +36,5 @@
     echo $check;
   }
   echo '<br>done.';
-  require('footer.php');  
+//require('footer.php');  
 ?>
