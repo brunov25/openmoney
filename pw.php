@@ -50,10 +50,10 @@ if ($confirm) {
 // check if all passwords are hashed
 $blank_passwords = exec_sql("SELECT * FROM users WHERE password2=''",array(),"blank passwords");
 foreach($blank_passwords as $row){
-  $old_pw = $row['password2'];
+  $old_pw = $row['password'];
   $id = $row['id'];
   $new_pw = password_hash($old_pw, PASSWORD_BCRYPT);
   $update1 = exec_sql("update users set password2=? WHERE id=?",array($new_pw,$id),"updating passwords",2);
-  echo "<br>$id: $new_pw";
+  echo "<br>$id: new_pw";
 }
 ?>

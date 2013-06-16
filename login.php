@@ -22,7 +22,6 @@ foreach($record as $row) {
    $currency = isset($row['currency'])?$row['currency']:'';
 }
 if (isset($db_pw2) AND (password_verify($form_pw, $db_pw2) OR (password_verify($form_pw, $db_pw1)))) {
-#if (isset($db_pw2) AND (password_verify($form_pw, $db_pw2)) ) {
    /* Valid */
    $_SESSION["user_id"] = $user_id;
    $_SESSION["user_name"] = $user_name;
@@ -33,7 +32,7 @@ if (isset($db_pw2) AND (password_verify($form_pw, $db_pw2) OR (password_verify($
    header("location: main.php");
 } else {
    /* Invalid */
-   echo "<h1>Incorrect Credentials for $user </h1><a href=logout.php>login again</a>";
+   echo "<h1>...Incorrect Credentials for $user </h1><a href=logout.php>login again</a>";
    exit;
    //header("location: index.php");
 }
