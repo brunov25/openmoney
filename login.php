@@ -4,6 +4,7 @@ require_once('connect.php');
 $form_pw = isset($_POST['password'])?$_POST['password']: 'nothing';
 $form_pw = isset($_POST['pw'])?$_POST['pw']:$form_pw;
 $user = isset($_POST['username'])?$_POST['username']:'nobody';
+$user_id = '0';
 require('password.php');
 //$hash = password_hash($password, PASSWORD_DEFAULT, ["cost" => 10]); //strongest algorithm known 
 $record = exec_sql("SELECT * FROM users JOIN user_spaces ON user_id=users.id
@@ -34,10 +35,14 @@ if (isset($db_pw2) AND (password_verify($form_pw, $db_pw2) OR (password_verify($
    $_SESSION["account"] = $user_name;
    $_SESSION["currency"] = $currency;
    $_SESSION['admin'] = strstr($privflags,'admin')?'admin':'';
+   $res = exec_sql("insert into eventLog (type,subtype,account_id,content,date) values ('login','success',?,?,?)",
+                   array($user_id,"$user_name from ".$_SERVER['REMOTE_ADDR'],date("Y-m-d H:i:s")),'log',2);
    header("location: main.php");
 } else {
    /* Invalid */
    echo "<h1>...Incorrect Credentials for $user </h1><a href=logout.php>login again</a>";
+   $res = exec_sql("insert into eventLog (type,subtype,account_id,content,date) values ('login','failure',?,?,?)",
+                   array($user_id,"$user attempted from ".$_SERVER['REMOTE_ADDR'],date("Y-m-d H:i:s")),'log',2);
    exit;
    //header("location: index.php");
 }
