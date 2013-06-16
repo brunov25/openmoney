@@ -54,6 +54,6 @@ foreach($blank_passwords as $row){
   $id = $row['id'];
   $new_pw = password_hash($old_pw, PASSWORD_BCRYPT);
   $update1 = exec_sql("update users set password2=? WHERE id=?",array($new_pw,$id),"updating passwords",2);
-  echo "<br>$id: $new_pw";
+  echo "<br>$id: new_pw";
 }
 ?>

@@ -9,8 +9,7 @@ require('password.php');
 $record = exec_sql("SELECT * FROM users JOIN user_spaces ON user_id=users.id
          JOIN user_account_currencies ON  user_space_id=user_spaces.id  where user_name = ? and confirmed !=''",
 		   array($user),"checking if $user can play here");
-//$debug = count($record)." record";
-$debug ='';
+$debug='';
 if (!$record) {
     $record = exec_sql("SELECT * FROM users JOIN user_spaces ON user_id=users.id
           where user_name = ? and confirmed !=''", array($user),"checking if $user can play here");
@@ -38,8 +37,7 @@ if (isset($db_pw2) AND (password_verify($form_pw, $db_pw2) OR (password_verify($
    header("location: main.php");
 } else {
    /* Invalid */
-
-   echo "<h1>...Incorrect Credentials for $user </h1><a href=logout.php>login again</a> ...$debug ";
+   echo "<h1>...Incorrect Credentials for $user </h1><a href=logout.php>login again</a>";
    exit;
    //header("location: index.php");
 }
