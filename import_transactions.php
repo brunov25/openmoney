@@ -31,9 +31,9 @@
                          VALUES (?,?,?,?,?,?,?)",array($tid,$date,$with_account,$trading_account,$currency,$amount,$description),
 			"insert into user_journal second line",2);
       $buyer_id = exec_sql("select user_id from FULL_QUERY where trading_name=? and currency = ?",
-                         array($trading_account,$currency),'getting buyer_id');
+			   array($trading_account,$currency),'getting buyer_id',1);
       $seller_id = exec_sql("select user_id from FULL_QUERY where trading_name=? and currency = ?",
-                         array($with_account,$currency),'getting seller_id');
+			    array($with_account,$currency),'getting seller_id',1);
       $journal = exec_sql("INSERT into journal (tid,created,buyer_id,seller_id,amount,description,tax) VALUES (?,?,?,?,?,?,?)",
 			  array($tid,$date,$buyer_id,$seller_id,$amount,$description,$tax),"insert into journal",2);
       if (!$journal) {echo "nothing to process";exit;}

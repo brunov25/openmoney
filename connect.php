@@ -4,8 +4,8 @@ ini_set('display_errors', 1);
 if (session_id() == '') {session_start();}
 //if (!defined('PDO::ATTR_DRIVER_NAME')) { echo 'PDO unavailable'; } elseif (defined('PDO::ATTR_DRIVER_NAME')) {echo 'PDO available'; }    
 require_once('config.php');
-#$db2->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_WARNING);
-$db2->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+$db2->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_WARNING);
+#$db2->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 //$db2->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_WARNING); //PDO::ERRMODE_WARNING
 //$db2->setAttribute(PDO::ATTR_EMULATE_PREPARES, false);
 
