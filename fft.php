@@ -57,6 +57,7 @@ $sidebar="<th width=15% valign=top align=left>
 <br><a title='user_journal' href='fft.php?table=user_journal&fields=id,user_id,tid,trading_account,with_account,amount,currency,description,created,balance,trading,flags'>user_journal</a>
 <br><a title='user_account_currencies' href='fft.php?table=user_account_currencies&fields=id,currency_id,trading_name,user_space_id'>user_acc_curr</a>
 <br><a title='logs' href='fft.php?table=logs&fields=id,logdate,ip,feedback,user_id,referer,browser'>logs</a>
+<br><a title='eventLog' href='fft.php?table=eventLog&fields=id,type,subType,account_id,related_id,content,date'>event log</a>
 ";
 
 // notes about each table
