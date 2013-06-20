@@ -59,7 +59,7 @@ $currencies_db = exec_sql("select distinct currency  from user_account_currencie
 			  "creating a list of appropriate currencies");
 foreach($currencies_db as $c) {$currency = $c['currency'];$currencies .= "<option value='$currency'>$currency</option>";}
 $date = date("Y-m-d H:i:s"); 
-$date2 = date("d M"); 
+$date2 = date("M d"); 
 $onfocus = "onfocus=this.value=''";
 
 echo "<h2>Open Money Beta</h2>
@@ -90,18 +90,20 @@ echo "<h2>Open Money Beta</h2>
 $currency = isset($_REQUEST['currency'])?$_REQUEST['currency']:'';
 $account = $account?$account:$user_name;
 switch ($order) {
-  case 'currency': $orderby = "currency, tid desc";break;
+  case 'currency': $orderby = "currency, created desc";break;
   case 'date': $orderby = "created asc";break;
-  case 'trading': $orderby = "trading_account";break;
-  case 'with': $orderby = "with_account";break;
+  case 'trading': $orderby = "trading_account, created desc";break;
+  case 'with': $orderby = "with_account, created desc";break;
 }
 $history_db = exec_sql("select * from user_journal where user_id=? order by $orderby",array($user_id),
 		       "reading historic transaction data");
 $new_currency='';
 $change_color=0;
+$ynow = date('Y');
 foreach($history_db as $h) {
   $date = $h['created'];
-  $date2 = date('d M', strtotime($date));
+  $ynow2 = date('Y', strtotime($date));
+  $date2 = ($ynow!=$ynow2)?date('Y M d', strtotime($date)):date('M d', strtotime($date));
   $description = $h['description'];
   $from = $h['trading_account'];
   $with = $h['with_account'];
@@ -116,6 +118,7 @@ foreach($history_db as $h) {
   $direction = $amount<0?'&rarr;':'&larr;';
   if ($balance=='0.00') {$balance ='TBC';}
   $tid = $h['tid'];
+  $rid = $h['id'];
   $currency_table = "cc is for this";
   echo "$edge <tr bgcolor=$color><td colspan=2>$date2:  $description</td><td>$from $direction $with</td>
         <td align=right><b>$amount</b></td><td align=right> $balance</td><td onclick=document.getElementById('here').innerHTML='currency'>$currency</td></tr>";
