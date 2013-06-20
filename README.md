@@ -13,7 +13,7 @@ Michael Linton (originator of the concept, quality control, team leader)
 Eric Harris Braun (first version in PERL)
 Matt Slater (db advice)
 Mark Rutter (db migration)
-Andy Soltys (second version in PHP and JSON)
+Adam Soltys (second version in PHP and JSON)
 Bruno Vernier (third version in PHP 5.3+ with PDO and password hashing functions, HTML5)
 
 # General Public License
