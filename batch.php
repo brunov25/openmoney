@@ -1,6 +1,7 @@
 <? 
 require_once('connect.php');
-$batch = exec_sql(" SELECT id FROM user_journal WHERE id > (SELECT coalesce(max(id),0) FROM user_journal WHERE flags = 'm') ORDER BY id",
+$batch = exec_sql(" SELECT id FROM user_journal WHERE id > (SELECT coalesce(max(id),0) FROM user_journal WHERE flags = 'm') 
+                    ORDER BY created",
 		  array(),"extracting data from user_journal");
 foreach($batch as $row) {
   $id = $row['id'];
