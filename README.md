@@ -6,6 +6,16 @@ Copy config.php.template to config.php and edit the database credentials and adm
 
 To learn more about what Open Money is and why you should use it, visit http://openmoney.editme.com/nowofmoney
 
+
+Acknowledgements:
+
+Michael Linton (originator of the concept, quality control, team leader)
+Eric Harris Braun (first version in PERL)
+Matt Slater (db advice)
+Mark Rutter (db migration)
+Andy Soltys (second version in PHP and JSON)
+Bruno Vernier (third version in PHP 5.3+ with PDO and password hashing functions, HTML5)
+
 # General Public License
 
 Copyright (C) 2012-13 Open Money Development Group
