@@ -90,7 +90,7 @@ echo "<h2>Open Money Beta</h2>
 $currency = isset($_REQUEST['currency'])?$_REQUEST['currency']:'';
 $account = $account?$account:$user_name;
 switch ($order) {
-  case 'currency': $orderby = "currency, created desc";break;
+  case 'currency': $orderby = "currency, id desc";break;
   case 'date': $orderby = "created asc";break;
   case 'trading': $orderby = "trading_account, created desc";break;
   case 'with': $orderby = "with_account, created desc";break;
@@ -114,9 +114,9 @@ foreach($history_db as $h) {
   $color = $change_color%2?'#ffffdd':'';  
   $new_currency = $currency;
   $flags = $h['flags'];
-  $balance = $h['balance'];
+  $balance = ($orderby=='currency, id desc')?$h['balance']:'';
   $direction = $amount<0?'&rarr;':'&larr;';
-  if ($balance=='0.00') {$balance ='TBC';}
+  //if ($balance=='0.00') {$balance ='TBC';}
   $tid = $h['tid'];
   $rid = $h['id'];
   $currency_table = "cc is for this";
