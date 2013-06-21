@@ -8,23 +8,30 @@ $chars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
 $length = 8;
 $new_pw = substr(str_shuffle($chars),0,$length);
 $new_pw_hash = password_hash($new_pw, PASSWORD_BCRYPT);
-$postmaster = 'michael.linton@gmail.com'; 
+$postmaster = $CFG->admin_email;
 
-if ($user_email) {
+if ($user_email) { //NEW PASSWORD
   $subject = "OpenMoney: new password";
   $msg = "you apparently requested a new password for your OpenMoney account.  Here it is: <b>$new_pw</b> . 
           <br>You can still use your old one.  <a href=http://openmoney.ca/beta>Open Money beta</a>
           <br>We recommend you click on Settings and change your password to something secret and memorable for you";
-  if(email_letter($user_email, $postmaster, $subject, $msg)) { echo "<br>new password sent to $user_email<p><a href=index.php>back</a>"; }
-  $update = exec_sql("update users set password= ? where email = ?",array($new_pw_hash, $user_email),"creating password",2);
+  $update = exec_sql("update users set password= ? where email = ? and confirmed>'0'",
+                     array($new_pw_hash, $user_email),"creating password",2);
+  if($update AND email_letter($user_email, $postmaster, $subject, $msg)) { 
+    echo "<br>new password sent to $user_email<p><a href=index.php>back</a>"; 
+  }
 }
 $confirm = isset($_REQUEST['confirm'])?$_REQUEST['confirm']:'';
 if ($confirm) {
-  $unconfirmed_users = exec_sql("select * from users where confirmed>'' and password2=''",array(),"new password-less members");
+  $unconfirmed_users = exec_sql("select * from users where confirmed>'0' and password2=''",array(),"new password-less members");
   foreach($unconfirmed_users as $row) {
     $user_name = $row['user_name'];
     $userid = $row['id'];
     $dupl = "ON DUPLICATE KEY UPDATE id=id"; //to deal with duplicates on unique keys
+    $spaceid = exec_sql("insert into spaces (space_name) values (?)",array($username),
+                        "creating unique space for $username",2);
+    $userspaceid = exec_sql("insert into user_spaces (space_id,user_id,class) values (?,?,'steward')",array($spaceid,$userid),
+                        "making $username a steward of his own space",2);
     $insert1 = exec_sql("insert into user_spaces (space_id,user_id,class) values ('1',?,'user') ON DUPLICATE KEY UPDATE id=id",
  			array($userid),"inserting $user_name into user_spaces",2);
     $insert2 = exec_sql("insert into user_account_currencies (user_space_id,trading_name,currency_id) values (?,?,'1') $dupl",
@@ -48,12 +55,12 @@ if ($confirm) {
 }
 
 // check if all passwords are hashed
-$blank_passwords = exec_sql("SELECT * FROM users WHERE password2=''",array(),"blank passwords");
+$blank_passwords = exec_sql("SELECT * FROM users WHERE password2='' and confirmed>'0'",array(),"blank passwords");
 foreach($blank_passwords as $row){
   $old_pw = $row['password'];
   $id = $row['id'];
   $new_pw = password_hash($old_pw, PASSWORD_BCRYPT);
-  $update1 = exec_sql("update users set password2=? WHERE id=?",array($new_pw,$id),"updating passwords",2);
+  $update1 = exec_sql("update users set password2=? WHERE id=?",array($new_pw,$id),"updating blank passwords",2);
   echo "<br>$id: new_pw";
 }
 ?>
