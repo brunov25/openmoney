@@ -8,9 +8,11 @@ $CFG = new stdClass();
 $CFG->db2 = new PDO('mysql:host=127.0.0.1;dbname=DATABASE','USERNAME','PW',array(PDO::MYSQL_ATTR_USE_BUFFERED_QUERY=>1));
 $CFG->admin_email = 'EMAIL';
 $CFG->maintainer = 'EMAIL';
+$CFG->site_name = 'Open Money'; 
 $CFG->site_type = 'Live';  //OR sandbox   
 $CFG->url = 'http://openmoney.ca'; //base URL
 
-$db2 = new PDO('mysql:host=127.0.0.1;dbname=DATABASE','USERNAME','PASSWORD',array(PDO::MYSQL_ATTR_USE_BUFFERED_QUERY=>1));
+$db2 = $CFG->db2;
+
 
 ?>

@@ -40,10 +40,10 @@ if ($confirm) {
     $new_pw = substr(str_shuffle($chars),0,$length);
     $new_pw_hash = password_hash($new_pw, PASSWORD_BCRYPT);
     $fname = $row['fname'];
-    $msg = "Hello $fname <p>Your account on OpenMoney has been confirmed. <p> please go to http://openmoney.ca/beta 
+    $msg = "Hello $fname <p>Your account on OpenMoney has been confirmed. <p> please go to {$CFG->url} 
      <p>your username is now: <b>$username</b> <br>and your password is <b>$new_pw</b> <p> Please change it right away by clicking on 
        settings in the top menu <p>( {$CFG->url}/settings.php )<p> Welcome to OpenMoney - Michael Linton"; 
-    $msg2 = "$fname signed up for an account on OpenMoney http://openmoney.ca/beta ";
+    $msg2 = "$fname signed up for an account on OpenMoney {$CFG->url} ";
     $subject = "OpenMoney: new account for $username";
     if(email_letter($address, $CFG->admin_email, $subject, $msg)) { echo "<br>sending confirmation email to $address"; }
     $id = $row['id'];

@@ -17,7 +17,7 @@ $batch = exec_sql("SELECT count(*) as total from user_journal where flags=''",ar
 $unconfirmed = exec_sql("SELECT count(*) as total from users where confirmed!='1'",array(),"unconfirmed users",1);
 $most_recent = exec_sql("SELECT max(created) as total from user_journal order by created desc limit 1",array(),"most recent transaction",1);
 
-echo"<h3>OpenMoney Beta $admin Menu</h3><table border>
+echo"<h3>{$CFG->site_name} $admin Menu</h3><table border>
 <tr><td><a href=import_transactions.php>Import Transactions</a> </td><td>$transactions transactions</td></tr>
 <tr><td><a href=check_user_ids.php>Check User_ids</a> </td><td>$user_ids unmatched user_ids</td></tr>
 <tr><td><a href=menu.php?batch=1>batch </a> </td><td>$batch items still to process</td></tr>

@@ -64,7 +64,7 @@ if ($new and isset($_REQUEST['currency'])) {
     if (!$space_id) { 
       $space_id = $admin?exec_sql("insert into spaces (space_name) values (?)",array($space_name),"create a new space",2):
 	email_letter('bruno.vernier@gmail.com','michael.linton@gmail.com','OpenMoney SPACE request',
-        "$user_name is requesting stewardship of SPACE $space_name on OpenMoney.  http://openmoney.ca/beta/fft") ;
+        "$user_name is requesting stewardship of SPACE $space_name on OpenMoney. {$CFG->url}/fft") ;
       echo $admin?"<br>NEW: created space <b>$space_name</b> ":'';
     } //else {echo "<br>using existing space $space_name";}
     $user_space_id = exec_sql("select id from user_spaces where space_id=? and user_id=?",
@@ -93,7 +93,7 @@ if ($new and isset($_REQUEST['currency'])) {
 			      array($currency_new,$user_id),"currencies insert",2);
         echo $admin?"<br>NEW: currency <b>$currency</b> created ":'';
 	email_letter('bruno.vernier@gmail.com','michael.linton@gmail.com','OpenMoney CURRENCY was created',
-        "$user_name is creating currency $currency on OpenMoney.  http://openmoney.ca/beta/fft") ;
+        "$user_name is creating currency $currency on OpenMoney.  {$CFG->url}/fft") ;
         goto new_form;
       }elseif (!$currency_id) {echo "<br>currency $currency does not already exists";  }
     }else{
@@ -113,7 +113,7 @@ if ($new and isset($_REQUEST['currency'])) {
       echo $admin?"<br>NEW: user_account_currency <b>$trading_name:$space_name:$currency</b> created ":'';
       email_letter('bruno.vernier@gmail.com','michael.linton@gmail.com','OpenMoney new U_A_C record created',
         "$user_name added u_a_c record for trading_name=$trading_name, space=$space_name and currency=$currency on OpenMoney.
-         <p>consult http://openmoney.ca/beta/fft if necessary") ;
+         <p>consult {$CFG->url}/fft if necessary") ;
     }
     echo "</td></tr></table>";
 }

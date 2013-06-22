@@ -17,7 +17,7 @@ if ($space_name) {
     $result = exec_sql("insert into user_spaces (space_id,user_id,class) values (?,?,?)",array($space_id,$user_id,'steward'),'',2);  
     echo $result?"<br>created new subspace $space_name":"no such username as $steward";
     email_letter('bruno.vernier@gmail.com','michael.linton@gmail.com','OpenMoney SPACE creation',
-		 "$user_name created SPACE $space_name on OpenMoney.  http://openmoney.ca/beta/fft") ;
+		 "$user_name created SPACE $space_name on OpenMoney.  {$CFG->url}fft") ;
   }
   if ($steward) {
     $other_id = exec_sql("select id from users where user_name = ?",array($steward),"get user_id",1);
@@ -25,7 +25,7 @@ if ($space_name) {
                array($space_id,$other_id,$class,$class),"inserting or updating membership for $other_id",2);  
     echo $result?"<br>made $steward a $class in $space_name":"no such username as $steward";    
     email_letter('bruno.vernier@gmail.com','michael.linton@gmail.com','OpenMoney new Steward assigned',
-		 "$user_name assigned $steward to SPACE $space_name on OpenMoney.  http://openmoney.ca/beta/fft") ;
+		 "$user_name assigned $steward to SPACE $space_name on OpenMoney.  {$CFG->url}/fft") ;
   }
   $removals = exec_sql("delete from user_spaces where class='remove'",array(),'removing members',2);
 }

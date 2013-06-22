@@ -62,7 +62,7 @@ $date = date("Y-m-d H:i:s");
 $date2 = date("M d"); 
 $onfocus = "onfocus=this.value=''";
 
-echo "<h2>Open Money Beta</h2>
+echo "<h2>{$CFG->site_name}</h2>
       <form action='' method='post'>
       <input type='hidden' id='current_account' value='$account' />
       <input type='hidden' id='user_name' value='$user_name' />
