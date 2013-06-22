@@ -6,7 +6,6 @@ $firstname=isset($_POST['firstname'])?$_POST['firstname']:'';
 $lastname=isset($_POST['lastname'])?$_POST['lastname']:'';
 $email=isset($_POST['email'])?preg_replace('/[^a-zA-Z\_\-\@0-9\.\+\%\&]/','',$_POST['email']):'';
 $newpw=isset($_REQUEST['newpw'])?$_REQUEST['newpw']:'';
-$servertype = $CFG->servertype;
 
 if ($username) {
   $reserved1 = exec_sql("select user_name from users where user_name=?",array($username),"check if username already exists",1);
@@ -19,14 +18,14 @@ if ($username) {
   if ($reserved4) {echo "<p><font size=+2 color=red><b>$email</b> is an existing email</font>"; goto signup_form;}
   echo "<br>creating username <b>$username</b>";
   $insert1 = exec_sql("INSERT into users (user_name, lname, fname, email, confirmed) values (?,?,?,?,?)",
-                      array($username, $lastname, $firstname, $email, ($servertype!='Live')?'1':'0'),
+                      array($username, $lastname, $firstname, $email, ($CFG->site_type!='Live')?'1':'0'),
 		      "creating new username $username (perhaps it already exists?)",2);
   if ($insert1>0) { 
     echo "Thank you, $firstname! <p>You will be notified as soon as your account has been manually confirmed";
     $address = $CFG->admin_email;
     $address2 = $CFG->maintainer;
     $url = $CFG->url;
-    $confirmed = ($servertype=='Live')?"needs <a href=$url/menu>confirmation</a>":"was auto-confirmed";
+    $confirmed = ($CFG->site_type=='Live')?"needs <a href=$url/menu>confirmation</a>":"was auto-confirmed";
     $msg = "$firstname $lastname created an account $username on OpenMoney which $confirmed.     <p>OpenMoney IT Team";
     $subject = "OpenMoney: new account REQUESTED for $username";
     email_letter($address,$email,$subject,$msg);  
@@ -44,7 +43,7 @@ if ($newpw) {
 }else {
   echo "<form method=post>
 <p><table width=30% border>
-<tr><th colspan=2>OpenMoney $servertype Signup Form</th></tr>
+<tr><th colspan=2>OpenMoney {$CFG->site_type} Signup Form</th></tr>
 <tr><td><b>Username</b>:</td>
 <td><input name=username required=required pattern='[A-Za-z0-9]{3}.*' 
      title='minimum 3 letters and numbers, no spaces nor punctuation' autofocus=autofocus></td></tr>
