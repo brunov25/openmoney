@@ -5,6 +5,23 @@ if (!is_admin()) { header('main.php');}
 $_SESSION['time'] = time();
 
 if (isset($_REQUEST['batch']) AND $_REQUEST['batch']>'') { require('batch.php');}
+if (isset($_REQUEST['currency']) AND $_REQUEST['currency']>'') { //process confirmation
+  $confirmation = exec_sql("update users set confirmed = 1 where id = ?",array($_REQUEST['id']),'id',2);
+  //pw.php with confirm set to 1
+}
+if (isset($_REQUEST['confirm']) AND $_REQUEST['confirm']>'') {
+  $unconfirmed = exec_sql("select * from users where confirmed='0'",array(),"");
+  echo "<form><table><tr><th><h3>Users to be confirmed:</h3></th></tr>";
+  foreach ($unconfirmed as $row) {
+    echo "<tr><td><input type=text value='{$row['user_name']}' name=user_name id=user_name></td> 
+               <td><input type=text value='{$row['init_space']}' name=space_name id=space_name placeholder='space_name'> 
+                <td><input type=text value='{$row['init_curr']}' name=currency id=currency placeholder='currency'></td>
+                <td><input type=submit value='confirm'></td></tr>
+         <tr><td colspan=4>{$row['email']} {$row['phone']} {$row['phone2']}</td></tr>
+        <input type=hidden name=id value='{$row['id']}'>";
+  }
+  echo "</table> <input type=hidden name=confirm value=1> </form>";
+}
 
 $account = isset($_SESSION['account'])?$_SESSION['account']:'';
 $user_id = isset($_SESSION['user_id'])?$_SESSION['user_id']:'';
@@ -22,7 +39,8 @@ echo"<h3>{$CFG->site_name} $admin Menu</h3><table border>
 <tr><td><a href=check_user_ids.php>Check User_ids</a> </td><td>$user_ids unmatched user_ids</td></tr>
 <tr><td><a href=menu.php?batch=1>batch </a> </td><td>$batch items still to process</td></tr>
 <tr><td><a href=uac.php>uac</a> last:</td><td>$most_recent</td></tr>
-<tr><td><a href='fft.php?table=users&fields=id,user_name,confirmed,lname,fname,email,privFlags,prefFlags,created&searchconfirmed=[^1]'>confirm</a></td><td>$unconfirmed unconfirmed users; <a href=pw.php?confirm=1>mail them passwords</a></td></tr>
+<tr><td><a href=menu.php?confirm=1>confirm</a>
+<!--<a href='fft.php?table=users&fields=id,user_name,confirmed,lname,fname,email,privFlags,prefFlags,created&searchconfirmed=[^1]'>confirm</a--></td><td>$unconfirmed unconfirmed users; <a href=pw.php?confirm=1>mail them passwords</a></td></tr>
 </table>";
 
 require('footer.php');

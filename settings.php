@@ -37,6 +37,7 @@ if (isset($_POST['email'])) {
 }
 
 $info = exec_sql("SELECT * FROM users WHERE id=?",array($user_id),"extracting user's record");
+if (!count($info)) {exit;}
 $fname = $info[0]['fname'];
 $lname = $info[0]['lname'];
 $email = $info[0]['email'];

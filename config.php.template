@@ -9,7 +9,7 @@ $CFG->db2 = new PDO('mysql:host=127.0.0.1;dbname=DATABASE','USERNAME','PW',array
 $CFG->admin_email = 'EMAIL';
 $CFG->maintainer = 'EMAIL';
 $CFG->site_name = 'Open Money'; 
-$CFG->site_type = 'Live';  //OR sandbox   
+$CFG->site_type = 'Live';  //Live OR sandbox   
 $CFG->url = 'http://openmoney.ca'; //base URL
 
 $db2 = $CFG->db2;
