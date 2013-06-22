@@ -8,8 +8,8 @@ $user_id = '0';
 require('password.php');
 //$hash = password_hash($password, PASSWORD_DEFAULT, ["cost" => 10]); //strongest algorithm known 
 $record = exec_sql("SELECT * FROM users JOIN user_spaces ON user_id=users.id
-         JOIN user_account_currencies ON  user_space_id=user_spaces.id  where user_name = ? and confirmed !=''",
-		   array($user),"checking if $user can play here");
+         JOIN user_account_currencies ON  user_space_id=user_spaces.id  where (user_name = ? OR email = ?) AND confirmed !=''",
+		   array($user,$user),"checking if $user can play here");
 $debug='';
 if (!$record) {
     $record = exec_sql("SELECT * FROM users JOIN user_spaces ON user_id=users.id
