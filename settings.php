@@ -22,8 +22,8 @@ if (isset($_POST['old'])) {
     }
 } 
 //change password:
-echo "<p><table border><tr><th><h3>$account - $admin</h3></th></tr>
-<tr><td><form method=POST name=chpw>old password: <input type=password name=old>
+echo "<p><table border><tr><th><h3>$account settings - $admin</h3></th></tr>
+<tr><td><form method=POST name=chpw>old password: &nbsp; <input type=password name=old>
   <br>new password: <input type=password name=new>
   <input type=submit name=chpw value=change></form></td></tr>
 <tr><td><a href=main.php>back</a></td></tr></table>";
