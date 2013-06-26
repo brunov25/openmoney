@@ -15,10 +15,10 @@ if ($user_email) { //NEW PASSWORD
           <br>You can still use your old one.  <a href={$CFG->url}>Open Money</a>
           <br>We recommend you click on Settings and change your password to something secret and memorable for you";
   $update = exec_sql("update users set password= ? where email = ? and confirmed>'0'",
-                     array($new_pw_hash, $user_email),"creating password",2);
+                     array($new_pw_hash, $user_email),"creating password",3);
   if($update AND email_letter($user_email, $CFG->admin_email, $subject, $msg)) { 
-    echo "<br>new password sent to $user_email<p><a href={$CFG->url}index.php>back</a>"; 
-  }
+    echo "<br>new password sent to $user_email<p><a href={$CFG->url}/index.php>back</a>"; 
+  }else {echo "problems creating new password - contact {$CFG->maintainer} or {$CFG->admin_email} $update";}
 }
 $confirm = isset($_REQUEST['confirm'])?$_REQUEST['confirm']:'';
 $sandbox = ($CFG->site_type!='Live')?1:0;  //is this a live site or a sandbox?
