@@ -40,6 +40,8 @@ function exec_sql($sql, $parms=array(), $comment="", $one=0, $debug=0) {
     return $result;
   }elseif ($one==2) { //show id of inserted record
     return $db2->lastInsertId();
+  }elseif ($one==3) { //show count of updated or replaced records
+    return $query->rowCount();
   }else { // create an associative array
     return $query->fetchAll(PDO::FETCH_ASSOC); //or _BOTH
   }
