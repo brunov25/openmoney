@@ -54,7 +54,7 @@ foreach ($my_spaces as $row) {
   $stewards_data .= "";
   $pattern=$space_name?"(pattern='$space_name|[\.a-zA-Z0-9]+\.$space_name)'":"pattern='[\.a-zA-Z0-9]+'";
   echo "<tr><form action='steward.php'>
-        <td>make <input id=steward name=steward style='width:100px;' pattern='[\.a-zA-Z0-9_-]+' title='alphanumeric usernames only'
+        <td valign=top>make <input id=steward name=steward style='width:100px; color: #555555; display: inline-block; font-size: 14px; height: 20px; line-height: 20px; margin-bottom: 9px; padding: 4px 6px; ' pattern='[\.a-zA-Z0-9_-]+' title='alphanumeric usernames only'
               list='users_$space_name' placeholder='<user_name>'>$users_data 
              a <select id=class name=class style='width:100px;'>
                <option value='user'>user</option><option value='steward'>steward</option><option value='remove'>goner</option></select>
