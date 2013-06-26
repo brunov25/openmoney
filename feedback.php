@@ -22,9 +22,9 @@ if ($feedback) { //process
 }
 echo "<form>
 <h3>Feedback</h3>
-<p>Please report any bugs, suggestions or comments here:<br>
+<p>Please report any bugs, suggestions or comments here:<br><br>
 <textarea name=feedback id=feedback ></textarea>
-<input type=hidden name=back value='$referer'>
+<input type=hidden name=back value='$referer'><br>
 <input type=submit>
 </form>
 ";
