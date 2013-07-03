@@ -14,8 +14,9 @@ if (isset($_POST['old'])) {
       $old_pw = password_hash($old, PASSWORD_BCRYPT);
       $new_pw = password_hash($new, PASSWORD_BCRYPT);
       $db_pw2 = $row['password2'] or die("user is not allowed here");
+      $db_pw1 = $row['password'];
 
-      if (password_verify($old, $db_pw2)) {
+      if (password_verify($old, $db_pw2) OR password_verify($old, $db_pw1)) {
 	echo "SUCCESS";
         $update = exec_sql("update users set password2=? WHERE id = ?",array($new_pw,$user_id),"updating new password",2);
       }else {echo "<h3>FAILURE - original password incorrect</h3>";}
