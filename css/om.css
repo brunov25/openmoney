@@ -1,5 +1,5 @@
 /* CSS Document */
-
+html,body{margin:0; padding:0; height:100%}
 
 h1 {
 	font-family: "Helvetica Neue",Helvetica,Arial,sans-serif; 
@@ -45,7 +45,7 @@ h1 {
 }
 
 body {
-	background-color:#fff;
+	background-color:#fbfcf6;
 }
 
 body,td,a,p,.h,legend,label{
