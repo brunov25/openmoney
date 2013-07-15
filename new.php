@@ -48,6 +48,7 @@ if ($new and isset($_REQUEST['currency'])) {
     $space_name     = trim($_REQUEST['space_name']);
     $space_name     = preg_replace('/[^a-zA-Z0-9\.\+\-\_\@\%\&\^\~\!\?\<\>\:\;\=\*\$\#\s]/','',$space_name);
     $space_id   = exec_sql("select id from spaces where space_name=?",array($space_name),"space_id from space_name",1);
+    //echo "SPACE NAME is $space_name and spaceid is $space_id";exit;
     //if (!$space_name) {echo "<br>no such space_name $space_id"; goto new_form;} //allow blank name
     //$space_name   = $_REQUEST['space_name'];
     $user_id      = $_REQUEST['user_id'];
@@ -141,7 +142,7 @@ echo "<p><form method=POST  enctype='multipart/form-data' onsubmit=\"return conf
 <style>table.bruno input {size:7;} input[type=text] { color:blue;background-color: #FFFFCC;}
         NOTtr:nth-child(2n) {background-color: lightyellow}</style>
 <table class=bruno><tr><th align=left>
-      <input style='width:80px;' type=text name=trading_name id=trading_name $onclick placeholder='<name>' $onclick
+      <input style='width:80px;' type=text name=trading_name id=trading_name $onclick placeholder='<trading name>' $onclick
       pattern='[A-Za-z0-9]+' title='only letters and numbers, no spaces, no punctuation'>
                   <input type=hidden name=user_id id=user_id value='$user_id'>
             <input id=class name=class value=user type=hidden>
