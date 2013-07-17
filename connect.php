@@ -6,9 +6,8 @@ if (session_id() == '') {session_start();}
 error_reporting(0);
 require_once('config.php');
 $db2->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_WARNING);
+//$db2->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 error_reporting(E_ALL);
-#$db2->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-//$db2->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_WARNING); //PDO::ERRMODE_WARNING
 //$db2->setAttribute(PDO::ATTR_EMULATE_PREPARES, false);
 
 function exec_sql($sql, $parms=array(), $comment="", $one=0, $debug=0) {

@@ -22,6 +22,7 @@ if ($user_email) { //NEW PASSWORD
 }
 $confirm = isset($_REQUEST['confirm'])?$_REQUEST['confirm']:'';
 $sandbox = ($CFG->site_type!='Live')?1:0;  //is this a live site or a sandbox?
+$live = ($CFG->site_type=='Live' AND is_admin())?1:0;  //is this a live site or a sandbox?
 
 if ($confirm) {
   $unconfirmed_users = exec_sql("select * from users where confirmed>'0' and password2=''",array(),"new password-less members");
@@ -29,19 +30,35 @@ if ($confirm) {
     $username = $row['user_name'];
     $userid = $row['id'];
     $dupl = "ON DUPLICATE KEY UPDATE id=id"; //to deal with duplicates on unique keys
-    // in SANDBOX mode, create user's private space and make him steward of it
-    $spaceid = $sandbox?exec_sql("insert into spaces (space_name) values (?)",array($username),
-			      "creating unique space for $username",2):'';
-    $userspaceid = $sandbox?exec_sql("insert into user_spaces (space_id,user_id,class) values (?,?,'steward')",array($spaceid,$userid),
-				  "making $username a steward of his own space",2):'';
+    // only in sandbox are private spaces based on username created automatically
+    $spaceid = $sandbox?exec_sql("insert into spaces (space_name) values (?) $dupl",array($username),
+			"creating unique space for $username",2):'';
+    $userspaceid = $sandbox?exec_sql("insert into user_spaces (space_id,user_id,class) values (?,?,'steward') $dupl",
+                        array($spaceid,$userid),"making $username a steward of his own space",2):'';
     // make user a member of a chosen SPACE and CURRENCY
     $space_name = isset($_REQUEST['space_name'])?$_REQUEST['space_name']:'';
     $space_id = exec_sql("select id from spaces where space_name = ?",array($space_name),'space_id',1); 
     $space_id = $space_id?$space_id:1; //default to the first space
+    $space_base = explode('.',$space_name,2);
+    if (array_key_exists(2,$space_base)) {
+      $space_allow = exec_sql("select id from spaces where space_name = ?",array($space_base[1]),1);
+    }elseif (strlen($space_name)>=3) {  // top level spaces must be at least 3 characters long
+      $space_allow = 1;
+    }else {$space_allow = 0;}
+    if ($space_allow AND ($sandbox or $live)) {
+      $spaceid = exec_sql("insert into spaces (space_name) values (?) $dupl",array($space_name),
+ 			      "creating unique space for $space_name",2);
+      $userspaceid = exec_sql("insert into user_spaces (space_id,user_id,class) values (?,?,'steward') $dupl",array($spaceid,$userid),
+				  "making $username a steward of his own space",2);
+    }else {echo "<br>top level space for $space_name is either too small or non-existing";}
+    // insert into currency if in LIVE system
     $currency = isset($_REQUEST['currency'])?$_REQUEST['currency']:'cc';
     $currency_id = exec_sql("select id from currencies where currency = ?",array($currency),'currency_id',1); 
+    if ($live and !$currency_id) { 
+      $currency_id =  exec_sql("insert into currencies (currency,currency_steward) values (?,?)",array($currency,$userid),2);
+    }
     $currency_id = $currency_id?$currency_id:1; //default to the first currency
-    $insert1 = exec_sql("insert into user_spaces (space_id,user_id,class) values (?,?,'user') ON DUPLICATE KEY UPDATE id=id",
+    $insert1 = exec_sql("insert into user_spaces (space_id,user_id,class) values (?,?,'user') $dupl",
  			array($space_id,$userid),"inserting $username into user_space ",2);
     $insert2 = exec_sql("insert into user_account_currencies (user_space_id,trading_name,currency_id) values (?,?,?) $dupl",
  			array($insert1,$username,$currency_id),"inserting $username into user_account_currencies",2);

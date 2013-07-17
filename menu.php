@@ -7,7 +7,8 @@ $_SESSION['time'] = time();
 if (isset($_REQUEST['batch']) AND $_REQUEST['batch']>'') { require('batch.php');}
 if (isset($_REQUEST['currency']) AND $_REQUEST['currency']>'') { //process confirmation
   $confirmation = exec_sql("update users set confirmed = 1 where id = ?",array($_REQUEST['id']),'id',2);
-  //pw.php with confirm set to 1
+  $_REQUEST['confirm'] = '1';
+  include('pw.php'); //send emails to new signups     
 }
 if (isset($_REQUEST['confirm']) AND $_REQUEST['confirm']>'') {
   $unconfirmed = exec_sql("select * from users where confirmed='0'",array(),"");

@@ -16,7 +16,8 @@ if ($username) {
   if ($reserved2) {echo "<p><font size=+2 color=red><b>$username</b> is a reserved currency</font>"; goto signup_form;}
   if ($reserved3) {echo "<p><font size=+2 color=red><b>$username</b> is a reserved trading name </font>"; goto signup_form;}
   if ($reserved4) {echo "<p><font size=+2 color=red><b>$email</b> is an existing email</font>"; goto signup_form;}
-  echo "<br>creating username <b>$username</b>";
+  $username = $username .'.'. $_REQUEST['space_name'];
+  echo "<br>creating username <b>$username</b> ";
   $insert1 = exec_sql("INSERT into users (user_name, lname, fname, email, phone, phone2, init_space, init_curr, confirmed) 
                       values (?,?,?,?,?,?,?,?,?)", array($username, $lastname, $firstname, $email, 
   		      $_REQUEST['phone'], $_REQUEST['phone2'], $_REQUEST['space_name'], $_REQUEST['currency'], 
@@ -56,7 +57,7 @@ if ($newpw) {
         placeholder='<optional phone number>'></td></tr>
 <tr><td>Phone2 </td><td><input type=tel pattern='[A-Za-z0-9]*' title='use only letters and numbers' name=phone2 
         placeholder='<second phone number>'></td></tr>
-<tr><td>Space</td><td><input type=text pattern='[A-Za-z0-9]*' title='use only letters and numbers'  name=space_name 
+<tr><td>Space</td><td><input type=text pattern='[A-Za-z0-9\.]*' title='use only letters and numbers'  name=space_name 
         placeholder='<if known>'></td></tr>
 <tr><td>Currency</td><td><input type=text name=currency pattern='[A-Za-z0-9]*' title='use only letters and numbers'  
         placeholder='<if known>'></td></tr>
