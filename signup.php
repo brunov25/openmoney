@@ -8,6 +8,9 @@ $email=isset($_POST['email'])?preg_replace('/[^a-zA-Z\_\-\@0-9\.\+\%\&]/','',$_P
 $newpw=isset($_REQUEST['newpw'])?$_REQUEST['newpw']:'';
 
 if ($username) {
+  $space_name = $_REQUEST['space_name'];
+  $username = $space_name?$username .'.'. $space_name:$username;
+  // check if proposed username is reserved:
   $reserved1 = exec_sql("select user_name from users where user_name=?",array($username),"check if username already exists",1);
   $reserved2 = exec_sql("select currency from currencies where currency=?",array($username),"check if username exists as currency",1);
   $reserved3 = exec_sql("select trading_name from user_account_currencies where trading_name=?",array($username),"check u_a_c",1);
@@ -16,7 +19,6 @@ if ($username) {
   if ($reserved2) {echo "<p><font size=+2 color=red><b>$username</b> is a reserved currency</font>"; goto signup_form;}
   if ($reserved3) {echo "<p><font size=+2 color=red><b>$username</b> is a reserved trading name </font>"; goto signup_form;}
   if ($reserved4) {echo "<p><font size=+2 color=red><b>$email</b> is an existing email</font>"; goto signup_form;}
-  $username = $username .'.'. $_REQUEST['space_name'];
   echo "<br>creating username <b>$username</b> ";
   $insert1 = exec_sql("INSERT into users (user_name, lname, fname, email, phone, phone2, init_space, init_curr, confirmed) 
                       values (?,?,?,?,?,?,?,?,?)", array($username, $lastname, $firstname, $email, 
@@ -59,7 +61,7 @@ if ($newpw) {
         placeholder='<second phone number>'></td></tr>
 <tr><td>Space</td><td><input type=text pattern='[A-Za-z0-9\.]*' title='use only letters and numbers'  name=space_name 
         placeholder='<if known>'></td></tr>
-<tr><td>Currency</td><td><input type=text name=currency pattern='[A-Za-z0-9]*' title='use only letters and numbers'  
+<tr><td>Currency</td><td><input type=text name=currency pattern='[A-Za-z0-9\.]*' title='use only letters and numbers'  
         placeholder='<if known>'></td></tr>
 <tr><td colspan=2><input type=submit></td></tr></form>";
 }
