@@ -20,6 +20,8 @@
       $transactions = array_slice($transactions,0,8);
       if (count($transactions)!=8) {echo "<br><b>ERROR: missing data</b> in <pre>";print_r($transactions);echo "</pre>";}
       list($tid,$date,$trading_account,$with_account,$currency,$amount,$description,$tax) = $transactions;
+      $old_pattern = '/([0-9][0-9])\/([0-9][0-9])\/([0-9][0-9])/';
+      $date =  preg_match($old_pattern, $date)?preg_replace($old_pattern, '20${1}-$2-$3 12:00', $date):$date;
       $date = date("Y-m-d H:i:s", strtotime($date));
       //ADD incorrect data checks here
       //echo "<li>INSERT into user_journal (tid,created,trading_account,with_account,currency,amount,description)                     

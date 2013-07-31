@@ -143,7 +143,7 @@ echo "<p><form method=POST  enctype='multipart/form-data' onsubmit=\"return conf
         NOTtr:nth-child(2n) {background-color: lightyellow}</style>
 <table class=bruno><tr><th align=left>
       <input style='width:80px;' type=text name=trading_name id=trading_name $onclick placeholder='<trading name>' $onclick
-      pattern='[A-Za-z0-9]+' title='only letters and numbers, no spaces, no punctuation'>
+      pattern='[A-Za-z0-9_]+' title='only letters and numbers, no spaces, no punctuation'>
                   <input type=hidden name=user_id id=user_id value='$user_id'>
             <input id=class name=class value=user type=hidden>
       <input style='width:80px;' type=text name=currency id=currency placeholder='<currency>' $onclick
