@@ -48,7 +48,7 @@ if (isset($_REQUEST['amount']) AND $_REQUEST['amount']>0) {
 }
 
 main_transaction_form:
-$currencies = "<option selected value='cc'>cc</option>";
+$currencies = "<option selected value='{$CFG->default_currency}'>{$CFG->default_currency}</option>";
 $trading_accounts = "<option selected value='$account'>$account</option>";
 $trading_accounts_db = exec_sql("select distinct trading_name from users join user_spaces on user_id=users.id
                          join user_account_currencies on user_space_id = user_spaces.id where user_name=?",array($user_name),
@@ -119,7 +119,6 @@ foreach($history_db as $h) {
   //if ($balance=='0.00') {$balance ='TBC';}
   $tid = $h['tid'];
   $rid = $h['id'];
-  $currency_table = "cc is for this";
   echo "$edge <tr bgcolor=$color><td colspan=2>$date2:  $description</td><td>$from $direction $with</td>
         <td align=right><b>$amount</b></td><td align=right> $balance</td><td onclick=document.getElementById('here').innerHTML='currency'>$currency</td></tr>";
 }

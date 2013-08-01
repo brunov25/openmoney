@@ -48,8 +48,8 @@ if ($newpw) {
 <p><table width=30% border>
 <tr><th colspan=2>OpenMoney {$CFG->site_type} Signup Form</th></tr>
 <tr><td><b>Username</b>:</td>
-<td><input type=text name=username required=required pattern='[A-Za-z0-9]{3}.*' 
-     title='minimum 3 letters and numbers, no spaces nor punctuation' autofocus=autofocus placeholder='<preferred user name>'></td></tr>
+<td><input type=text name=username required=required pattern='[A-Za-z0-9]{2}.*' 
+     title='minimum 2 letters and numbers, no spaces nor punctuation' autofocus=autofocus placeholder='<preferred user name>'></td></tr>
 <tr><td><b>Email address</b></td><td><input type=email required name=email placeholder='<email>'></td></tr>
 <tr><td>First Name</td><td><input type=text pattern='[A-Za-z0-9]*' title='use only letters and numbers' name=firstname
         placeholder='<optional given name>'></td></tr>

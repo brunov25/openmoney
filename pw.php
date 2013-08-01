@@ -52,7 +52,7 @@ if ($confirm) {
 				  "making $username a steward of his own space",2);
     }else {echo "<br>top level space for $space_name is either too small or non-existing";}
     // insert into currency if in LIVE system
-    $currency = isset($_REQUEST['currency'])?$_REQUEST['currency']:'cc';
+    $currency = isset($_REQUEST['currency'])?$_REQUEST['currency']:$CFG->default_currency;
     $currency_id = exec_sql("select id from currencies where currency = ?",array($currency),'currency_id',1); 
     if ($live and !$currency_id) { 
       $currency_id =  exec_sql("insert into currencies (currency,currency_steward) values (?,?)",array($currency,$userid),2);
