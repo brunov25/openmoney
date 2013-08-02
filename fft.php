@@ -47,7 +47,7 @@ if (!array_key_exists('table',$_REQUEST)) {$table='';}
 $menu="<div id=region-fft2 style='$style'><table id=fft valign=top><tr><th colspan=2>
        Fast Furious Transforms for <font color=red>{$CFG->site_name}</font> (c)GPL Bruno Vernier 2004-13 </th></tr><tr>";
 $sidebar="<th width=15% valign=top align=left>
-<br><a title='spaces' href='fft.php?table=spaces&fields=id,space_name,specification,access_control,created'>spaces</a>
+<br><a title='spaces' href='fft.php?table=spaces&fields=id,space_name,specification,access_control,welcome,created'>spaces</a>
 <br><a title='currencies' href='fft.php?table=currencies&fields=id,currency,currency_steward,access_control,specification,created'>currencies</a>
 <br><a title='journal' href='fft.php?table=journal&fields=id,created,tid,buyer_id,seller_id,amount,description,source,posted'>journal</a>
 <hhr>
