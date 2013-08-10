@@ -56,6 +56,7 @@ body,td,a,p,.h,legend,label{
 table, tr, td {
 	 border: 1px solid #CCCCCC;
 }
+table.front, tr, td {border-collapse:collapse; border: 0px solid black;}
 	
 a {
 	text-decoration:none;
