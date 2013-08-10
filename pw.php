@@ -41,21 +41,22 @@ if ($confirm) {
     $space_id = $space_id?$space_id:1; //default to the first space
     $space_base = explode('.',$space_name,2);
     if (array_key_exists(2,$space_base)) {
-      $space_allow = exec_sql("select id from spaces where space_name = ?",array($space_base[1]),1);
-    }elseif (strlen($space_name)>=3) {  // top level spaces must be at least 3 characters long
+      $space_allow = exec_sql("select id from spaces where space_name = ?",array($space_base[1]),'space allow',1);
+    }elseif (strlen($space_name)>=2) {  // top level spaces must be at least 2 characters long
       $space_allow = 1;
     }else {$space_allow = 0;}
-    if ($space_allow AND ($sandbox or $live)) {
+    if ($space_allow) {
       $spaceid = exec_sql("insert into spaces (space_name) values (?) $dupl",array($space_name),
  			      "creating unique space for $space_name",2);
       $userspaceid = exec_sql("insert into user_spaces (space_id,user_id,class) values (?,?,'steward') $dupl",array($spaceid,$userid),
 				  "making $username a steward of his own space",2);
-    }else {echo "<br>top level space for $space_name is either too small or non-existing";}
+    }else {echo "<br>PROBLEM: space_allow=$space_allow; sandbox=$sandbox, live=$live,
+                  top level space for $space_name (".$space_base[1].") is size ".strlen($space_name);}
     // insert into currency if in LIVE system
     $currency = isset($_REQUEST['currency'])?$_REQUEST['currency']:$CFG->default_currency;
     $currency_id = exec_sql("select id from currencies where currency = ?",array($currency),'currency_id',1); 
     if ($live and !$currency_id) { 
-      $currency_id =  exec_sql("insert into currencies (currency,currency_steward) values (?,?)",array($currency,$userid),2);
+      $currency_id =  exec_sql("insert into currencies (currency,currency_steward) values (?,?)",array($currency,$userid),'c id',2);
     }
     $currency_id = $currency_id?$currency_id:1; //default to the first currency
     $insert1 = exec_sql("insert into user_spaces (space_id,user_id,class) values (?,?,'user') $dupl",
@@ -69,6 +70,13 @@ if ($confirm) {
     $msg = "Hello $fname <p>Your account on OpenMoney has been confirmed. <p> please go to {$CFG->url} 
      <p>your username is now: <b>$username</b> <br>and your password is <b>$new_pw</b> <p> Please change it right away by clicking on 
        settings in the top menu <p>( {$CFG->url}/settings.php )<p> Welcome to OpenMoney - Michael Linton"; 
+    $welcome = exec_sql("select welcome from spaces where space_name=?",array($row['init_space']),'welcome',1);
+    if ($welcome) {
+      $msg = str_replace('%firstname',"$fname",$welcome);
+      $msg = str_replace('%username',"$username",$msg);
+      $msg = str_replace('%password',"$new_pw",$msg);
+    }    
+    echo "<p>welcome message = $msg";
     $msg2 = "$fname signed up for an account on OpenMoney {$CFG->url} ";
     $subject = "OpenMoney: new account for $username";
     if(email_letter($address, $CFG->admin_email, $subject, $msg)) { echo "<br>sending confirmation email to $address"; }
