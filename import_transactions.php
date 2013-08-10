@@ -5,7 +5,7 @@
   $pw = isset($_REQUEST['pw']) ? $_REQUEST['pw']:'';
   $file = isset($_FILES['file']) ? $_FILES['file']:'';
   if ($file AND $file["error"]>0) {
-    echo "Error: " . $file["error"] . "<br>";
+    //echo "Error: " . $file["error"] . "<br>";
   } elseif ($file) {
     echo "Upload: " . $file["name"] . "<br>Type: " . $file["type"] . "<br>Size: " . ($file["size"] / 1024) . " kB<br>";
     $rawdata .= file_get_contents($file['tmp_name']);
@@ -26,23 +26,24 @@
       //ADD incorrect data checks here
       //echo "<li>INSERT into user_journal (tid,created,trading_account,with_account,currency,amount,description)                     
       //                   VALUES ($tid,$date,$trading_account,$with_account,$currency,-1*$amount,$description)<p>";
-      $line1 = exec_sql("INSERT into user_journal (tid,created,trading_account,with_account,currency,amount,description) 
-                         VALUES (?,?,?,?,?,?,?)",array($tid,$date,$trading_account,$with_account,$currency,-1*$amount,$description),
-			"insert into user_journal first line",2);
-      $line2 = exec_sql("INSERT into user_journal (tid,created,trading_account,with_account,currency,amount,description) 
-                         VALUES (?,?,?,?,?,?,?)",array($tid,$date,$with_account,$trading_account,$currency,$amount,$description),
-			"insert into user_journal second line",2);
       $buyer_id = exec_sql("select user_id from FULL_QUERY where trading_name=? and currency = ?",
 			   array($trading_account,$currency),'getting buyer_id',1);
       $seller_id = exec_sql("select user_id from FULL_QUERY where trading_name=? and currency = ?",
 			    array($with_account,$currency),'getting seller_id',1);
+      if (!($buyer_id and $seller_id)) {echo "<br><font color=red><b>missing buyer_id or seller_id !!!</b></font>";}
+      $line1 = exec_sql("INSERT into user_journal (tid,user_id,created,trading_account,with_account,currency,amount,description) 
+                 VALUES (?,?,?,?,?,?,?,?)",array($tid,$buyer_id,$date,$trading_account,$with_account,$currency,-1*$amount,$description),
+  	         "insert into user_journal first line",2);
+      $line2 = exec_sql("INSERT into user_journal (tid,user_id,created,trading_account,with_account,currency,amount,description) 
+                 VALUES (?,?,?,?,?,?,?,?)",array($tid,$seller_id,$date,$with_account,$trading_account,$currency,$amount,$description),
+		 "insert into user_journal second line",2);
       $journal = exec_sql("INSERT into journal (tid,created,buyer_id,seller_id,amount,description,tax) VALUES (?,?,?,?,?,?,?)",
 			  array($tid,$date,$buyer_id,$seller_id,$amount,$description,$tax),"insert into journal",2);
       if (!$journal) {echo "nothing to process";exit;}
-      echo "<br>INSERT into journal (tid, date, buyer_id,seller_id,amount,description,tax) 
-             VALUES ($tid,$date,$seller_id,$buyer_id,$currency,$amount,$description,$tax)";
-      echo "<br>... INSERT into user_journal (tid, created, trading_account,currency,amount,description) 
-             VALUES ($tid,$date,$trading_account,$with_account,$currency,-$amount,$description)";
+      echo "<br>INSERT into journal (tid, user_id, date, buyer_id,seller_id,amount,description,tax) 
+             VALUES ($tid,$buyer_id,$date,$seller_id,$buyer_id,$currency,$amount,$description,$tax)";
+      echo "<br>... INSERT into user_journal (tid, user_id, created, trading_account,currency,amount,description) 
+             VALUES ($tid,$seller_id, $date,$trading_account,$with_account,$currency,-$amount,$description)";
       echo "<br>... INSERT into user_journal (tid, created,  trading_account,currency,amount,description) 
              VALUES ($tid,$date,$with_account,$trading_account,$currency,$amount,$description)";
     }
