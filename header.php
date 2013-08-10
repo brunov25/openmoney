@@ -5,7 +5,6 @@ echo"<!DOCTYPE html>
   <head>
     <meta name='viewport' content='width=device-width'>
     <meta charset='utf-8' />
-    <NO_meta name='viewport' content='width=480, height=752, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0' />
     <title>{$CFG->site_name}</title>
     <link href='css/bootstrap.min.css' rel='stylesheet' />
   <link rel='stylesheet' href='http://domain.tld/screen.css' type='text/css' media='Screen' />
