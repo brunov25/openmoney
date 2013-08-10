@@ -22,7 +22,8 @@ if ($username) {
   echo "<br>creating username <b>$username</b> ";
   $insert1 = exec_sql("INSERT into users (user_name, lname, fname, email, phone, phone2, init_space, init_curr, confirmed) 
                       values (?,?,?,?,?,?,?,?,?)", array($username, $lastname, $firstname, $email, 
-  		      $_REQUEST['phone'], $_REQUEST['phone2'], $_REQUEST['space_name'], $_REQUEST['currency'], 
+                      $_REQUEST['phone'], $_REQUEST['phone2'], $_REQUEST['space_name'], 
+                      $_REQUEST['currency']?$_REQUEST['currency']:$CFG->default_currency, 
                       ($CFG->site_type!='Live')?'1':'0'), "creating new username $username (perhaps it already exists?)",2);
   if ($insert1>0) { 
     echo "Thank you, $firstname! <p>You will be notified as soon as your account has been manually confirmed";
