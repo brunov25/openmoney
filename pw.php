@@ -29,6 +29,9 @@ if ($confirm) {
   foreach($unconfirmed_users as $row) {
     $username = $row['user_name'];
     $userid = $row['id'];
+    $space_name = isset($_REQUEST['space_name'])?$_REQUEST['space_name']:'';
+    $space_id = exec_sql("select id from spaces where space_name = ?",array($space_name),'space_id',1); 
+    $space_id = $space_id?$space_id:1; //default to the first space
     $dupl = "ON DUPLICATE KEY UPDATE id=id"; //to deal with duplicates on unique keys
     // only in sandbox are private spaces based on username created automatically
     $spaceid = $sandbox?exec_sql("insert into spaces (space_name) values (?) $dupl",array($username),
@@ -36,20 +39,22 @@ if ($confirm) {
     $userspaceid = $sandbox?exec_sql("insert into user_spaces (space_id,user_id,class) values (?,?,'steward') $dupl",
                         array($spaceid,$userid),"making $username a steward of his own space",2):'';
     // make user a member of a chosen SPACE and CURRENCY
-    $space_name = isset($_REQUEST['space_name'])?$_REQUEST['space_name']:'';
-    $space_id = exec_sql("select id from spaces where space_name = ?",array($space_name),'space_id',1); 
-    $space_id = $space_id?$space_id:1; //default to the first space
     $space_base = explode('.',$space_name,2);
+    $space_allow = 0;
     if (array_key_exists(2,$space_base)) {
-      $space_allow = exec_sql("select id from spaces where space_name = ?",array($space_base[1]),'space allow',1);
-    }elseif (strlen($space_name)>=2) {  // top level spaces must be at least 2 characters long
-      $space_allow = 1;
-    }else {$space_allow = 0;}
+      $space_allow = exec_sql("select id from spaces where space_name = ?",array($space_name),'space allow',1);
+      $space_allow = $space_allow OR exec_sql("select id from spaces where space_name = ?",array($space_base[1]),'space allow',1);
+      $space_allow = $space_allow AND strlen($space_name)>=2 ;// top level spaces must be at least 2 characters long
+    }
+    $address = $row['email'];
     if ($space_allow) {
       $spaceid = exec_sql("insert into spaces (space_name) values (?) $dupl",array($space_name),
  			      "creating unique space for $space_name",2);
-      $userspaceid = exec_sql("insert into user_spaces (space_id,user_id,class) values (?,?,'steward') $dupl",array($spaceid,$userid),
+      $userspaceid = exec_sql("insert into user_spaces (space_id,user_id,class) values (?,?,'user') $dupl",array($spaceid,$userid),
 				  "making $username a steward of his own space",2);
+      $subject = "OpenMoney: new SPACE for $username";
+      $msg2 = "$username created SPACE $spacename on {$CFG->site_Xname} {$CFG->url} ";
+      email_letter($CFG->admin_email,$address,$subject,$msg2);
     }else {echo "<br>PROBLEM: space_allow=$space_allow; sandbox=$sandbox, live=$live,
                   top level space for $space_name (".$space_base[1].") is size ".strlen($space_name);}
     // insert into currency if in LIVE system
@@ -63,7 +68,6 @@ if ($confirm) {
  			array($space_id,$userid),"inserting $username into user_space ",2);
     $insert2 = exec_sql("insert into user_account_currencies (user_space_id,trading_name,currency_id) values (?,?,?) $dupl",
  			array($insert1,$username,$currency_id),"inserting $username into user_account_currencies",2);
-    $address = $row['email'];
     $new_pw = substr(str_shuffle($chars),0,$length);
     $new_pw_hash = password_hash($new_pw, PASSWORD_BCRYPT);
     $fname = $row['fname'];
