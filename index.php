@@ -34,4 +34,4 @@ require('header.php');
 </center>
 
 
-<? require('footer.php'); ?>
+<? include('footer.php'); ?>
