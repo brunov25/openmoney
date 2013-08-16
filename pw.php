@@ -9,9 +9,10 @@ $length = 8;
 $new_pw = substr(str_shuffle($chars),0,$length);
 $new_pw_hash = password_hash($new_pw, PASSWORD_BCRYPT);
 
-if ($user_email) { //NEW PASSWORD
+$confirm = isset($_REQUEST['confirm'])?$_REQUEST['confirm']:'';
+if ($user_email AND !$confirm) { //NEW PASSWORD
   $subject = "OpenMoney: new password";
-  $msg = "you apparently requested a new password for your OpenMoney account.  Here it is: <b>$new_pw</b> . 
+  $msg = "you requested a new password for your OpenMoney account.  Here it is: <b>$new_pw</b> . 
           <br>You can still use your old one.  <a href={$CFG->url}>Open Money</a>
           <br>We recommend you click on Settings and change your password to something secret and memorable for you";
   $update = exec_sql("update users set password= ? where email = ? and confirmed>'0'",
@@ -20,7 +21,6 @@ if ($user_email) { //NEW PASSWORD
     echo "<br>new password sent to $user_email<p><a href={$CFG->url}/index.php>back</a>"; 
   }else {echo "problems creating new password - contact {$CFG->maintainer} or {$CFG->admin_email} $update";}
 }
-$confirm = isset($_REQUEST['confirm'])?$_REQUEST['confirm']:'';
 $sandbox = ($CFG->site_type!='Live')?1:0;  //is this a live site or a sandbox?
 $live = ($CFG->site_type=='Live' AND is_admin())?1:0;  //is this a live site or a sandbox?
 
@@ -80,7 +80,7 @@ if ($confirm) {
       $msg = str_replace('%username',"$username",$msg);
       $msg = str_replace('%password',"$new_pw",$msg);
     }    
-    echo "<p>welcome message = $msg";
+    //echo "<p>welcome message = $msg";
     $msg2 = "$fname signed up for an account on OpenMoney {$CFG->url} ";
     $subject = "OpenMoney: new account for $username";
     if(email_letter($address, $CFG->admin_email, $subject, $msg)) { echo "<br>sending confirmation email to $address"; }
