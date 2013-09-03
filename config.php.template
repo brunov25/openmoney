@@ -11,6 +11,7 @@ $CFG->maintainer = 'EMAIL';
 $CFG->site_name = 'Open Money'; 
 $CFG->site_type = 'Live';  //Live OR sandbox   
 $CFG->url = 'http://openmoney.ca'; //base URL
+$CFG->default_currency = 'cc';
 
 $db2 = $CFG->db2;
 
