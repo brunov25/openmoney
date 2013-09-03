@@ -4,6 +4,8 @@ This software implements Michael Linton's Open Money concept.  User Guide: http:
 
 Copy config.php.template to config.php and edit the database credentials and admin emails etc
 
+populate the space table with a blank record
+
 To learn more about what Open Money is and why you should use it, visit http://openmoney.editme.com/nowofmoney
 
 Blog: http://openmoney.blogspot.ca/
