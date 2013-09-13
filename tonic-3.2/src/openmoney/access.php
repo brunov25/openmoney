@@ -68,10 +68,16 @@ class access extends Resource
      */
     public function sayaccess($name = 'initialData')
     {	
-        $accounts_array = new array();
-        $accounts_q = @mysqli_query($db,"select * from users_accounts where userID='".$user['id']."'") or die(mysqli_error());
+    	require("rest_connect.php");
+        $accounts_array = array();
+        $accounts_q = mysqli_query($db,$test = "SELECT *, uac.id user_account_currencies_id FROM user_account_currencies uac, user_spaces us, currencies c  WHERE uac.currency_id=c.id AND uac.user_space_id=us.id AND us.user_id='".$this->user['id']."'") or die($test . mysqli_error($db));
         while($accounts = mysqli_fetch_array($accounts_q)){
-            array_push($accounts_array,array("id" => $accounts['id'],"type" => array("id" => $accounts['accountsTypeID'], "name" => $account['name'], "currency" => array("id" => $accounts['currencyID'], "symbol" => $accounts['currencySymbol'], "name" => $accounts['currencyName']))));
+            array_push($accounts_array,array("id" => $accounts['user_account_currencies_id'],
+            								  "type" => array("id" => $accounts['user_space_id'],
+            												  "name" => $accounts['trading_name'],
+            												  "currency" => array("id" => $accounts['currency_id'],
+            																	  "symbol" => $accounts['currency'],
+            																	  "name" => $accounts['currency']))));
         }
     	$result = '';
     	if($name == 'initialData'){
@@ -85,8 +91,8 @@ class access extends Resource
     								'canMakeSystemPayments' => false,
     								'decimalCount' => 2,
 									'decimalSeparator' => ".",
-									'accounts'=> $accounts_array			 
-    			));
+									'accounts' => $accounts_array			 
+    			)));
     	} else {
     		throw new Tonic\NotFoundException;
     	}
