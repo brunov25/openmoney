@@ -68,6 +68,11 @@ class access extends Resource
      */
     public function sayaccess($name = 'initialData')
     {	
+        $accounts_array = new array();
+        $accounts_q = @mysqli_query($db,"select * from users_accounts where userID='".$user['id']."'") or die(mysqli_error());
+        while($accounts = mysqli_fetch_array($accounts_q)){
+            array_push($accounts_array,array("id" => $accounts['id'],"type" => array("id" => $accounts['accountsTypeID'], "name" => $account['name'], "currency" => array("id" => $accounts['currencyID'], "symbol" => $accounts['currencySymbol'], "name" => $accounts['currencyName']))));
+        }
     	$result = '';
     	if($name == 'initialData'){
     		$result = new Response(200, array(
@@ -79,7 +84,8 @@ class access extends Resource
     								'canMakeMemberPayments' => true,
     								'canMakeSystemPayments' => false,
     								'decimalCount' => 2,
-									'decimalSeparator' => ".")				 
+									'decimalSeparator' => ".",
+									'accounts'=> $accounts_array			 
     			));
     	} else {
     		throw new Tonic\NotFoundException;
