@@ -302,7 +302,6 @@ class accountHistory extends Resource
 	 *
 	 * @method GET
 	 * @param  str $accountID
-     * @accepts application/json
 	 * @provides application/json
 	 * @json
 	 * @return Tonic\Response
@@ -332,33 +331,33 @@ class accountHistory extends Resource
 			$memberID = 0;
 			$memberPrincipal = '';
 			$beginDate = 0;
-			$endDate = strtotime();
+			$endDate = strtotime("now");
 			
-			$requestData = $this->request->data;
-			if(isset($requestData)){
-				if(isset($requestData['pageSize'])&&$requestData['pageSize']>0&&$requestData['pageSize']<101){
-					$pageSize = $requestData['pageSize'];
+			//$requestData = $this->request->data;
+			if(isset($_GET)){
+				if( isset($_GET['pageSize']) && ($_GET['pageSize']>0) && ($_GET['pageSize']<101) ){
+					$pageSize = $_GET['pageSize'];
 				}
-				if(isset($requestData['currentPage'])){
-					$currentPage = $requestData['currentPage'];
+				if(isset($_GET['currentPage'])){
+					$currentPage = $_GET['currentPage'];
 				}
-				if(isset($requestData['showStatus'])){
-					$showStatus = $requestData['showStatus'];
+				if(isset($_GET['showStatus'])){
+					$showStatus = $_GET['showStatus'];
 				}
-				if(isset($requestData['paymentFilterID'])){
-					$paymentFilterID = $requestData['paymentFilterID'];
+				if(isset($_GET['paymentFilterID'])){
+					$paymentFilterID = $_GET['paymentFilterID'];
 				}
-				if(isset($requestData['memberID'])){
-					$memberID = $requestData['memberID'];
+				if(isset($_GET['memberID'])){
+					$memberID = $_GET['memberID'];
 				}
-				if(isset($requestData['memberPrincipal'])){
-					$memberPrincipal = $requestData['memberPrincipal'];
+				if(isset($_GET['memberPrincipal'])){
+					$memberPrincipal = $_GET['memberPrincipal'];
 				}
-				if(isset($requestData['beginDate'])){
-					$beginDate = strtotime(str_replace("T", " ",$requestData['beginDate'])." GMT");
+				if(isset($_GET['beginDate'])){
+					$beginDate = strtotime(str_replace("T", " ",$_GET['beginDate'])." GMT");
 				}
-				if(isset($requestData['endDate'])){
-					$endDate = strtotime(str_replace("T", " ",$requestData['endDate'])." GMT");
+				if(isset($_GET['endDate'])){
+					$endDate = strtotime(str_replace("T", " ",$_GET['endDate'])." GMT");
 				}
 				
 			}
@@ -369,19 +368,19 @@ class accountHistory extends Resource
 			$accounts_q = mysqli_query($db,$test = "SELECT *, uac.id user_account_currencies_id FROM user_account_currencies uac, user_spaces us, currencies c  WHERE uac.id='".mysqli_real_escape_string($db, intval($accountID))."' AND uac.currency_id=c.id AND uac.user_space_id=us.id AND us.user_id='".$this->user['id']."'") or die($test . mysqli_error($db));
 			while($accounts = mysqli_fetch_array($accounts_q)){
 
-				$total_journal_entries = 0;
+				$totalCount = 0;
 				$balance = 0.00000;
 				
 				$elements_array = array();
 				
-				$user_journal_q = @mysqli_query($db,$test = "SELECT *, count(*) total_journal_entries FROM user_journal WHERE currency='".$accounts['currency']."' AND user_id='".$this->user['id']."' ORDER BY tid DESC LIMIT $currentStartEntry, $pageSize ");
+				$user_journal_q = @mysqli_query($db,$test = "SELECT * FROM user_journal WHERE currency='".$accounts['currency']."' AND user_id='".$this->user['id']."' ORDER BY tid DESC LIMIT $currentStartEntry, $pageSize ");
 				while($user_journal = @mysqli_fetch_array($user_journal_q)){
-					$total_journal_entries = $user_journal['total_journal_entries'];
+					$totalCount++;
 					$balance = floatval($user_journal['balance']);
 					$balance_decimal = number_format($balance,2);
-					$trading_name_q = @mysqli_query($db, $test = "SELECT * FROM user_account_currencies WHERE trading_name='".$user_journal['trading_name']."'");
+					$trading_name_q = @mysqli_query($db, $test = "SELECT * FROM user_account_currencies WHERE trading_name='".$user_journal['trading_account']."'");
 					$trading_name = @mysqli_fetch_array($trading_name_q);
-					$account_name_q = @mysqli_query($db, $test = "SELECT * FROM user_account_currencies WHERE trading_name='".$user_journal['account_name']."'");
+					$account_name_q = @mysqli_query($db, $test = "SELECT * FROM user_account_currencies WHERE trading_name='".$user_journal['with_account']."'");
 					$account_name = @mysqli_fetch_array($account_name_q);
 					
 					array_push($elements_array, array("id"=>$user_journal['id'],
@@ -394,13 +393,13 @@ class accountHistory extends Resource
 													   "transferType"=>array("id"=>$accounts['currency_id'],
 																			"name"=>$accounts['currency']." exchange",
 																			"from"=>array("id"=>$trading_name['id'],
-																						  "name"=>$user_journal['trading_name'],
-																						  "currency"=>array("id"=>$accounts['currenc_id'],
+																						  "name"=>$user_journal['trading_account'],
+																						  "currency"=>array("id"=>$accounts['currency_id'],
 																											"symbol"=>$accounts['currency'],
 																											"name"=>$accounts['currency'])),
 																			"to"=>array("id"=>$account_name['id'],
-																						  "name"=>$user_journal['account_name'],
-																						  "currency"=>array("id"=>$accounts['currenc_id'],
+																						  "name"=>$user_journal['with_account'],
+																						  "currency"=>array("id"=>$accounts['currency_id'],
 																											"symbol"=>$accounts['currency'],
 																											"name"=>$accounts['currency']))),
 														"description"=>$user_journal['description']));
@@ -409,14 +408,10 @@ class accountHistory extends Resource
 				$default = false;
 				if($accounts['currency_id']==1)
 					$default = true;
-				$accounts_array = array( "balance" => $balance,
-						"formattedBalance" => "$balance_decimal ".$accounts['currency'],
-						"availableBalance" => 0.000000,
-						"formattedAvailableBalance" => "0.00 ".$accounts['currency'],
-						"reservedAmount" => 0,
-						"formattedReservedAmount" => "0.00 ".$accounts['currency'],
-						"creditLimit" => 0.000000,
-						"formattedCreditLimit" => "0.00 ".$accounts['currency']);
+				$accounts_array = array( "currentPage" => $currentPage,
+						"pageSize" => $pageSize,
+						"totalCount" => $totalCount,
+						"elements" => $elements_array);
 
 
 			}
@@ -451,15 +446,6 @@ class accountHistory extends Resource
 			}
 		});
 	}
-}
-
-
-function getDateTimeValue( $intDate = null ) {
-
-	$strFormat = 'Y-m-d\TH:i:s.uP';
-	$strDate = $intDate ? date( $strFormat, $intDate ) : date( $strFormat ) ;
-
-	return $strDate;
 }
 
 
