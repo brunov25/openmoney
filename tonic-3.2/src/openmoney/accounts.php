@@ -511,16 +511,9 @@ class accountTransferData extends Resource
 		if($transactionID != 0){
 			require("rest_connect.php");
 			
-			$accounts_a xrray = array();
-			$accounts_q = mysqli_query($db,$test = "SELECT *, uac.id user_account_currencies_id FROM user_account_currencies uac, user_spaces us, currencies c  WHERE uac.id='".mysqli_real_escape_string($db, intval($accountID))."' AND uac.currency_id=c.id AND uac.user_space_id=us.id AND us.user_id='".$this->user['id']."'") or die($test . mysqli_error($db));
-			while($accounts = mysqli_fetch_array($accounts_q)){
-
-				$totalCount = 0;
-				$balance = 0.00000;
-				
 				$elements_array = array();
 				
-				$user_journal_q = @mysqli_query($db,$test = "SELECT * FROM user_journal WHERE id='".$transactionID."' AND user_id='".$this->user['id']."' ORDER BY tid DESC LIMIT $currentStartEntry, $pageSize ");
+				$user_journal_q = @mysqli_query($db,$test = "SELECT * FROM user_journal WHERE id='".$transactionID."' AND user_id='".$this->user['id']."' ORDER BY tid DESC ");
 				while($user_journal = @mysqli_fetch_array($user_journal_q)){
 					$totalCount++;
 					$balance = floatval($user_journal['balance']);
@@ -548,17 +541,10 @@ class accountTransferData extends Resource
 																						  "name"=>$user_journal['with_account'],
 																						  "currency"=>array("id"=>$accounts['currency_id'],
 																											"symbol"=>$accounts['currency'],
-																											"name"=>$accounts['currency']))),
-														"description"=>$user_journal['description']));
-				}
-
-				$default = false;
-				if($accounts['currency_id']==1)
-					$default = true;
-				$accounts_array = array( "currentPage" => $currentPage,
-						"pageSize" => $pageSize,
-						"totalCount" => $totalCount,
-						"elements" => $elements_array);
+				//note to implement contacts check																							"name"=>$accounts['currency']))),
+					
+				$accounts_array = array("accountsHistoryTransfer" => $elements_array,
+					                	"canAddRelatedMemberAsContact" => false);
 
 
 			}
