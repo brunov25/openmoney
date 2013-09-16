@@ -376,11 +376,13 @@ class accountHistory extends Resource
 				$user_journal_q = @mysqli_query($db,$test = "SELECT * FROM user_journal WHERE currency='".$accounts['currency']."' AND user_id='".$this->user['id']."' ORDER BY tid DESC LIMIT $currentStartEntry, $pageSize ");
 				while($user_journal = @mysqli_fetch_array($user_journal_q)){
 					$totalCount++;
-					$balance = floatval($user_journal['balance']);
-					$balance_decimal = number_format($balance,2);
+					
+					$currency_q = @mysqli_query($db, $test = "SELECT * FROM currencies WHERE currency='".$user_journal['currency']."'") or die($test . mysqli_error($db));
+					$currency = @mysqli_fetch_array($currency_q);
+					
 					$trading_name_q = @mysqli_query($db, $test = "SELECT * FROM user_account_currencies WHERE trading_name='".$user_journal['trading_account']."'");
 					$trading_name = @mysqli_fetch_array($trading_name_q);
-					$account_name_q = @mysqli_query($db, $test = "SELECT * FROM user_account_currencies WHERE trading_name='".$user_journal['with_account']."'");
+					$account_name_q = @mysqli_query($db, $test = "SELECT *, uac.id user_account_currencies_id FROM user_account_currencies uac, user_spaces us, users u WHERE u.id=us.user_id AND us.id=uac.user_space_id AND uac.currency_id='".$currency['id']."' AND uac.trading_name='".$user_journal['with_account']."'");
 					$account_name = @mysqli_fetch_array($account_name_q);
 					
 					array_push($elements_array, array("id"=>$user_journal['id'],
@@ -390,19 +392,23 @@ class accountHistory extends Resource
 													   "formattedProcessDate"=>date("Y-m-d",$user_journal['tid']),
 													   "amount"=>floatval($user_journal['amount']),
 													   "formattedAmount"=>$user_journal['amount']." ".$accounts['currency'],
-													   "transferType"=>array("id"=>$accounts['currency_id'],
-																			"name"=>$accounts['currency']." exchange",
+													   "transferType"=>array("id"=>$currency['id'],
+																			"name"=>$currency['currency']." exchange",
 																			"from"=>array("id"=>$trading_name['id'],
 																						  "name"=>$user_journal['trading_account'],
-																						  "currency"=>array("id"=>$accounts['currency_id'],
-																											"symbol"=>$accounts['currency'],
-																											"name"=>$accounts['currency'])),
-																			"to"=>array("id"=>$account_name['id'],
+																						  "currency"=>array("id"=>$currency['id'],
+																											"symbol"=>$currency['currency'],
+																											"name"=>$currency['currency'])),
+																			"to"=>array("id"=>$account_name['user_account_currencies_id'],
 																						  "name"=>$user_journal['with_account'],
-																						  "currency"=>array("id"=>$accounts['currency_id'],
-																											"symbol"=>$accounts['currency'],
-																											"name"=>$accounts['currency']))),
-														"description"=>$user_journal['description']));
+																						  "currency"=>array("id"=>$currency['id'],
+																											"symbol"=>$currency['currency'],
+																											"name"=>$currency['currency']))),
+														"description"=>$user_journal['description'],
+														"member"=>array("id"=>$account_name['user_id'],
+																		"name"=>$account_name['fname'] . " " . $account_name['lname'],
+																		"username"=>$account_name['user_name'],
+																		"email"=>$account_name['email'])));
 				}
 
 				$default = false;
@@ -515,36 +521,47 @@ class accountTransferData extends Resource
 				
 				$user_journal_q = @mysqli_query($db,$test = "SELECT * FROM user_journal WHERE id='".$transactionID."' AND user_id='".$this->user['id']."' ORDER BY tid DESC ");
 				while($user_journal = @mysqli_fetch_array($user_journal_q)){
-					$totalCount++;
-					$balance = floatval($user_journal['balance']);
-					$balance_decimal = number_format($balance,2);
-					$trading_name_q = @mysqli_query($db, $test = "SELECT * FROM user_account_currencies WHERE trading_name='".$user_journal['trading_account']."'");
-					$trading_name = @mysqli_fetch_array($trading_name_q);
-					$account_name_q = @mysqli_query($db, $test = "SELECT * FROM user_account_currencies WHERE trading_name='".$user_journal['with_account']."'");
-					$account_name = @mysqli_fetch_array($account_name_q);
 					
-					array_push($elements_array, array("id"=>$user_journal['id'],
+					$currency_q = @mysqli_query($db, $test = "SELECT * FROM currencies WHERE currency='".$user_journal['currency']."'") or die($test . mysqli_error($db));
+					$currency = @mysqli_fetch_array($currency_q);
+					
+					$trading_name_q = @mysqli_query($db, $test = "SELECT * FROM user_account_currencies WHERE currency_id='".$currency['id']."' AND trading_name='".$user_journal['trading_account']."'");
+					$trading_name = @mysqli_fetch_array($trading_name_q);
+					$account_name_q = @mysqli_query($db, $test = "SELECT *, uac.id user_account_currencies_id FROM user_account_currencies uac, user_spaces us, users u WHERE u.id=us.user_id AND us.id=uac.user_space_id AND uac.currency_id='".$currency['id']."' AND uac.trading_name='".$user_journal['with_account']."'");
+					$account_name = @mysqli_fetch_array($account_name_q);
+
+					
+					
+					$elements_array = array("id"=>intval($user_journal['id']),
 													   "date"=>date("Y-m-d\TH:i:s",$user_journal['tid']).".000+0000",
 													   "formattedDate"=>date("Y-m-d",$user_journal['tid']),
 													   "processDate"=>date("Y-m-d\TH:i:s",$user_journal['tid']).".000+0000",
 													   "formattedProcessDate"=>date("Y-m-d",$user_journal['tid']),
-													   "amount"=>floatval($user_journal['amount']),
-													   "formattedAmount"=>$user_journal['amount']." ".$accounts['currency'],
-													   "transferType"=>array("id"=>$accounts['currency_id'],
-																			"name"=>$accounts['currency']." exchange",
-																			"from"=>array("id"=>$trading_name['id'],
+													   "amount"=>floatval($user_journal['amount']-0.000001),
+													   "formattedAmount"=> number_format($user_journal['amount'],2)." ".$user_journal['currency'],
+													   "transferType"=>array("id"=>$currency['id'],
+																			"name"=>$currency['currency']." exchange",
+																			"from"=>array("id"=>intval($trading_name['id']),
 																						  "name"=>$user_journal['trading_account'],
-																						  "currency"=>array("id"=>$accounts['currency_id'],
-																											"symbol"=>$accounts['currency'],
-																											"name"=>$accounts['currency'])),
-																			"to"=>array("id"=>$account_name['id'],
+																						  "currency"=>array("id"=>$currency['id'],
+																											"symbol"=>$currency['currency'],
+																											"name"=>$currency['currency'])),
+																			"to"=>array("id"=>intval($account_name['user_account_currencies_id']),
 																						  "name"=>$user_journal['with_account'],
-																						  "currency"=>array("id"=>$accounts['currency_id'],
-																											"symbol"=>$accounts['currency'],
-				//note to implement contacts check																							"name"=>$accounts['currency']))),
-					
-				$accounts_array = array("accountsHistoryTransfer" => $elements_array,
-					                	"canAddRelatedMemberAsContact" => false);
+																						  "currency"=>array("id"=>$currency['id'],
+																											"symbol"=>$currency['currency'],
+																											"name"=>$currency['currency']))),
+													   "description"=>$user_journal['description'],
+													   "member"=>array("id"=>$account_name['user_id'],
+																		"name"=>$account_name['fname'] . " " . $account_name['lname'],
+																		"username"=>$account_name['user_name'],
+																		"email"=>$account_name['email']));
+				//note to implement contacts check																							
+				$accounts_array = array("accountHistoryTransfer" => $elements_array ,
+					                	"canAddRelatedMemberAsContact" => false );
+				
+				
+				
 
 
 			}
@@ -573,9 +590,9 @@ class accountTransferData extends Resource
 		$this->after(function ($response) {
 			$response->contentType = "application/json";
 			if (isset($_GET['jsonp'])) {
-				$response->body = $_GET['jsonp'].'('.json_encode($response->body).');';
+				$response->body = $_GET['jsonp'].'('.json_encode($response->body, JSON_NUMERIC_CHECK ).');';
 			} else {
-				$response->body = json_encode($response->body);
+				$response->body = json_encode($response->body, JSON_NUMERIC_CHECK );
 			}
 		});
 	}

@@ -21,3 +21,28 @@
   "description":"Payment for setting up the system",
   "systemAccountName":"TimeKeeper"},
  "canAddRelatedMemberAsContact":false}
+
+
+{"accountHistoryTransfer":{"id":2,
+	"date":"2013-09-15T18:09:14.000+0000",
+	"formattedDate":"2013-09-15",
+	"processDate":"2013-09-15T18:09:14.000+0000",
+	"formattedProcessDate":"2013-09-15",
+	"amount":-16.000000,
+	"formattedAmount":"-16.00 units",
+	"transferType":{"id":13,
+		"name":"Trade transfer",
+		"from":{"id":5,
+			"name":"Member account",
+			"currency":{"id":1,
+				"symbol":"units","name":"Units"}},
+		"to":{"id":5,
+			"name":"Member account",
+			"currency":{"id":1,
+				"symbol":"units","name":"Units"}}},
+	"description":"This is an example payment in the cyclos system",
+	"member":{"id":4,
+		"name":"json Doe",
+		"username":"json",
+		"email":"json@example.com"}},
+"canAddRelatedMemberAsContact":false}

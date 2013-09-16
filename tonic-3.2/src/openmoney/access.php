@@ -77,7 +77,7 @@ class access extends Resource
 				if($accounts['currency_id']==1)
 					$default = true;
 				array_push($accounts_array,array("id" => $accounts['user_account_currencies_id'],
-												  "type" => array("id" => $accounts['user_space_id'],
+												  "type" => array("id" => $accounts['user_account_currencies_id'],
 																"name" => $accounts['trading_name'],
 																"currency" => array("id" => $accounts['currency_id'],
 																					"symbol" => $accounts['currency'],
@@ -101,7 +101,7 @@ class access extends Resource
 													array("internalName" => "postalCode",
 											 			  "fieldId" => 4,
 											 			  "displayName" => "Postal code",
-											 			  "value" => "X0X 0X0"),
+											 			  "value" => "V8N 0R2"),
 													array("internalName" => "city",
 											 			  "fieldId" => 5,
 											 			  "displayName" => "City",
