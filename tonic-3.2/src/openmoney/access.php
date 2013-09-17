@@ -71,21 +71,25 @@ class access extends Resource
 		if($name == 'initialData'){
 			require("rest_connect.php");
 			$accounts_array = array();
-			$accounts_q = mysqli_query($db,$test = "SELECT *, uac.id user_account_currencies_id FROM user_account_currencies uac, user_spaces us, currencies c  WHERE uac.currency_id=c.id AND uac.user_space_id=us.id AND us.user_id='".$this->user['id']."'") or die($test . mysqli_error($db));
+			$default_count = 0;
+			$accounts_q = mysqli_query($db,$test = "SELECT *, uac.id user_account_currencies_id FROM user_account_currencies uac, user_spaces us, currencies c  WHERE uac.currency_id=c.id AND uac.user_space_id=us.id AND us.user_id='".$this->user['id']."' ORDER BY uac.id ASC") or die($test . mysqli_error($db));
 			while($accounts = mysqli_fetch_array($accounts_q)){
 				$default = false;
-				if($accounts['currency_id']==1)
+				if(($accounts['currency_id']==1)&&($default_count==0)){
+					$default_count++;
 					$default = true;
-				array_push($accounts_array,array("id" => $accounts['user_account_currencies_id'],
-												  "type" => array("id" => $accounts['user_account_currencies_id'],
+				}
+					
+				array_push($accounts_array,array("id" => intval($accounts['user_account_currencies_id']),
+												  "type" => array("id" => intval($accounts['user_account_currencies_id']),
 																"name" => $accounts['trading_name'],
-																"currency" => array("id" => $accounts['currency_id'],
+																"currency" => array("id" => intval($accounts['currency_id']),
 																					"symbol" => $accounts['currency'],
 																					"name" => $accounts['currency'])),
 												  "default" => $default));
 			}
 			$result = new Response(200, array(
-					'profile' => array('id' => $this->user['id'],
+					'profile' => array('id' => intval($this->user['id']),
 							'name' => $this->user['fname'] . " " . $this->user['lname'],
 							'username' => $this->username,
 							'email' => $this->user['email'],

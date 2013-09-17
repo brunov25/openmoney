@@ -4,4 +4,6 @@ Recommended Database Changes:
 4.id's use BIGINT(22) in mysql
 2.currency name field in currency table
 3.user_journal include the id of the trading account rather than the trading name (would save lookup)
-4.user_journal tid not unique.
+4.user_journal tid not unique (two entries that have the same time)
+
+

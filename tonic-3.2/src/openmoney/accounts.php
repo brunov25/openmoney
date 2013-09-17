@@ -12,6 +12,7 @@ Tonic\ConditionException;
  * annotations allow this resource to match multiple URLs.
  *
  * @uri /accounts
+ * @uri /accounts/info
  */
 class accounts extends Resource
 {
@@ -67,22 +68,26 @@ class accounts extends Resource
 		
 			require("rest_connect.php");
 			$accounts_array = array();
-			$accounts_q = mysqli_query($db,$test = "SELECT *, uac.id user_account_currencies_id FROM user_account_currencies uac, user_spaces us, currencies c  WHERE uac.currency_id=c.id AND uac.user_space_id=us.id AND us.user_id='".$this->user['id']."'") or die($test . mysqli_error($db));
+			$default_count = 0;
+			$accounts_q = mysqli_query($db,$test = "SELECT *, uac.id user_account_currencies_id FROM user_account_currencies uac, user_spaces us, currencies c  WHERE uac.currency_id=c.id AND uac.user_space_id=us.id AND us.user_id='".$this->user['id']."' ORDER BY uac.id ASC") or die($test . mysqli_error($db));
 			while($accounts = mysqli_fetch_array($accounts_q)){
 				
 				$balance = 0.00000;
-				$user_journal_q = @mysqli_query($db,$test = "SELECT * FROM user_journal WHERE currency='".$accounts['currency']."' AND user_id='".$this->user['id']."' ORDER BY tid DESC");
-				$user_journal = @mysqli_fetch_array($user_journal_q);
-				$balance = floatval($user_journal['balance']);
 				$balance_decimal = number_format($balance,2);
-				
+				$user_journal_q = @mysqli_query($db,$test = "SELECT * FROM user_journal WHERE currency='".$accounts['currency']."' AND trading_account='".$accounts['trading_name']."' AND user_id='".$this->user['id']."' ORDER BY id DESC");
+				if($user_journal = @mysqli_fetch_array($user_journal_q)){
+					$balance = floatval($user_journal['balance']);
+					$balance_decimal = number_format($balance,2);
+				}
 				
 				$default = false;
-				if($accounts['currency_id']==1)
+				if(($accounts['currency_id']==1)&&($default_count==0)){
+					$default_count++;
 					$default = true;
+				}
 				array_push($accounts_array,array('account' => array("id" => $accounts['user_account_currencies_id'],
 												  "default" => $default,
-												  "type" => array("id" => $accounts['user_space_id'],
+												  "type" => array("id" => $accounts['user_account_currencies_id'],
 																"name" => $accounts['trading_name'],
 																"currency" => array("id" => $accounts['currency_id'],
 																					"symbol" => $accounts['currency'],
@@ -191,19 +196,23 @@ class accountStatus extends Resource
 		if($accountID != 0){
 			require("rest_connect.php");
 			$accounts_array = array();
-			$accounts_q = mysqli_query($db,$test = "SELECT *, uac.id user_account_currencies_id FROM user_account_currencies uac, user_spaces us, currencies c  WHERE uac.id='".mysqli_real_escape_string($db, intval($accountID))."' AND uac.currency_id=c.id AND uac.user_space_id=us.id AND us.user_id='".$this->user['id']."'") or die($test . mysqli_error($db));
-			while($accounts = mysqli_fetch_array($accounts_q)){
+			$default_count = 0;
+			$accounts_q = mysqli_query($db,$test = "SELECT *, uac.id user_account_currencies_id FROM user_account_currencies uac, user_spaces us, currencies c  WHERE uac.id='".mysqli_real_escape_string($db, intval($accountID))."' AND uac.currency_id=c.id AND uac.user_space_id=us.id AND us.user_id='".$this->user['id']."' ORDER BY uac.id ASC") or die($test . mysqli_error($db));
+			if($accounts = mysqli_fetch_array($accounts_q)){
 	
 				$balance = 0.00000;
-				$user_journal_q = @mysqli_query($db,$test = "SELECT * FROM user_journal WHERE currency='".$accounts['currency']."' AND user_id='".$this->user['id']."' ORDER BY tid DESC");
+				$user_journal_q = @mysqli_query($db,$test = "SELECT * FROM user_journal WHERE currency='".$accounts['currency']."' AND trading_account='".$accounts['trading_name']."' AND user_id='".$this->user['id']."' ORDER BY id DESC");
 				$user_journal = @mysqli_fetch_array($user_journal_q);
 				$balance = floatval($user_journal['balance']);
 				$balance_decimal = number_format($balance,2);
 	
 	
 				$default = false;
-				if($accounts['currency_id']==1)
+				if(($accounts['currency_id']==1)&&($default_count==0)){
+					$default_count++;
 					$default = true;
+				}
+					
 				$accounts_array = array( "balance" => $balance,
 						"formattedBalance" => "$balance_decimal ".$accounts['currency'],
 						"availableBalance" => 0.000000,
@@ -365,15 +374,15 @@ class accountHistory extends Resource
 			$currentStartEntry = $currentPage * $pageSize;
 			
 			$accounts_array = array();
-			$accounts_q = mysqli_query($db,$test = "SELECT *, uac.id user_account_currencies_id FROM user_account_currencies uac, user_spaces us, currencies c  WHERE uac.id='".mysqli_real_escape_string($db, intval($accountID))."' AND uac.currency_id=c.id AND uac.user_space_id=us.id AND us.user_id='".$this->user['id']."'") or die($test . mysqli_error($db));
-			while($accounts = mysqli_fetch_array($accounts_q)){
+			$accounts_q = mysqli_query($db,$test = "SELECT *, uac.id user_account_currencies_id FROM user_account_currencies uac, user_spaces us, currencies c  WHERE uac.id='".mysqli_real_escape_string($db, intval($accountID))."' AND uac.currency_id=c.id AND uac.user_space_id=us.id AND us.user_id='".$this->user['id']."' ORDER BY uac.id ASC") or die($test . mysqli_error($db));
+			if($accounts = mysqli_fetch_array($accounts_q)){
 
 				$totalCount = 0;
 				$balance = 0.00000;
 				
 				$elements_array = array();
 				
-				$user_journal_q = @mysqli_query($db,$test = "SELECT * FROM user_journal WHERE currency='".$accounts['currency']."' AND user_id='".$this->user['id']."' ORDER BY tid DESC LIMIT $currentStartEntry, $pageSize ");
+				$user_journal_q = @mysqli_query($db,$test = "SELECT * FROM user_journal WHERE currency='".$accounts['currency']."' AND trading_account='".$accounts['trading_name']."' AND user_id='".$this->user['id']."' ORDER BY id DESC LIMIT $currentStartEntry, $pageSize ");
 				while($user_journal = @mysqli_fetch_array($user_journal_q)){
 					$totalCount++;
 					
@@ -405,8 +414,8 @@ class accountHistory extends Resource
 																											"symbol"=>$currency['currency'],
 																											"name"=>$currency['currency']))),
 														"description"=>$user_journal['description'],
-														"member"=>array("id"=>$account_name['user_id'],
-																		"name"=>$account_name['fname'] . " " . $account_name['lname'],
+														"member"=>array("id"=>$account_name['user_account_currencies_id'],
+																		"name"=>$account_name['trading_name'],
 																		"username"=>$account_name['user_name'],
 																		"email"=>$account_name['email'])));
 				}
@@ -552,8 +561,8 @@ class accountTransferData extends Resource
 																											"symbol"=>$currency['currency'],
 																											"name"=>$currency['currency']))),
 													   "description"=>$user_journal['description'],
-													   "member"=>array("id"=>$account_name['user_id'],
-																		"name"=>$account_name['fname'] . " " . $account_name['lname'],
+													   "member"=>array("id"=>$account_name['user_account_currencies_id'],
+																		"name"=>$account_name['trading_name'],
 																		"username"=>$account_name['user_name'],
 																		"email"=>$account_name['email']));
 				//note to implement contacts check																							
