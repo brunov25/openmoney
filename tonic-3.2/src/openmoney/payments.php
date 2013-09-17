@@ -121,7 +121,7 @@ class paymentData extends Resource
 					if($toMember = mysqli_fetch_array($toMemberId_q)){
 					
 						array_push($transfer_types_array, array("id"=>$transfer_types['user_account_currencies_id'],
-															 "name"=>$transfer_types['trading_name'] . " " . $transfer_types['currency']." Trade",
+															 "name"=>$transfer_types['trading_name'] . " " . $transfer_types['currency']." trade",
 															 "from"=>array("id"=>$transfer_types['user_account_currencies_id'],
 															 				"name"=>$transfer_types['trading_name'],
 															 				"currency"=>array("id"=>$transfer_types['currency_id'],
@@ -307,16 +307,16 @@ class memberPayment extends Resource
 		$requestData = $this->request->data;
 		
 		if(isset($requestData->toMemberId)){
-			$toMemberId = $requestData->toMemberId;
+			$toMemberId = intval(mysqli_real_escape_string($db, $requestData->toMemberId));
 		} 
 		if(isset($requestData->amount)){
-			$amount = $requestData->amount;
+			$amount = floatval(mysqli_real_escape_string($db, $requestData->amount));
 		}
 		if(isset($requestData->transferTypeId)){
-			$transferTypeId = $requestData->transferTypeId;
+			$transferTypeId = intval(mysqli_real_escape_string($db, $requestData->transferTypeId));
 		}
 		if(isset($requestData->description)){
-			$transferTypeId = $requestData->description;
+			$description = mysqli_real_escape_string($db, $requestData->description);
 		}
 		
 		
@@ -324,7 +324,7 @@ class memberPayment extends Resource
 			
 		if($toMemberId > 0){
 
-			$currency = 'units';
+			$currency = 'cc'; //default currency
 
 			$transfer_types_array = array();
 			$transfer_types_q = mysqli_query($db, $test = "SELECT *, uac.id user_account_currencies_id  FROM user_account_currencies uac, user_spaces us, currencies c WHERE c.id='".$transferTypeId."' AND uac.user_space_id=us.id AND uac.currency_id=c.id AND us.user_id='".$this->user['id']."'") or die($test . mysqli_error($db));
@@ -334,7 +334,7 @@ class memberPayment extends Resource
 				if($toMember = mysqli_fetch_array($toMemberId_q)){
 					
 					$transfer_types_array = array("id"=>$transfer_types['user_account_currencies_id'],
-						"name"=>$transfer_types['trading_name'] . " " . $transfer_types['currency'] . " Trade",
+						"name"=>$transfer_types['trading_name'] . " " . $transfer_types['currency'] . " trade",
 						"from"=>array("id"=>$transfer_types['user_account_currencies_id'],
 							"name"=>$transfer_types['trading_name'],
 							"currency"=>array("id"=>$transfer_types['currency_id'],
