@@ -112,23 +112,57 @@ class members extends Resource
 	
 		$startEntry = $currentPage * $pageSize;
 		
+		
+		$myCurrenciesArray = array();
+		$myTradingNamesArray = array();
+		$myAccounts_q = mysqli_query($db, $test = "SELECT * FROM user_account_currencies uac, user_spaces us WHERE us.id=uac.user_space_id AND us.user_id='".$this->user['id']."'") or die($test.mysqli_error($db));
+		while($myAccounts = mysqli_fetch_array($myAccounts_q)){
+			array_push($myCurrenciesArray, $myAccounts['currency_id']);
+			array_push($myTradingNamesArray, $myAccounts['trading_name']);
+		}
+		
+		$tradingNamesArray = array();
 		$keywords_q = '';
-		if($keywords)
-			$keywords_q = " AND uac.trading_name like '%$keywords%' ";
+		if($keywords) {
+			array_push($tradingNamesArray,$keywords);
+		}
+		$trading_name_history_q = mysqli_query($db,$test = "SELECT * FROM user_journal WHERE user_id='".$this->user['id']."' AND (trading_account like '%$keywords%' OR with_account like '%$keywords%')");
+		while($trading_name_history = mysqli_fetch_array($trading_name_history_q)){
+			array_push($tradingNamesArray,$trading_name_history['trading_account']);
+			array_push($tradingNamesArray,$trading_name_history['with_account']);
+		}
+		
+		if(!empty($tradingNamesArray)){
+			foreach($tradingNamesArray as $trading_name){
+				if(!in_array($trading_name,$myTradingNamesArray)){
+					$keywords_q .= " OR uac.trading_name='$trading_name'";
+				}
+			}
+			if(strlen($keywords_q) > 4){
+				$keywords_q = substr($keywords_q,4); //remove begining OR
+				$keywords_q = " AND ($keywords_q) "; // enclose in Parentheses and add AND
+			}
+		}
+		
 		
 		$exclude_q = '';
 		if($excludeLoggedIn)
 			$exclude_q = " AND us.user_id!='".$this->user['id']."' ";
 		
+
+		
+		
 		$totalCount = 0;
 		$members_array = array();
 		$members_q = mysqli_query($db,$test = "SELECT *, uac.id user_account_currencies_id FROM user_account_currencies uac, user_spaces us, currencies c, users u  WHERE us.user_id=u.id AND uac.currency_id=c.id AND uac.user_space_id=us.id $keywords_q $exclude_q LIMIT $startEntry, $pageSize") or die($test . mysqli_error($db));
 		while($members = mysqli_fetch_array($members_q)){
-			$totalCount++;
-			array_push($members_array,array("id"=>$members['user_account_currencies_id'],
-											"name"=>$members['trading_name'],
-											"username"=>$members['user_name'],
-											"email"=>$members['email']));
+			if(in_array($members['currency_id'],$myCurrenciesArray)){
+				$totalCount++;
+				array_push($members_array,array("id"=>$members['user_account_currencies_id'],
+												"name"=>$members['trading_name'] . " " . $members['currency'],
+												"username"=>$members['user_name'],
+												"email"=>$members['email']));
+			}
 
 		}
 		$result_array = array("currentPage" => $currentPage,
