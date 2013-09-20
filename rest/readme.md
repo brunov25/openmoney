@@ -4,11 +4,11 @@ Recommended Database Changes:
 2.id's use BIGINT(22) in mysql especially for user_journal table
 	int/integer: 4 bytes, 0 - 4,294,967,295 (unsigned)
 	bigint: 8 bytes, 0 - 18,446,744,073,709,551,615 (unsigned)
-2.currency name field in currency table
-3.user_journal include the id of the trading account rather than the trading name (would save lookup) and could join with user_account_currencies table.
-4.user_journal tid not unique (two entries that have the same time)
-5.user_journal indexes on trading_account and with_account and user_id
-6.user_journal description longtext max size is 4gb but limitation is max packet size ~(32MB default) of mysql client http://stackoverflow.com/questions/4294506/maximum-length-for-longtext-field 
+3.currency name field in currency table
+4.user_journal include the id of the trading account rather than the trading name (would save lookup) and could join with user_account_currencies table.
+5.user_journal tid not unique (two entries that have the same time)
+6.user_journal indexes on trading_account and with_account and user_id
+7.user_journal description longtext max size is 4gb but limitation is max packet size ~(32MB default) of mysql client http://stackoverflow.com/questions/4294506/maximum-length-for-longtext-field 
 
 example user_journal table. Table could be updated using update table syntax.
 
