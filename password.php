@@ -11,6 +11,8 @@ if (!defined('PASSWORD_BCRYPT')) {
 
 	define('PASSWORD_BCRYPT', 1);
 	define('PASSWORD_DEFAULT', PASSWORD_BCRYPT);
+	
+
 
 	/**
 	 * Hash the password using the specified algorithm
@@ -21,7 +23,24 @@ if (!defined('PASSWORD_BCRYPT')) {
 	 *
 	 * @return string|false The hashed password, or false on error.
 	 */
+	
 	function password_hash($password, $algo, array $options = array()) {
+		
+		//check php version
+		if (!defined('PHP_VERSION_ID')) {
+			$version = explode('.', PHP_VERSION);
+		
+			define('PHP_VERSION_ID', ($version[0] * 10000 + $version[1] * 100 + $version[2]));
+		}
+		$hash_format_string = "$2y$%02d$";
+		$hash_format_salt = "$2y$";
+		//if version is pre 5.3.7
+		if (PHP_VERSION_ID < 50307) {
+			//use previous blowfish salt
+			$hash_format_string = "$2a$%02d$";
+			$hash_format_salt = "$2a$";
+		}
+		
 		if (!function_exists('crypt')) {
 			trigger_error("Crypt must be loaded for password_hash to function", E_USER_WARNING);
 			return null;
@@ -46,7 +65,7 @@ if (!defined('PASSWORD_BCRYPT')) {
 					}
 				}
 				$required_salt_len = 22;
-				$hash_format = sprintf("$2y$%02d$", $cost);
+				$hash_format = sprintf($hash_format_string, $cost);
 				break;
 			default:
 				trigger_error(sprintf("password_hash(): Unknown password hashing algorithm: %s", $algo), E_USER_WARNING);
@@ -149,20 +168,34 @@ if (!defined('PASSWORD_BCRYPT')) {
 	 * @return array The array of information about the hash.
 	 */
 	function password_get_info($hash) {
+		//check php version
+		if (!defined('PHP_VERSION_ID')) {
+			$version = explode('.', PHP_VERSION);
+		
+			define('PHP_VERSION_ID', ($version[0] * 10000 + $version[1] * 100 + $version[2]));
+		}
+		$hash_format_string = "$2y$%02d$";
+		$hash_format_salt = "$2y$";
+		//if version is pre 5.3.7
+		if (PHP_VERSION_ID < 50307) {
+			//use previous blowfish salt
+			$hash_format_string = "$2a$%02d$";
+			$hash_format_salt = "$2a$";
+		}
 		$return = array(
 			'algo' => 0,
 			'algoName' => 'unknown',
 			'options' => array(),
 		);
-		if (substr($hash, 0, 4) == '$2y$' && strlen($hash) == 60) {
+		if (substr($hash, 0, 4) == $hash_format_salt && strlen($hash) == 60) {
 			$return['algo'] = PASSWORD_BCRYPT;
 			$return['algoName'] = 'bcrypt';
-			list($cost) = sscanf($hash, "$2y$%d$");
+			list($cost) = sscanf($hash, $hash_format_string);
 			$return['options']['cost'] = $cost;
 		}
 		return $return;
 	}
-
+	
 	/**
 	 * Determine if the password hash needs to be rehashed according to the options provided
 	 *
