@@ -20,15 +20,26 @@
 
 // Initialize application
 function initApp() {
-	setupViewport();
-    splashScreen();  	
+	//setupViewport();
+    //splashScreen();  	
 	setupLanguage();
-	setupGWT();
-	onDeviceReady();
+	//setupGWT();
+	//onDeviceReady();
 }
 // Initialize PhoneGap
 function onDeviceReady() {
-	document.addEventListener('deviceready', (function() { PhoneGap.available = true; }), false); 	
+	document.addEventListener('deviceready', (function() { 
+		console.log("phonegap ready");
+		if (typeof cordova != 'undefined') {
+			cordova.available = true;
+		}
+		if (typeof Phonegap != 'undefined') {
+			Phonegap.available = true;
+		}
+		if (typeof phonegap != 'undefined'){
+			phonegap.available = true;
+		}
+		}), false); 	
 }
 // Setup GWT 
 function setupGWT() {
@@ -38,12 +49,30 @@ function setupGWT() {
 function setupCordova() {	
 	if(isBlackBerry()) {
 		writeScript('js/cordova-blackberry.js');
+		//loadScript('js/cordova-blackberry.js');
 	} else if(isAndroid()) {
-		writeScript('js/cordova-android.js');
+		writeScript('js/cordova-android-3.0.js');
+		//loadScript('js/cordova-android.js');
 	} else if(isIos()) {
 	  	writeScript('js/cordova-ios.js');
-	}	
+		//loadScript('js/cordova-ios.js');
+	} else {
+		//loadScript('js/cordova-android.js');
+		writeScript('js/cordova-android-3.0.js');
+	}
 }
+function isPhoneGap() {
+    return (cordova || PhoneGap || phonegap) 
+    && /^file:\/{3}[^\/]/i.test(window.location.href) 
+    && /ios|iphone|ipod|ipad|android/i.test(navigator.userAgent);
+}
+
+//if ( isPhoneGap() ) {
+//    alert("Running on PhoneGap!");
+//} else {
+//    alert("Not running on PhoneGap!");
+//}
+
 // Setup custom styles
 function setupStyles() {
 	// Imports styles from here because it can't be done 
@@ -67,8 +96,18 @@ function writeCss(path) {
 function loadScript(path) {
     var script = document.createElement('script');
     script.setAttribute('src', path);
-    var body = document.getElementsByTagName("head")[0];
-    body.appendChild(script);    
+    script.type = 'text/javascript';
+    //script.async = true;
+    //var body = document.getElementsByTagName("head")[0];
+    //body.appendChild(script);    
+    
+    //http://www.stevesouders.com/blog/2010/05/11/appendchild-vs-insertbefore/
+
+	head = document.getElementsByTagName ("head")[0] || 
+    document.documentElement;
+	// Use insertBefore instead of appendChild to circumvent an IE6 bug.
+	// This arises when a base node is used (#2709 and #4378).
+	head.insertBefore(script, head.firstChild);
 }
 // Returns if the device browser is Blackberry based
 function isBlackBerry() {
@@ -347,8 +386,16 @@ function setupLanguage() {
 		var meta = document.createElement('meta');
 		meta.setAttribute('name', 'gwt:property');
 		meta.setAttribute('content', 'locale=' + locale);
-		var body = document.getElementsByTagName("head")[0];
-	    body.appendChild(meta);
+//		var body = document.getElementsByTagName("head")[0];
+//	    body.appendChild(meta);
+	    
+		//http://www.stevesouders.com/blog/2010/05/11/appendchild-vs-insertbefore/
+		
+		head = document.getElementsByTagName ("head")[0] || 
+	    document.documentElement;
+		// Use insertBefore instead of appendChild to circumvent an IE6 bug.
+		// This arises when a base node is used (#2709 and #4378).
+		head.insertBefore(meta, head.firstChild);
 	}
 }
 // Preloads the given image
