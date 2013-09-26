@@ -63,6 +63,7 @@ class members extends Resource
 	 * @method GET
 	 * @provides application/json
 	 * @json
+	 * @cache 0
 	 * @return Tonic\Response
 	 */
 	public function sayMembers()
@@ -308,6 +309,7 @@ class memberData extends Resource
 	 * @param $memberId
 	 * @provides application/json
 	 * @json
+	 * @cache 0
 	 * @return Tonic\Response
 	 */
 	public function sayMemberData($memberId)

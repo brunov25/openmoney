@@ -18,6 +18,7 @@ class Welcome extends Resource
     /**
      * Returns the welcome message.
      * @method GET
+     * @cache 0
      */
     public function welcomeMessage()
     {

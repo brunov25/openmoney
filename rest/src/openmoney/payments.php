@@ -61,6 +61,7 @@ class paymentData extends Resource
 	 * @method GET
 	 * @provides application/json
 	 * @json
+	 * @cache 0
 	 * @return Tonic\Response
 	 */
 	public function sayPaymentsData()
@@ -271,6 +272,7 @@ class memberPayment extends Resource
      * @accepts application/json
 	 * @provides application/json
 	 * @json
+	 * @cache 0
 	 * @return Tonic\Response
 	 */
 	public function sayMemberPayment()
@@ -469,6 +471,7 @@ class confirmMemberPayment extends Resource
 	 * @accepts application/json
 	 * @provides application/json
 	 * @json
+	 * @cache 0
 	 * @return Tonic\Response
 	 */
 	public function sayConfirmMemberPayment()
