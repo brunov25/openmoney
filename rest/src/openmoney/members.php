@@ -63,6 +63,7 @@ class members extends Resource
 	 * @method GET
 	 * @provides application/json
 	 * @json
+	 * @cache 0
 	 * @return Tonic\Response
 	 */
 	public function sayMembers()
@@ -106,13 +107,17 @@ class members extends Resource
 			$showCustomFields = $this->boolval(mysqli_real_escape_string($db,$_GET['showCustomFields']));
 		if(isset($_GET['showImages']))
 			$showImages = $this->boolval(mysqli_real_escape_string($db,$_GET['showImages']));
+		//not used anymore
 		if(isset($_GET['excludeLoggedIn']))
 			$excludeLoggedIn = $this->boolval(mysqli_real_escape_string($db,$_GET['excludeLoggedIn']));
+		
 	
 	
 		$startEntry = $currentPage * $pageSize;
 		
 		
+		
+		//get My currencies and Accounts
 		$myCurrenciesArray = array();
 		$myTradingNamesArray = array();
 		$myAccounts_q = mysqli_query($db, $test = "SELECT * FROM user_account_currencies uac, user_spaces us WHERE us.id=uac.user_space_id AND us.user_id='".$this->user['id']."'") or die($test.mysqli_error($db));
@@ -121,6 +126,7 @@ class members extends Resource
 			array_push($myTradingNamesArray, $myAccounts['trading_name']);
 		}
 		
+		//make an array of possible trading accounts
 		$tradingNamesArray = array();
 		$keywords_q = '';
 		if($keywords) {
@@ -132,11 +138,24 @@ class members extends Resource
 			array_push($tradingNamesArray,$trading_name_history['with_account']);
 		}
 		
+		//If I only have one trading account in that currency I cannot trade with that account.
+		$exclude_q = mysqli_query($db, $test = "SELECT *, uac.id user_account_currencies_id FROM user_account_currencies uac, user_spaces us, currencies c WHERE c.id=uac.currency_id AND us.id=uac.user_space_id AND us.user_id='".$this->user['id']."' GROUP BY c.id HAVING count(*)=1") or die($test.mysqli_error($db));
+		while($exclude = mysqli_fetch_array($exclude_q)){
+			//iterate through trading names
+			foreach($tradingNamesArray as $key => $trading_name){
+				//if the trading name exists remove it.
+				if($trading_name==$exclude['trading_name']){
+					unset($tradingNamesArray[$key]);
+				}
+			}
+		}
+		
+		//build a query of all possible trading accounts
 		if(!empty($tradingNamesArray)){
 			foreach($tradingNamesArray as $trading_name){
-				if(!in_array($trading_name,$myTradingNamesArray)){
+				//if(!in_array($trading_name,$myTradingNamesArray)){
 					$keywords_q .= " OR uac.trading_name='$trading_name'";
-				}
+				//}
 			}
 			if(strlen($keywords_q) > 4){
 				$keywords_q = substr($keywords_q,4); //remove begining OR
@@ -145,17 +164,14 @@ class members extends Resource
 		}
 		
 		
-		$exclude_q = '';
-		if($excludeLoggedIn)
-			$exclude_q = " AND us.user_id!='".$this->user['id']."' ";
-		
 
 		
-		
+		//Seach through trading accounts on this system.
 		$totalCount = 0;
 		$members_array = array();
-		$members_q = mysqli_query($db,$test = "SELECT *, uac.id user_account_currencies_id FROM user_account_currencies uac, user_spaces us, currencies c, users u  WHERE us.user_id=u.id AND uac.currency_id=c.id AND uac.user_space_id=us.id $keywords_q $exclude_q LIMIT $startEntry, $pageSize") or die($test . mysqli_error($db));
+		$members_q = mysqli_query($db,$test = "SELECT *, uac.id user_account_currencies_id FROM user_account_currencies uac, user_spaces us, currencies c, users u  WHERE us.user_id=u.id AND uac.currency_id=c.id AND uac.user_space_id=us.id $keywords_q LIMIT $startEntry, $pageSize") or die($test . mysqli_error($db));
 		while($members = mysqli_fetch_array($members_q)){
+			//if the member has a currency I have
 			if(in_array($members['currency_id'],$myCurrenciesArray)){
 				$totalCount++;
 				array_push($members_array,array("id"=>$members['user_account_currencies_id'],
@@ -293,6 +309,7 @@ class memberData extends Resource
 	 * @param $memberId
 	 * @provides application/json
 	 * @json
+	 * @cache 0
 	 * @return Tonic\Response
 	 */
 	public function sayMemberData($memberId)
