@@ -33,6 +33,7 @@ class general extends Resource
 	 * @param  str $name
 	 * @provides application/json
 	 * @json
+	 * @cache 0
 	 * @return Tonic\Response
 	 */
 	public function saygeneral($name = 'test')
