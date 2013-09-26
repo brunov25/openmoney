@@ -83,6 +83,7 @@ class paymentData extends Resource
 			*/
 			$destination = 'MEMBER';
 			$toMemberId = 0;
+			$exculdeToMemberId_q = '';
 			$fromAccountId = 0;
 			$fromAccount_q ='';
 			$currencyId = 0;
@@ -96,6 +97,7 @@ class paymentData extends Resource
 				}
 				if(isset($_GET['toMemberId'])){
 					$toMemberId = intval(mysqli_real_escape_string($db, $_GET['toMemberId']));
+					$exculdeToMemberId_q = " AND uac.id!='$toMemberId' ";
 				}
 				if(isset($_GET['fromAccountId'])){
 					$fromAccountId = intval(mysqli_real_escape_string($db, $_GET['fromAccountId']));
@@ -114,7 +116,7 @@ class paymentData extends Resource
 				$currency_id = 1;
 				
 				$transfer_types_array = array();
-				$transfer_types_q = mysqli_query($db, $test = "SELECT *, uac.id user_account_currencies_id  FROM user_account_currencies uac, user_spaces us, currencies c WHERE uac.user_space_id=us.id AND uac.currency_id=c.id AND us.user_id='".$this->user['id']."' $currency_q $fromAccount_q ORDER BY uac.id ASC") or die($test . mysqli_error($db));
+				$transfer_types_q = mysqli_query($db, $test = "SELECT *, uac.id user_account_currencies_id  FROM user_account_currencies uac, user_spaces us, currencies c WHERE uac.user_space_id=us.id AND uac.currency_id=c.id AND us.user_id='".$this->user['id']."' $currency_q $fromAccount_q $exculdeToMemberId_q ORDER BY uac.id ASC") or die($test . mysqli_error($db));
 				while($transfer_types = mysqli_fetch_array($transfer_types_q)){
 					
 					$toMemberId_q = mysqli_query($db, $test = "SELECT *, uac.id user_account_currencies_id  FROM users u, user_account_currencies uac, user_spaces us WHERE uac.currency_id='".$transfer_types['currency_id']."' AND uac.user_space_id=us.id AND us.user_id=u.id AND uac.id='".mysqli_real_escape_string($db,$toMemberId)."' ORDER BY uac.id ASC") or die($test . mysqli_error($db));
@@ -327,7 +329,7 @@ class memberPayment extends Resource
 			$currency = 'cc'; //default currency
 
 			$transfer_types_array = array();
-			$transfer_types_q = mysqli_query($db, $test = "SELECT *, uac.id user_account_currencies_id  FROM user_account_currencies uac, user_spaces us, currencies c WHERE c.id='".$transferTypeId."' AND uac.user_space_id=us.id AND uac.currency_id=c.id AND us.user_id='".$this->user['id']."'") or die($test . mysqli_error($db));
+			$transfer_types_q = mysqli_query($db, $test = "SELECT *, uac.id user_account_currencies_id  FROM user_account_currencies uac, user_spaces us, currencies c WHERE uac.id='".$transferTypeId."' AND uac.user_space_id=us.id AND uac.currency_id=c.id AND us.user_id='".$this->user['id']."'") or die($test . mysqli_error($db));
 			if($transfer_types = mysqli_fetch_array($transfer_types_q)){
 					
 				$toMemberId_q = mysqli_query($db, $test = "SELECT *, uac.id user_account_currencies_id  FROM users u, user_account_currencies uac, user_spaces us WHERE uac.currency_id='".$transfer_types['currency_id']."' AND uac.user_space_id=us.id AND us.user_id=u.id AND uac.id='".mysqli_real_escape_string($db,$toMemberId)."'") or die($test . mysqli_error($db));
