@@ -64,6 +64,7 @@ class access extends Resource
 	 * @param  str $name
 	 * @provides application/json
 	 * @json
+	 * @cache 0
 	 * @return Tonic\Response
 	 */
 	public function sayaccess($name = 'initialData')

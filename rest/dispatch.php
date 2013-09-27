@@ -9,8 +9,7 @@ if (@include(__DIR__.'/../tonic-3.2/src/Tonic/Autoloader.php')) { // use Tonic a
 
 $config = array(
     'load' => array(
-        __DIR__.'/../tonic-3.2/src/openmoney/*.php', // load example resources
-        __DIR__.'/../tonic-3.2/vendor/peej/tonic/src/Tyrell/*.php' // load examples from composer's vendor directory
+        __DIR__.'/src/openmoney/*.php' // load example resources
     ),
     #'mount' => array('Tyrell' => '/nexus'), // mount in example resources at URL /nexus
     #'cache' => new Tonic\MetadataCacheFile('/tmp/tonic.cache') // use the metadata cache

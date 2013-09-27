@@ -1,6 +1,17 @@
 <IfModule mod_rewrite.c>
     RewriteEngine On
-    RewriteCond %{REQUEST_URI} !dispatch\.php$
-    RewriteCond %{REQUEST_FILENAME} !-f
-    RewriteRule .* dispatch.php [L,QSA]
+
+	#Un-comment and edit if placed in anything but the DocumentRoot
+	#RewriteBase /path/in/DocumentRoot
+
+	RewriteCond %{REQUEST_FILENAME} !-f
+	RewriteCond %{REQUEST_FILENAME} !-d [OR]
+	RewriteCond %{REQUEST_FILENAME} ""
+
+	RewriteRule ^(.*)$ dispatch.php [L]
+	#RewriteRule ^(.*)$ /path/in/DocumentRoot/dispatch.php [L]
+    
+    #RewriteCond %{REQUEST_URI} !dispatch\.php$
+    #RewriteCond %{REQUEST_FILENAME} !-f
+    #RewriteRule .* dispatch.php [L,QSA]
 </IfModule>
