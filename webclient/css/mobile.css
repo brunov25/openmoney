@@ -1,0 +1,931 @@
+/*
+    This file is part of Cyclos (www.cyclos.org).
+    A project of the Social Trade Organisation (www.socialtrade.org).
+
+    Cyclos is free software; you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation; either version 2 of the License, or
+    (at your option) any later version.
+
+    Cyclos is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with Cyclos; if not, write to the Free Software
+    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
+
+ */
+body {
+	font-family: arial,helvetica, sans-serif,"lucida grande",tahoma,verdana;
+	font-size: 14px;
+	border: 0px;
+	margin: 0px;
+	padding: 0px;
+	overflow: hidden;
+}
+a, input, div {
+   	outline: 0;
+}
+a {
+	text-decoration:none
+}
+input::-moz-focus-inner { 
+	border: 0; 
+}
+td {
+	vertical-align: top;
+}
+ul {
+    list-style-position: inside;
+    padding: 0px 0px 15px 0px;
+    margin: 0;
+} 
+/* This makes sure that when you click on a link it is not highlighted on touchscreens */
+* {
+	-webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+}
+.action-button, 
+.bottom-bar-button, 
+.menu-button, 
+.topmenu-button,
+.clickable,
+.icon-button,
+.datePickerDay,
+.datePickerPreviousButton,
+.datePickerNextButton,
+.dateBoxSelect,
+.scroll-data-image,
+.scroll-page-image {
+	cursor: pointer;
+	cursor: hand;
+}
+.dateBox-input-field,
+.form-input-field,
+.popup,
+.row-left-column,
+.row-right-column {
+	padding: 5px;
+}
+.action-button,
+.custom-radio > .box,
+.custom-radio > input:checked + .box > .dot,
+.custom-checkbox > .box,
+.custom-checkbox > input:checked + .box > .tick,
+#loading,
+.topmenu-button img, 
+.spinner img {
+	display: block;
+}
+.action-button {
+	outline: none;
+	color: #FFFFFF;	
+    border: 1px solid #487BA7;
+    position: relative;
+    padding: 6px;
+}
+.action-button-click-surface,
+.scroll-page,
+.scroll-data,
+.top-bar {
+	top: 0;
+}
+.action-button-click-surface {
+	height: 100%;
+    left: 0;
+    position: absolute;   
+}
+.action-button-text {
+	margin: 6px;
+}
+.action-button-down,
+.datePickerDayIsHighlighted,
+.dateBoxSelect-down {
+	border-color: #E47100 !important;
+	background: #FFC17B !important; /* Old browsers */
+	background: -moz-linear-gradient(top,#FFC17B 0%,#F29120 95%) !important; /* FF3.6+ */
+	background: -webkit-gradient(linear,left top,left bottom,color-stop(0%,#FFC17B),color-stop(95%,#F29120)) !important; /* Chrome,Safari4+ */
+	background: -webkit-linear-gradient(top,#FFC17B 0%,#F29120 95%) !important; /* Chrome10+,Safari5.1+ */
+	background: -o-linear-gradient(top,#FFC17B 0%,#F29120 95%) !important; /* Opera 11.10+ */
+	background: -ms-linear-gradient(top,#FFC17B 0%,#F29120 95%) !important; /* IE10+ */
+	background: linear-gradient(top,#FFC17B 0%,#F29120 95%) !important; /* W3C */
+	filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#FFC17B',endColorstr='#F29120',GradientType=0) !important; /* IE6-9 */	
+}
+.action-button, 
+.prompt-text, 
+.menu-button,
+.loading-data,
+.loading-text,
+.no-data,
+.number-field-decimal-separator,
+.loading-process,
+.transaction-password-label-field,
+.scroll-data,
+.Caption {
+    text-align: center;
+}
+.amount-positive {
+	color: #2527A2;
+}
+.amount-negative {
+	color: #A32408;
+}
+.bottom {
+	background-color: #DFF1F9;
+    border-top: 1px solid #8EBECB;       
+}
+.top, 
+.menu {
+	z-index: 1;
+}
+.bottom, 
+.bottom-bar,
+.action-button, 
+.top, 
+.top-bar, 
+.menu,
+.main,
+.number-field,
+.page,
+.dateBox-input-field,
+.form-input-field,
+.form-select-field,
+.icon-label,
+.icon-button,
+.popup table,
+.prompt-text,
+.row,
+.row-content,
+.no-data,
+.notification,
+.loading-data,
+.loading-process,
+.datePickerDays,
+.datePickerMonthSelector,
+.version-label-field,
+.action-button-click-surface {
+	width: 100%;
+}
+.number-field,
+.top,
+.menu,
+.row-content,
+.no-data,
+.notification,
+.radio-group {
+	display: table;
+}
+.number-field,
+.top,
+.menu {
+	border-collapse: collapse;
+}
+.bottom-bar {	
+    display: table;
+}
+.bottom-bar > tbody > tr > td {
+	padding: 2px 20px 2px 6px;
+}
+.custom-radio > .box,
+.custom-radio > .value,
+.number-field-number-wrapper,
+.number-field-decimal-wrapper,
+.number-field-decimal-separator,
+.text-container,
+.topmenu-heading,
+.topmenu-button,
+.spinner,
+.menu-button,
+.image-row-left-column,
+.icon-container,
+.radio-group-button,
+.row-left-column,
+.row-right-column {
+	display: table-cell;  
+}
+.Caption, 
+.prompt-text {
+	margin-bottom: 10px;
+}
+.custom-radio > .value,
+.menu, 
+.help, 
+.icon-button,
+.row-heading,
+.version-label-field {	
+	font-size: 11px;	
+}
+.account-information-heading,
+.label-field, 
+.dateBox-input-field,
+.form-input-field, 
+.form-select-field select,
+.login, 
+.example, 
+.help-title,
+.prompt-text,
+.form-label,
+.custom-field-label,
+.form-value,
+.action-button,
+.users,
+.Caption {
+	font-size: 12px;
+}
+.configuration-label-field, 
+.payment-label-field,
+.Caption, 
+.help-title, 
+.icon-label-text, 
+.icon-button,
+.topmenu-heading, 
+.action-button,
+.row-heading,
+.row-right-column,
+.form-label,
+.custom-field-label,
+.number-field-decimal-separator {		    
+    font-weight: bold;
+}
+.custom-checkbox,
+.custom-radio {
+  	display: inline-block;
+}
+.custom-checkbox > .box {
+	border-radius: 4px; 
+    -moz-border-radius: 4px; 
+    -webkit-border-radius: 4px;	
+}
+.custom-radio > .box {
+	border-radius: 11px; 
+    -moz-border-radius: 11px; 
+    -webkit-border-radius: 11px;
+}
+.custom-radio > .value {
+	padding-left: 5px;
+}
+.custom-checkbox > .box,
+.custom-radio > .box {
+	height: 14px;
+}
+.custom-checkbox > .box,
+.custom-radio > .box {	
+	width: 14px;
+	border: 1px solid #B0CDD7;
+	background-color: #FFFFFF;	
+}
+.custom-checkbox > .box > .tick {
+	left: 2px;
+	top: -2px;
+	width: 14px;
+	height: 6px;
+	border-bottom: 2px solid #333333;
+	border-left: 2px solid #333333;
+	-webkit-transform: rotate(-45deg);
+	-moz-transform: rotate(-45deg);
+	-o-transform: rotate(-45deg);
+	-ms-transform: rotate(-45deg);
+	transform: rotate(-45deg);
+	display: none;
+}
+.custom-radio > .box > .dot {
+	top: 2px;
+	left: 2px;
+	height: 10px;
+    width: 10px;
+	background-color: #F29120;
+    display: none;     
+    position: relative;        
+}
+.custom-radio input,
+.custom-checkbox > input {
+	outline: none;
+	left: 1px;
+	top: 1px;
+	padding: 0;
+	width: 16px;
+	height: 16px;
+	border: none;
+	margin: 0;	
+  	-ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=0)";	
+	filter: alpha(opacity=0);
+  	-moz-opacity: 0;
+	-khtml-opacity: 0;
+  	opacity: 0;
+	z-index: 1;
+}
+.custom-checkbox > input:active + .box,
+.custom-radio > input:active + .box {
+	border-color: #AAAAAA;
+	background-color: #DDDDDD;
+}
+.custom-field-label, .custom-checkbox {
+	margin-top: 5px;
+}
+.dateBox-input-field {
+	padding-left: 40px;
+}
+.form-correction {
+	padding-right: 12px;
+}
+.form-label, 
+.form-value {
+	padding-bottom: 3px;
+}
+.form-value {
+	padding-left: 10px;	
+}
+.dateBox-input-field,
+.form-input-field,
+.form-select-field select {
+	font-family: arial,helvetica,sans-serif,"lucida grande",tahoma,verdana;
+}
+.dateBox-input-field,
+.form-input-field,
+.form-select-field {
+	background-color: white;
+    border: 1px solid #B0CDD7;
+    margin: 5px 0;   
+    box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    -webkit-box-sizing: border-box;
+}
+.form-input-field:-moz-placeholder,
+.dateBox-input-field:-moz-placeholder {
+	color: #AAAAAA;
+    font-style: italic;
+    text-align: left !important;
+}
+.form-input-field::-webkit-input-placeholder,
+.dateBox-input-field::-webkit-input-placeholder {
+	color: #AAAAAA;
+    font-style: italic;
+    text-align: left !important;
+}
+.form-input-field-readonly, 
+.example {
+	font-style: italic;
+}
+.form-select-field {
+	background: url("../images/drop_down.png") no-repeat scroll right center white;
+	overflow: hidden;
+	padding: 3px 17px 4px 4px;
+}
+.form-select-field select {
+	background: none !important;
+	border: 0 !important;
+	width: 120%;
+}
+.GPBYFDEAB,
+.GPBYFDECB,
+.row {
+	min-height: 38px;
+}
+.row-content {
+	height: 38px;
+}
+.help {
+	margin: 5px 8px;
+}
+.help-title {
+	padding: 2px 0px 0px 0px; 
+}
+.help-title, 
+.form-label,
+.custom-field-label {
+	color: #07737B;
+}
+.help-text {
+	margin-bottom: 10px;
+}
+#loading {
+	overflow: hidden;	
+}
+.loading-data,
+.scroll-data,
+.scroll-page,
+.bottom,
+.custom-checkbox > .box > .tick,
+.custom-checkbox > input,
+.custom-radio > input,
+#loading,
+#loadingImage {
+ 	position: absolute;	
+}
+.loading-data,
+.bottom {
+	bottom: 0;
+}
+.loading-data {
+	background: #FFFFFF;
+}
+.loading-data-text {
+	padding: 10px;
+}
+.login, 
+.help,
+.notification, 
+.dateBox-input-field,
+.dateBox-input-field:disabled,
+.form-input-field,
+.form-select-field,
+.form-select-field select,
+.menu-bar, 
+.label-field,
+.example,
+.Caption,
+.custom-radio > .value,
+.row-heading,
+.no-data,
+.users,
+.icon-button,
+.form-value,
+.transaction-password-label-field,
+.prompt-text,
+.loading-text {
+	color: #3C4B50;
+}
+.login-label {
+	margin-right: 5px;
+}
+.icon-button {
+	border: 1px solid #B0CDD7;
+    margin: 5px 0px;
+    padding: 6px 5px;
+	background: #EFF9FF; /* Old browsers */
+	background: -moz-linear-gradient(top,#EFF9FF 0%,#CAE2F7 100%); /* FF3.6+ */
+	background: -webkit-gradient(linear,left top,left bottom,color-stop(0%,#EFF9FF),color-stop(100%,#CAE2F7)); /* Chrome,Safari4+ */
+	background: -webkit-linear-gradient(top,#EFF9FF 0%,#CAE2F7 100%); /* Chrome10+,Safari5.1+ */
+	background: -o-linear-gradient(top,#EFF9FF 0%,#CAE2F7 100%); /* Opera 11.10+ */
+	background: -ms-linear-gradient(top,#EFF9FF 0%,#CAE2F7 100%); /* IE10+ */
+	background: linear-gradient(top,#EFF9FF 0%,#CAE2F7 100%); /* W3C */
+	filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#EFF9FF',endColorstr='#CAE2F7',GradientType=0); /* IE6-9 */	
+}
+.icon-button-down {
+	background: #D3EAFF; /* Old browsers */
+	background: -moz-linear-gradient(top,#BCDCF9 10%,#D3EAFF 100%); /* FF3.6+ */
+	background: -webkit-gradient(linear,left top,left bottom,color-stop(10%,#BCDCF9), color-stop(100%,#D3EAFF)); /* Chrome,Safari4+ */
+	background: -webkit-linear-gradient(top,#BCDCF9 10%,#D3EAFF 100%); /* Chrome10+,Safari5.1+ */
+	background: -o-linear-gradient(top,#BCDCF9 10%,#D3EAFF 100%); /* Opera 11.10+ */
+	background: -ms-linear-gradient(top,#BCDCF9 10%,#D3EAFF 100%); /* IE10+ */
+	background: linear-gradient(top,#BCDCF9 10%,#D3EAFF 100%); /* W3C */
+	filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#BCDCF9',endColorstr='#D3EAFF',GradientType=0 ); /* IE6-9 */		
+}
+.icon-button-image,
+.icon-container {
+	width: 16px;
+	height: 16px;	
+}
+.icon-button-image {
+	margin: 0px 5px 0px 0px;
+}
+.icon-label-image {
+	margin-right: 5px;
+	line-height: 1px;
+}
+.icon-container {
+	line-height: 11px;
+}
+.icon-label-text,
+.icon-button span {
+	line-height: 18px;
+}
+.icon-label-image, 
+.icon-label-text, 
+.icon-button-image,
+.login-label, 
+.icon-label {
+	float: left;
+}
+.image-row-left-column {
+	padding: 0 0 0 5px;
+    width: 20px;
+}
+.loading-process {	
+    margin: 0 auto 10px;    
+}
+.mask {
+	background-color: #000000;
+    -ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=30)";	
+	filter: alpha(opacity=30);
+  	-moz-opacity: 0.3;
+	-khtml-opacity: 0.3;
+  	opacity: 0.3;
+  	z-index: 3;
+}
+.login-icon-label, 
+.login-welcome-text {
+	margin-bottom: 10px;
+}
+.main {	
+	overflow-x: hidden;	
+}
+.main,
+.main-wrapper,
+.page, 
+.notification-container,
+.form-correction,
+.top, 
+.menu,
+.bottom-bar,
+.custom-radio,
+.custom-checkbox,
+.custom-checkbox > .box,
+.custom-radio > .box {
+	position: relative;
+}
+.menu-bar, 
+.popup {
+	background: #FEFFFF; /* Old browsers */
+	background: -moz-linear-gradient(top,#FEFFFF 0%,#DDF1F9 100%); /* FF3.6+ */
+	background: -webkit-gradient(linear, left top,left bottom,color-stop(0%,#FEFFFF),color-stop(100%,#DDF1F9)); /* Chrome,Safari4+ */
+	background: -webkit-linear-gradient(top,#FEFFFF 0%,#DDF1F9 100%); /* Chrome10+,Safari5.1+ */
+	background: -o-linear-gradient(top,#FEFFFF 0%,#DDF1F9 100%); /* Opera 11.10+ */
+	background: -ms-linear-gradient(top,#FEFFFF 0%,#DDF1F9 100%); /* IE10+ */
+	background: linear-gradient(top,#FEFFFF 0%,#DDF1F9 100%); /* W3C */
+	filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#FEFFFF', endColorstr='#DDF1F9',GradientType=0); /* IE6-9 */	   
+}
+.menu-bar {
+	border-bottom: 1px solid #AAAAAA;
+}
+.menu-button {
+    padding: 5px;    
+	width: 66px;
+    border-right: 1px solid #CCCCCC;
+}
+.menu-button-down {
+	background: #DBFDFC; /* Old browsers */
+	background: -moz-linear-gradient(top,#DBFDFC 0%,#C1EBFA 100%); /* FF3.6+ */
+	background: -webkit-gradient(linear,left top,left bottom,color-stop(0%,#DBFDFC),color-stop(100%,#C1EBFA)); /* Chrome,Safari4+ */
+	background: -webkit-linear-gradient(top,#DBFDFC 0%,#C1EBFA 100%); /* Chrome10+,Safari5.1+ */
+	background: -o-linear-gradient(top,#DBFDFC 0%,#C1EBFA 100%); /* Opera 11.10+ */
+	background: -ms-linear-gradient(top,#DBFDFC 0%,#C1EBFA 100%); /* IE10+ */
+	background: linear-gradient(top,#DBFDFC 0%,#C1EBFA 100%); /* W3C */
+	filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#DBFDFC', endColorstr='#C1EBFA',GradientType=0); /* IE6-9 */		
+}
+.no-data {
+    box-shadow: inset 0 -1px 0 rgba(255,255,255,.4);
+    padding: 10px 0;       
+}
+.notification {
+    border: 1px solid;
+    border-spacing: 5px;
+}
+.notification-fixed {
+	box-shadow: 0 1px 5px -2px;
+    left: 2%;
+    margin-top: 10px;
+    position: absolute;
+    width: 96%;
+    z-index: 1;
+}
+.notification-container {
+	padding: 5px 5px 0px 5px;
+}
+.notification-container-fixed {
+	padding: 0px !important;
+}
+.notification-error {
+	background-color: #FFF8EC;
+	border-color: #FF8040;	
+}
+.notification-information {	
+	background-color: #F5F6F8;
+    border-color: #B0CDD7;      
+}
+.notification-success {
+	background-color: #EBFFDE;
+	border-color: #4AC74C;
+}
+.notification-warning {
+	background-color: #FEFFD5;
+    border-color: #FFDC00;
+}
+.number-field-decimal-wrapper input,
+.number-field-number-wrapper input,
+.row-right-column,
+.version-label-field {
+	text-align: right;		
+}
+.number-field-decimal-wrapper input:-moz-placeholder {
+	color: #3C4B50 !important;
+    font-style: normal !important;
+    text-align: right !important;
+}
+.number-field-decimal-wrapper input::-webkit-input-placeholder {
+	color: #3C4B50 !important;
+    font-style: normal !important;
+    text-align: right !important;
+}
+.number-field-decimal-separator {
+	width: 10px;	
+}
+.number-field-number-wrapper {
+	width: 75%;
+}
+.opaque {
+	backface-visibility: hidden;
+	-moz-backface-visibility: hidden;
+	-webkit-backface-visibility: hidden;
+}
+.page-fixed {
+	-ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=40)";	
+	filter: alpha(opacity=40);
+  	-moz-opacity: 0.4;
+	-khtml-opacity: 0.4;
+  	opacity: 0.4;
+}
+.payment-label-field {
+	margin-bottom: 5px;
+}
+.popup {
+    border: 3px solid #CFD6FF;
+	z-index: 4;
+	width: 75%;
+}
+.principal {
+	background: #FFFFFF !important;
+}
+.radio-group {
+	margin: 5px 0;
+}
+.radio-group-button {
+	margin-right: 5px;
+}
+.rounded, 
+.notification, 
+.square, 
+.dateBox-input-field,
+.form-input-field,
+.form-select-field, 
+.popup,
+.action-button,
+.icon-button,
+.custom-radio > .box > .dot {
+	 border-radius: 5px; 
+    -moz-border-radius: 5px; 
+    -webkit-border-radius: 5px;
+}
+.row, .no-data {
+	border-bottom: 1px solid #DDDED8;
+	background: #FFFFFF; /* Old browsers */
+	background: -moz-linear-gradient(top,#FFFFFF 0%, #F1F1EF 100%); /* FF3.6+ */
+	background: -webkit-gradient(linear,left top,left bottom,color-stop(0%,#FFFFFF),color-stop(100%,#F1F1EF)); /* Chrome,Safari4+ */
+	background: -webkit-linear-gradient(top, #FFFFFF 0%,#F1F1EF 100%); /* Chrome10+,Safari5.1+ */
+	background: -o-linear-gradient(top,#FFFFFF 0%,#F1F1EF 100%); /* Opera 11.10+ */
+	background: -ms-linear-gradient(top,#FFFFFF 0%,#F1F1EF 100%); /* IE10+ */
+	background: linear-gradient(top,#FFFFFF 0%,#F1F1EF 100%); /* W3C */
+	filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#FFFFFF', endColorstr='#F1F1EF',GradientType=0); /* IE6-9 */	
+}
+.row-sub {
+	font-size: 10px;
+	font-family: "lucida grande",tahoma,verdana,arial,sans-serif;
+	color: #8F908A;
+}
+.version-container {
+	margin-right: 4px;
+}
+.account-information-row {
+	border-bottom: 1px solid #CED9C8;
+	background: #FFFCF4; /* Old browsers */
+	background: -moz-linear-gradient(top,#FFFCF4 0%,#FCFAE2 100%); /* FF3.6+ */
+	background: -webkit-gradient(linear,left top,left bottom,color-stop(0%,#FFFCF4),color-stop(100%,#FCFAE2)); /* Chrome,Safari4+ */
+	background: -webkit-linear-gradient(top,#FFFCF4 0%,#FCFAE2 100%); /* Chrome10+,Safari5.1+ */
+	background: -o-linear-gradient(top,#FFFCF4 0%,#FCFAE2 100%); /* Opera 11.10+ */
+	background: -ms-linear-gradient(top,#FFFCF4 0%,#FCFAE2 100%); /* IE10+ */
+	background: linear-gradient(top,#FFFCF4 0%,#FCFAE2 100%); /* W3C */
+	filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#FFFCF4',endColorstr='#FCFAE2',GradientType=0); /* IE6-9 */	
+}
+.account-information-heading {
+	color: #115F15;	
+}
+.account-information-sub {
+	color: #3C4B50;
+}
+.account-information-value {
+	color: #444;
+}
+.top-spacing,
+.transaction-password-label-field {
+	padding-top: 10px;
+}
+.scroll-page,
+.scroll-data {
+	width: 92px;
+}
+.scroll-data {
+	left: 50%;
+	margin-left: -46px;
+}
+.scroll-page {
+	right: 0;
+}
+.scroll-page-image,
+.scroll-data-image {
+	display: inline-block;
+	margin: 0 5px;
+	background-color: #DDDDDD;
+	border-radius: 0 0 4px 4px; 
+    -moz-border-radius: 0 0 4px 4px; 
+    -webkit-border-radius: 0 0 4px 4px;	
+    padding: 2px 5px 0;
+    border: 1px solid #BBBBBB;
+    border-top: 0px;
+    box-shadow: 1px 1px 1px #FFFFFF inset;    
+    -ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=80)";	
+	filter: alpha(opacity=80);
+  	-moz-opacity: 0.8;
+	-khtml-opacity: 0.8;
+  	opacity: 0.8;
+  	z-index: 2;
+}
+.square {
+    background-color: #F5F6F8;
+    border: 1px solid #B0CDD7;
+}
+.square,
+.content-wrapper {
+	margin: 5px;
+	overflow: hidden;
+}
+.square-shadow {
+	box-shadow: 1px 1px #AAAAAA;
+}
+.login {
+	padding: 10px;
+}
+.text-container {	
+	overflow: hidden;
+}
+.top-bar {   
+	display: table-row;	
+	border-bottom: 1px solid #366998; 
+}
+.text-container,
+.topmenu-heading,
+.topmenu-button,
+.image-row-left-column,
+.bottom-bar-button,
+.row-left-column,
+.row-right-column,
+.spinner,
+.custom-radio > .value {
+	vertical-align: middle;
+}
+.topmenu-heading {
+	color: #FFFFFF;
+    text-shadow: 1px 1px 1px #516AA4;
+    padding-left: 5px;
+}
+.topmenu-button, 
+.spinner {
+	width: 34px;
+    outline: none;
+}
+.topmenu-button img, 
+.spinner img {
+	margin: 10px 12px;	
+}
+.topmenu-button {
+	border-left: 1px solid #366998;   
+}
+.topmenu-button-down, 
+.topmenu-button-down-hovering {	
+	background: #6CC5FC; /* Old browsers */
+	background: -moz-linear-gradient(top,#6CC5FC 5%,#58B2F3 95%); /* FF3.6+ */
+	background: -webkit-gradient(linear,left top,left bottom,color-stop(5%,#6CC5FC),color-stop(95%,#58B2F3)); /* Chrome,Safari4+ */
+	background: -webkit-linear-gradient(top,#6CC5FC 5%,#58B2F3 95%); /* Chrome10+,Safari5.1+ */
+	background: -o-linear-gradient(top,#6CC5FC 5%,#58B2F3 95%); /* Opera 11.10+ */
+	background: -ms-linear-gradient(top,#6CC5FC 5%,#58B2F3 95%); /* IE10+ */
+	background: linear-gradient(top,#6CC5FC 5%,#58B2F3 95%); /* W3C */
+	filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#6CC5FC', endColorstr='#58B2F3',GradientType=0); /* IE6-9 */
+}
+.dateBox-container {
+	position: relative;
+}
+.dateBoxPopup {
+	box-shadow: 1px 1px 5px 0px;
+	z-index: 4;
+}
+.dateBoxSelect {
+	border-radius: 5px 0 0 5px; 
+    -moz-border-radius: 5px 0 0 5px; 
+    -webkit-border-radius: 5px 0 0 5px;
+    border-right: 1px solid #B0CDD7;
+    margin: 5px 0;
+    padding: 4px 10px 2px;
+    position: absolute;	
+}
+.gwt-DatePicker {
+  	border: 1px solid #CCCCCC;
+  	border-top:1px solid #999999;
+  	cursor: default;
+}
+.gwt-DatePicker td,
+.datePickerMonthSelector td:focus {
+  	outline: none;
+}
+.datePickerDays { 
+  	background: #FFFFFF;
+}
+.datePickerDay,
+.datePickerWeekdayLabel,
+.datePickerWeekendLabel {
+	font-size: 85%;
+	text-align: center;
+	padding: 4px;
+	outline: none;
+	font-weight:bold;
+	color:#333333;
+	border-right: 1px solid #EDEDED;
+	border-bottom: 1px solid #EDEDED;
+}
+.datePickerWeekdayLabel,
+.datePickerWeekendLabel {
+	background: #FFFFFF;
+	padding: 0px 4px 2px;
+	cursor: default;
+	color:#666666;
+	font-size:70%;
+	font-weight:normal;
+}
+.datePickerDay {
+	padding: 5px 9px;
+}
+.datePickerDayIsWeekend {
+  	background: #F7F7F7;
+}
+.datePickerDayIsFiller {
+  	color: #999999;
+  	font-weight:normal;
+}
+.datePickerDayIsDisabled {
+  	color: #AAAAAA;
+  	font-style: italic;
+}
+.datePickerDayIsValue,
+.datePickerDayIsToday {
+	color: #FFFFFF; 	
+}
+.datePickerDayIsHighlighted {
+  	border: 0px;
+}
+.datePickerDayIsValueAndHighlighted {
+  	background: #D7DFE8;
+}
+.datePickerDayIsToday {	
+  	background: #3D3C7B; /* Old browsers */
+	background: -moz-linear-gradient(top,#4590E6 0%,#3D3C7B 95%); /* FF3.6+ */
+	background: -webkit-gradient(linear,left top,left bottom,color-stop(0%,#4590E6),color-stop(95%,#3D3C7B)); /* Chrome,Safari4+ */
+	background: -webkit-linear-gradient(top,#4590E6 0%,#3D3C7B 95%); /* Chrome10+,Safari5.1+ */
+	background: -o-linear-gradient(top,#4590E6 0%,#3D3C7B 95%); /* Opera 11.10+ */
+	background: -ms-linear-gradient(top,#4590E6 0%,#3D3C7B 95%); /* IE10+ */
+	background: linear-gradient(top,#4590E6 0%,#3D3C7B 95%); /* W3C */
+	filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#4590E6', endColorstr='#3D3C7B',GradientType=0); /* IE6-9 */ 
+}
+.datePickerMonthSelector {
+	background: #FFFFFF;
+}
+.datePickerPreviousButton,
+.datePickerNextButton {
+	font-size: 120%;
+	line-height: 1em;
+	color: #3A6AAD;
+	font-weight: bold;
+	padding: 4px 15px 6px;
+	margin-bottom: 1px;
+	outline: none;
+	border-radius: 3px; 
+    -moz-border-radius: 3px; 
+    -webkit-border-radius: 3px;
+	background: #DFDEFF; /* Old browsers */
+	background: -moz-linear-gradient(top,#E4F0FE 0%,#DFDEFF 95%); /* FF3.6+ */
+	background: -webkit-gradient(linear,left top,left bottom,color-stop(0%,#E4F0FE),color-stop(95%,#DFDEFF)); /* Chrome,Safari4+ */
+	background: -webkit-linear-gradient(top,#E4F0FE 0%,#DFDEFF 95%); /* Chrome10+,Safari5.1+ */
+	background: -o-linear-gradient(top,#E4F0FE 0%,#DFDEFF 95%); /* Opera 11.10+ */
+	background: -ms-linear-gradient(top,#E4F0FE 0%,#DFDEFF 95%); /* IE10+ */
+	background: linear-gradient(top,#E4F0FE 0%,#DFDEFF 95%); /* W3C */
+	filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#E4F0FE', endColorstr='#DFDEFF',GradientType=0); /* IE6-9 */ 
+}
+td.datePickerMonth {
+	text-align: center;
+	vertical-align: middle;
+	white-space: nowrap;
+	font-size: 100%;
+	font-weight: bold;
+	color: #333333;
+}
+.top-bar, 
+.action-button,
+.datePickerDayIsValue,
+.dateBoxSelect {
+	background: #58B2F3; /* Old browsers */
+	background: -moz-linear-gradient(top,#58B2F3 0%,#4590E6 95%); /* FF3.6+ */
+	background: -webkit-gradient(linear,left top,left bottom,color-stop(0%,#58B2F3),color-stop(95%,#4590E6)); /* Chrome,Safari4+ */
+	background: -webkit-linear-gradient(top,#58B2F3 0%,#4590E6 95%); /* Chrome10+,Safari5.1+ */
+	background: -o-linear-gradient(top,#58B2F3 0%,#4590E6 95%); /* Opera 11.10+ */
+	background: -ms-linear-gradient(top,#58B2F3 0%,#4590E6 95%); /* IE10+ */
+	background: linear-gradient(top,#58B2F3 0%,#4590E6 95%); /* W3C */
+	filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#58B2F3', endColorstr='#4590E6',GradientType=0); /* IE6-9 */
+}
