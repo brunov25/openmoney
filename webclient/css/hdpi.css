@@ -1,0 +1,185 @@
+/*
+    This file is part of Cyclos (www.cyclos.org).
+    A project of the Social Trade Organisation (www.socialtrade.org).
+
+    Cyclos is free software; you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation; either version 2 of the License, or
+    (at your option) any later version.
+
+    Cyclos is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with Cyclos; if not, write to the Free Software
+    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
+
+ */
+body {
+	font-size: 21px;
+}
+ul {
+    padding: 0px 0px 23px 0px;
+}
+.label-field, 
+.dateBox-input-field,
+.form-input-field, 
+.form-select-field select,
+.login, 
+.example, 
+.help-title,
+.prompt-text,
+.form-label,
+.custom-field-label,
+.form-value,
+.action-button,
+.users, 
+.menu, 
+.help, 
+.Caption,
+.icon-button,
+.row-heading,
+.account-information-heading {
+	font-size: 18px;
+}			
+.row-sub {
+	font-size: 15px;
+}
+.custom-radio > .value,
+.version-label-field {
+	font-size: 17px;
+}
+.custom-radio > .value {
+	padding-left: 8px;
+}
+.dateBox-input-field,
+.form-input-field,
+.icon-button,
+.menu-button,
+.row-left-column,
+.row-right-column {
+	padding: 8px;
+}
+.help-title {
+	padding: 3px 0px 0px 0px; 
+}
+.menu-button {
+	width: 99px;
+}
+.form-correction {
+	padding-right: 18px;
+}
+.form-select-field {
+	padding: 5px 17px 5px 5px;
+}
+.form-label, 
+.form-value {
+   	padding-bottom: 5px;
+}
+.icon-button {
+	margin: 8px 0px;
+}
+.topmenu-heading {
+	padding-left: 8px;
+}
+.topmenu-button,
+.spinner {
+	width: 55px;
+}
+.topmenu-button img, 
+.spinner img {
+   	margin: 15px 18px;
+}
+.GPBYFDEAB,
+.GPBYFDECB,
+.row {
+	min-height: 61px;
+}
+.row-content {
+	height: 61px;
+}
+.dateBoxSelect {
+	padding: 7px 15px 5px;
+}
+.datePickerDay {
+	padding: 14px 20px;
+}
+.datePickerPreviousButton, 
+.datePickerNextButton {
+    padding: 4px 22px 6px;
+}
+.custom-checkbox > .box > .tick {
+	left: 3px;
+	top: -1px;
+}
+.custom-radio > .box > .dot {
+	top: 3px;
+	left: 3px;
+	height: 15px;
+    width: 15px;
+   	border-radius: 8px; 
+    -moz-border-radius: 8px; 
+    -webkit-border-radius: 8px;
+}
+.custom-radio > .box,
+.custom-checkbox > .box > .tick,
+.custom-checkbox > .box {
+	width: 21px;
+}
+.custom-radio > .box,
+.custom-checkbox > .box {
+	height: 21px;
+}
+.custom-radio input, 
+.custom-checkbox > input {
+    left: 4px;
+    top: 4px;
+}
+.dateBox-input-field {
+	padding-left: 60px;
+}
+.square,
+.content-wrapper {
+	margin: 8px;
+}
+.bottom-bar > tbody > tr > td {
+	padding: 3px 23px 3px 9px;
+}
+.image-row-left-column {
+    padding: 0 0 0 8px;
+}
+.icon-button-image,
+.icon-container {
+	width: 24px;
+	height: 24px;
+}
+.icon-button-image {
+    margin: 0px 8px 0 0;
+}
+.icon-label-text,
+.icon-button span {
+    line-height: 24px;
+}
+.icon-label-image,
+.radio-group-button {
+    margin-right: 8px;
+}
+.notification-container {
+    padding: 8px 8px 0;
+}
+.notification-fixed {
+	margin-top: 15px;
+}
+.action-button-text {
+	margin: 9px;
+}
+.top-spacing,
+.transaction-password-label-field {
+	padding-top: 15px;
+}
+.scroll-page-image,
+.scroll-data-image {
+	margin: 0 8px;
+}

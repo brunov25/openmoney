@@ -1,0 +1,190 @@
+/*
+    This file is part of Cyclos (www.cyclos.org).
+    A project of the Social Trade Organisation (www.socialtrade.org).
+
+    Cyclos is free software; you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation; either version 2 of the License, or
+    (at your option) any later version.
+
+    Cyclos is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with Cyclos; if not, write to the Free Software
+    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
+
+ */
+body {
+	font-size: 28px;
+}
+ul {
+    padding: 0px 0px 30px 0px;
+} 
+.label-field, 
+.dateBox-input-field,
+.form-input-field, 
+.form-select-field select,
+.login, 
+.example, 
+.help-title,
+.prompt-text,
+.form-label,
+.custom-field-label,
+.form-value,
+.action-button,
+.users, 
+.menu, 
+.help, 
+.Caption,
+.icon-button,
+.row-heading,
+.account-information-heading {
+	font-size: 24px;
+}			
+.row-sub {
+	font-size: 20px;
+}
+.custom-radio > .value,
+.version-label-field {
+	font-size: 22px;
+}
+.custom-radio > .value {
+	padding-left: 10px;
+}
+.dateBox-input-field,
+.form-input-field,
+.icon-button,
+.menu-button,
+.row-left-column,
+.row-right-column {
+	padding: 10px;
+}
+.help-title {
+	padding: 4px 0px 0px 0px; 
+}
+.menu-button {
+	width: 122px;
+}
+.form-correction {
+	padding-right: 22px;
+}
+.form-select-field {
+	padding: 5px 17px 5px 5px;
+}
+.form-label, 
+.form-value {
+   	padding-bottom: 6px;
+}
+.icon-button {
+	margin: 10px 0px;
+}
+.topmenu-heading {
+	padding-left: 10px;
+}
+.topmenu-button,
+.spinner {
+	width: 72px;
+}
+.topmenu-button img, 
+.spinner img {
+   	margin: 20px 24px;
+}
+.GPBYFDEAB,
+.GPBYFDECB,
+.row {
+	min-height: 80px;
+}
+.row-content {
+	height: 80px;
+}
+.dateBoxSelect {
+	padding: 8px 20px 3px;
+}
+.datePickerDay {
+	padding: 10px 20px;
+}
+.datePickerPreviousButton, 
+.datePickerNextButton {
+    padding: 4px 20px;
+}
+.custom-checkbox > .box > .tick {
+	left: 5px;
+	top: 0px;
+}
+.custom-radio > .box > .dot {
+	top: 4px;
+	left: 4px;
+	height: 20px;
+    width: 20px;
+   	border-radius: 10px; 
+    -moz-border-radius: 10px; 
+    -webkit-border-radius: 10px;
+}
+.custom-radio > .box,
+.custom-checkbox > .box > .tick,
+.custom-checkbox > .box {
+	width: 28px;
+}
+.custom-radio > .box {
+	border-radius: 14px; 
+    -moz-border-radius: 14px; 
+    -webkit-border-radius: 14px;
+}
+.custom-checkbox > .box,
+.custom-radio > .box {
+	height: 28px;
+}
+.custom-radio input, 
+.custom-checkbox > input {
+    left: 5px;
+    top: 5px;
+}
+.dateBox-input-field {
+	padding-left: 80px;
+}
+.square,
+.content-wrapper {
+	margin: 10px;
+}
+.bottom-bar > tbody > tr > td {
+	padding: 4px 25px 4px 12px;
+}
+.image-row-left-column {
+    padding: 0 0 0 10px;
+}
+.icon-button-image,
+.icon-container {
+	width: 32px;
+	height: 32px;
+}
+.icon-button-image {
+    margin: 0px 10px 0 0;
+}
+.icon-label-text,
+.icon-button span {
+    line-height: 34px;
+}
+.icon-label-image,
+.radio-group-button {
+    margin-right: 10px;
+}
+.notification-container {
+    padding: 10px 10px 0;
+}
+.notification-fixed {
+	margin-top: 20px;
+}
+.action-button-text {
+	margin: 12px;
+}
+.top-spacing,
+.transaction-password-label-field {
+	padding-top: 20px;
+}
+.scroll-page-image,
+.scroll-data-image {
+	margin: 0 10px;
+}
