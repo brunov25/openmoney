@@ -1,3 +1,17 @@
+Tonic Restful requirements:
+
+Install mod_rewrite
+$ sudo a2enmod rewrite
+$ sudo service apache2 restart
+
+Install Tonic
+
+$ curl -sS https://getcomposer.org/installer | php
+$ php composer.phar install
+
+check baseurl and update rest/.htaccess as needed.
+
+
 Recommended Database Changes:
 
 1.rename id's of each table to {table name}_id 
