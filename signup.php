@@ -9,7 +9,8 @@ $newpw=isset($_REQUEST['newpw'])?$_REQUEST['newpw']:'';
 
 if ($username) {
   $space_name = $_REQUEST['space_name'];
-  $username = $space_name?$username .'.'. $space_name:$username;
+  $space_check = exec_sql("select space_name from spaces where space_name=?",array($space_name),"check if spacename already exists",1);
+  $username = $space_check?$username .'.'. $space_name:$username;
   // check if proposed username is reserved:
   $reserved1 = exec_sql("select user_name from users where user_name=?",array($username),"check if username already exists",1);
   $reserved2 = exec_sql("select currency from currencies where currency=?",array($username),"check if username exists as currency",1);
