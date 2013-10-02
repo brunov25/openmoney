@@ -14,7 +14,6 @@ use Tonic\Resource,
  * annotations allow this resource to match multiple URLs.
  *
  * @uri /general
- * @uri /general/:name
  */
 class general extends Resource
 {
@@ -36,45 +35,33 @@ class general extends Resource
 	 * @cache 0
 	 * @return Tonic\Response
 	 */
-	public function saygeneral($name = 'test')
+	public function saygeneral()
 	{
-		if($name='test'){
+
 			$result = new Response(200, array("cyclosVersion" => "3.7.4",
- 											   "applicationName" => "openmoney.proudleo.com",
+ 											   "applicationName" => "openmoney.ca",
  											   "welcomeMessage" => "Welcome to the open money LETSystem",
  											   "principalType" => "USER",
  											   "credentialType" => "LOGIN_PASSWORD",
 											   'images' => array(array('id' => 241,
 																        'caption' => 'mobileSplash_large',
-																        'thumbnailUrl' => 'http://cyclos.proudleo.com:8080/cyclos/thumbnail?id=241',
-																        'fullUrl' => 'http://cyclos.proudleo.com:8080/cyclos/image?id=241',
-																        'lastModified' => '2013-08-27T17:02:06.000+0000'),
+																        'thumbnailUrl' => 'http://openmoney.ca/beta/webclient/res/icon/android/icon-72-hdpi.png',
+																        'fullUrl' => 'http://openmoney.ca/beta/webclient/res/screen/android/screen-hdpi-portrait.png',
+																        'lastModified' => '2013-10-01T17:02:06.000+0000'),
 											   					 array('id' => 240,
 																        'caption' => 'mobileSplash_medium',
-																        'thumbnailUrl' => 'http://cyclos.proudleo.com:8080/cyclos/thumbnail?id=240',
-																        'fullUrl' => 'http://cyclos.proudleo.com:8080/cyclos/image?id=240',
-																        'lastModified' => '2013-08-27T17:02:06.000+0000'),
+																        'thumbnailUrl' => 'http://openmoney.ca/beta/webclient/res/icon/android/icon-48-mdpi.png',
+																        'fullUrl' => 'http://openmoney.ca/beta/webclient/res/screen/android/screen-mdpi-portrait.png',
+																        'lastModified' => '2013-10-01T17:02:06.000+0000'),
 											   					 array('id' => 207,
 																        'caption' => 'mobileSplash_small',
-																        'thumbnailUrl' => 'http://cyclos.proudleo.com:8080/cyclos/thumbnail?id=207',
-																        'fullUrl' => 'http://cyclos.proudleo.com:8080/cyclos/image?id=207',
-																        'lastModified' => '2013-08-27T17:02:05.000+0000'))));
-		} else {
-			throw new Tonic\NotFoundException;
-		}
-		
+																        'thumbnailUrl' => 'http://openmoney.ca/beta/webclient/res/icon/android/icon-36-ldpi.png',
+																        'fullUrl' => 'http://openmoney.ca/beta/webclient/res/screen/android/screen-ldpi-portrait.png',
+																        'lastModified' => '2013-10-01T17:02:05.000+0000'))));
+
 		return $result;
 	}
 	
-	/**
-	 * Condition method for above methods.
-	 *
-	 * Only allow specific :name parameter to access the method
-	 */
-	protected function only($allowedName)
-	{
-		if (strtolower($allowedName) != strtolower($this->name)) throw new ConditionException;
-	}
 	/**
 	 * Condition method to turn output into JSON.
 	 *
