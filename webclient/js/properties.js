@@ -30,7 +30,7 @@
 var options = {
 		version: "1.0.3",
 		sessionTimeout: 1800,
-		hostUrl: "http://openmoney.proudleo.com",
+		hostUrl: "http://openmoney.ca/beta2",
 		splashScreen: false
 		
 };
