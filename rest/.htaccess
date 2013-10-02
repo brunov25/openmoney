@@ -2,13 +2,13 @@
     RewriteEngine On
 
 	#Un-comment and edit if placed in anything but the DocumentRoot
-	#RewriteBase /path/in/DocumentRoot
+	RewriteBase /beta2
 
 	RewriteCond %{REQUEST_FILENAME} !-f
 	RewriteCond %{REQUEST_FILENAME} !-d [OR]
 	RewriteCond %{REQUEST_FILENAME} ""
 
-	RewriteRule ^(.*)$ dispatch.php [L]
-	#RewriteRule ^(.*)$ /path/in/DocumentRoot/rest/dispatch.php [L]
+	#RewriteRule ^(.*)$ dispatch.php [L]
+	RewriteRule ^(.*)$ /beta2/rest/dispatch.php [L]
     
 </IfModule>
