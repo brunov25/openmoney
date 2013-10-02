@@ -13,7 +13,8 @@ if ($details) {
                                 order by trading_account,id; ",array($currency),"items in journal",0);
 
 }else{
-  $last_transactions = exec_sql("select *,currency, trading_account, trading from user_journal j where currency=? and trading = (select max(trading) from user_journal j2 where j2.trading_account = j.trading_account) order by trading_account,id desc; ",array($currency),"items in journal",0);
+  //$last_transactions = exec_sql("select *,currency, trading_account, trading from user_journal j where currency=? and trading = (select max(trading) from user_journal j2 where j2.trading_account = j.trading_account) order by trading_account,id desc; ",array($currency),"items in journal",0);
+  $last_transactions = exec_sql("select * from (select * from user_journal order by id DESC) AS x where currency='hours' GROUP BY trading_account; ",array($currency),"items in journal",0);
 }
 $data = '';
 $total = 0.00;
