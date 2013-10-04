@@ -11,6 +11,10 @@ $details=isset($_REQUEST[ 'details' ])? $_REQUEST['details']:'';
 if ($details) {
   $last_transactions = exec_sql("select *,currency, trading_account, trading from user_journal j where currency=? 
                                 order by trading_account,id; ",array($currency),"items in journal",0);
+  // for troubleshooting which balance is out of whack
+  //$last_transactions = exec_sql("select *,trading_account, balance, sum(amount), balance-sum(amount) as diff from (select * from user_journal order by id DESC) AS x where currency=? and diff<>0 GROUP BY trading_account;",array($currency),"items in journal",0);
+
+
 
 }else{
   //$last_transactions = exec_sql("select *,currency, trading_account, trading from user_journal j where currency=? and trading = (select max(trading) from user_journal j2 where j2.trading_account = j.trading_account) order by trading_account,id desc; ",array($currency),"items in journal",0);
