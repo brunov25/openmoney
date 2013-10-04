@@ -548,7 +548,7 @@ class accountTransferData extends Resource
 					$elements_array = array("id"=>intval($user_journal['id']),
 													   "date"=>date("Y-m-d\TH:i:s",$user_journal['tid']).".000+0000",
 													   "formattedDate"=>date("Y-m-d",strtotime($user_journal['created'])),
-													   "processDate"=>date("Y-m-d\TH:i:s",srttotime($user_journal['created'])).".000+0000",
+													   "processDate"=>date("Y-m-d\TH:i:s",strtotime($user_journal['created'])).".000+0000",
 													   "formattedProcessDate"=>date("Y-m-d",strtotime($user_journal['created'])),
 													   "amount"=>floatval($user_journal['amount']-0.000001),
 													   "formattedAmount"=> number_format($user_journal['amount'],2)." ".$user_journal['currency'],
