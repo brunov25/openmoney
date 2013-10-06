@@ -28,7 +28,7 @@ if ($username) {
                       ($CFG->site_type!='Live')?'1':'0'), "creating new username $username (perhaps it already exists?)",2);
   if ($insert1>0) { 
     //echo "Thank you, $firstname! <p>You will be notified as soon as your account has been manually confirmed";
-    echo "Thank you, %name! You will be notified as soon as your account %username has been manually confirmed.";
+    //echo "Thank you, %name! You will be notified as soon as your account %username has been manually confirmed.";
     $address = $CFG->admin_email;
     $address2 = $CFG->maintainer;
     $confirmed = ($CFG->site_type=='Live')?"needs <a href={$CFG->url}/menu?confirm=1>confirmation</a>":"was auto-confirmed";
