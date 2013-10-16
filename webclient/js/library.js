@@ -557,3 +557,35 @@ function isNotUndefined(arg) {
 var scrollInterval;
 var spinnerInterval;
 var cStorage;
+
+
+
+//$(window).resize(function (){
+//	resizeColumn();
+//});
+
+function resizeColumn(){
+	//alert("before resize");
+    $( ".row-right-column:not(:has(>p.innerParagraph))" ).not(".account-information-row-right-column").wrapInner(function() {
+        return "<p class='innerParagraph'></p>";
+    });
+    $(".row-right-column").not(".account-information-row-right-column").width(getMaxWidth(".innerParagraph"));
+    console.log("resize column finished");
+    
+//    $( ".account-information-row-right-column:not(:has(>span))" ).wrapInner(function() {
+//        return "<span class='innerSpan' style='display:inline-block;margin:0;'></span>";
+//    });
+//    $(".account-information-row-right-column").width(getMaxWidth(".innerSpan"));
+}
+
+function getMaxWidth(selector){
+    var maxWidth = 0;
+	//go through each paragraph in the right column and find the widest value.
+	$(selector).each(function() {
+	    if(maxWidth < $(this).width()){
+	        maxWidth = $(this).width();
+	    }
+	});
+	// assign max width to column
+	return maxWidth;
+}
