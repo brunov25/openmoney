@@ -45,4 +45,7 @@ try {
 
 #echo $response;
 
+$response->accessControlAllowOrigin = "*";
+$response->accessControlAllowMethods = "GET,POST,PUT,DELETE,OPTIONS";
+$response->accessControlAllowHeaders = "Cache-Control, Pragma, Origin, Authorization, Content-Type, X-Requested-With";
 $response->output();

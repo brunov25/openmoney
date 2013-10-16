@@ -18,8 +18,11 @@ if ($user_email AND !$confirm) { //NEW PASSWORD
   $update = exec_sql("update users set password= ? where email = ? and confirmed>'0'",
                      array($new_pw_hash, $user_email),"creating password",3);
   if($update AND email_letter($user_email, $CFG->admin_email, $subject, $msg)) { 
-    echo "<br>new password sent to $user_email<p><a href={$CFG->url}/index.php>back</a>"; 
-  }else {echo "problems creating new password - contact {$CFG->maintainer} or {$CFG->admin_email} $update";}
+   echo "<br>new password sent to $user_email<p><a href={$CFG->url}/index.php>back</a>"; 
+  }else {
+   echo "<br>If you have any troubles creating a new password for your account, please contact {$CFG->admin_email} or {$CFG->maintainer}";  
+   //echo "problems creating new password - contact {$CFG->maintainer} or {$CFG->admin_email} $update";
+  }
 }
 $sandbox = ($CFG->site_type!='Live')?1:0;  //is this a live site or a sandbox?
 $live = ($CFG->site_type=='Live' AND is_admin())?1:0;  //is this a live site or a sandbox?
@@ -55,8 +58,7 @@ if ($confirm) {
       $subject = "OpenMoney: new SPACE for $username";
       $msg2 = "$username created SPACE $spacename on {$CFG->site_Xname} {$CFG->url} ";
       email_letter($CFG->admin_email,$address,$subject,$msg2);
-    }else {echo "<br>PROBLEM: space_allow=$space_allow; sandbox=$sandbox, live=$live,
-                  top level space for $space_name (".$space_base[1].") is size ".strlen($space_name);}
+    } //else {echo "<br>NOT CREATING SPACE: $space_name (top level: ".$space_base[1].") because it is un-authorized" ;}
     // insert into currency if in LIVE system
     $currency = isset($_REQUEST['currency'])?$_REQUEST['currency']:$CFG->default_currency;
     $currency_id = exec_sql("select id from currencies where currency = ?",array($currency),'currency_id',1); 
@@ -83,7 +85,7 @@ if ($confirm) {
     //echo "<p>welcome message = $msg";
     $msg2 = "$fname signed up for an account on OpenMoney {$CFG->url} ";
     $subject = "OpenMoney: new account for $username";
-    if(email_letter($address, $CFG->admin_email, $subject, $msg)) { echo "<br>sending confirmation email to $address"; }
+    if(email_letter($address, $CFG->admin_email, $subject, $msg)) { echo "<br>sending password email to $address"; }
     $id = $row['id'];
     $update = exec_sql("update users set password2= ? where id = ?",array($new_pw_hash, $id),"creating password",2);
     email_letter($CFG->admin_email,$address,$subject,$msg2);

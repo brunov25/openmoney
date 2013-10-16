@@ -146,17 +146,23 @@ class paymentData extends Resource
 	
 					$balance = 0.000000;
 					$balance_decimal = 0.00;
+					$trading = 0.000000;
+					$trading_decimal = 0.00;
 					$user_journal_q = @mysqli_query($db,$test = "SELECT * FROM user_journal WHERE currency='".$accounts['currency']."' AND trading_account='".$accounts['trading_name']."' AND user_id='".$this->user['id']."' ORDER BY tid DESC");
 					if($user_journal = @mysqli_fetch_array($user_journal_q)){
 						$balance = floatval($user_journal['balance']);
 						$balance_decimal = number_format($balance,2);
+						$trading = floatval($user_journal['trading']);
+						$trading_decimal = number_format($trading,2);
 					}
 		
 					$default = false;
 					if($accounts['currency_id']==1)
 						$default = true;
 					$accounts_array[$accounts['user_account_currencies_id']] = array( "balance" => number_format($balance,6),
-							"formattedBalance" => "$balance_decimal ".$accounts['currency'],
+							"formattedBalance" => $balance_decimal,
+							"trading"=>$trading,
+							"formattedTrading"=>$trading_decimal." ".$accounts['currency'],
 							"availableBalance" => number_format(0.000000,6),
 							"formattedAvailableBalance" => "0.00 ".$accounts['currency'],
 							"reservedAmount" => number_format(0.000000,6),
