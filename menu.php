@@ -39,7 +39,7 @@ echo"<h3>{$CFG->site_name} $admin Menu</h3><table border>
 <tr><td><a href=import_transactions.php>Import Transactions</a> </td><td>$transactions transactions</td></tr>
 <tr><td><a href=check_user_ids.php>Check User_ids</a> </td><td>$user_ids unmatched user_ids</td></tr>
 <tr><td><a href=menu.php?batch=1>batch </a> </td><td>$batch items still to process</td></tr>
-<tr><td><a href=uac.php>uac</a> last:</td><td>$most_recent</td></tr>
+<tr><td><a href=report.php>reports</a> last:</td><td>$most_recent</td></tr>
 <tr><td><a href=menu.php?confirm=1>confirm</a>
 <!--<a href='fft.php?table=users&fields=id,user_name,confirmed,lname,fname,email,privFlags,prefFlags,created&searchconfirmed=[^1]'>confirm</a--></td><td>$unconfirmed unconfirmed users; <a href=pw.php?confirm=1>mail them passwords</a></td></tr>
 </table>";
