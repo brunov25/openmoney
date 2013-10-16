@@ -48,21 +48,24 @@ if ($new and isset($_REQUEST['currency'])) {
     $space_name     = trim($_REQUEST['space_name']);
     $space_name     = preg_replace('/[^a-zA-Z0-9\.\+\-\_\@\%\&\^\~\!\?\<\>\:\;\=\*\$\#\s]/','',$space_name);
     $space_id   = exec_sql("select id from spaces where space_name=?",array($space_name),"space_id from space_name",1);
+    $acceptable_space_name = preg_match ( "/^[\.].*$/", $space_name); 
     //echo "SPACE NAME is $space_name and spaceid is $space_id";exit;
     //if (!$space_name) {echo "<br>no such space_name $space_id"; goto new_form;} //allow blank name
     //$space_name   = $_REQUEST['space_name'];
     $user_id      = $_REQUEST['user_id'];
     $user_name    = $_SESSION['user_name'];
+    $acceptable_space_name += preg_match ( "/$username/", $space_name); 
     $currency     = trim($_REQUEST['currency']);
     //$currency     = preg_replace('/\s*(.*?\s*/','\1',$currency);
     $trading_name = trim($_REQUEST['trading_name']);
+    $acceptable_space_name += preg_match ( "/$trading_name/", $space_name); 
     $class        = $_REQUEST['class'];
     // restrictions of trading names, currencies and spaces
     $currency_prefix = preg_split( "/[\.]/", $currency );
     //$space_id = exec_sql("select id from spaces where space_name = ?",array($space_name),"getting space_id",1);
     //$space_id = $space_id?$space_id:1;
     echo "<table><tr><td>";
-    if (!$space_id) { 
+    if ($acceptable_space_name AND !$space_id) { 
       $space_id = $admin?exec_sql("insert into spaces (space_name) values (?)",array($space_name),"create a new space",2):
 	email_letter('bruno.vernier@gmail.com','michael.linton@gmail.com','OpenMoney SPACE request',
         "$user_name is requesting stewardship of SPACE $space_name on OpenMoney. {$CFG->url}/fft") ;
@@ -79,7 +82,7 @@ if ($new and isset($_REQUEST['currency'])) {
     // check that new currency name is not somebody else's trading account 
     $reserved = exec_sql("select user_name from FULL_QUERY where trading_name=? and user_id != ? limit 1",
 			 array($currency_prefix[0],$user_id),"consulting currencies $currency",1);
-    if ($reserved) {echo "Sorry, but currency $currency is reserved for user $reserved ";goto new_form;}
+#    if ($reserved) {echo "Sorry, but currency $currency is reserved for user $reserved ";goto new_form;}
 
     // then check if the currency already exists
     if ($currency) {

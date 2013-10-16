@@ -12,14 +12,17 @@ $dupl = "ON DUPLICATE KEY UPDATE class=?"; //to deal with duplicates on unique k
 if ($space_name) {
   $space_id = exec_sql("select id from spaces where space_name = ?",array($space_name),"get space_id",1);
   //echo $space_id?"create subspace $space_name":goto steward_spaces_form ;
-  if (!$space_id) { 
+  $acceptable_space_name = preg_match ( "/^[^\.]+$/", $space_name);
+  $acceptable_space_name += preg_match ( "/[\.\b]$user_name$/", $space_name);
+
+  if ($acceptable_space_name AND !$space_id) { 
     $space_id  = exec_sql("insert into spaces (space_name) values (?)",array($space_name),'',2);  
     $result = exec_sql("insert into user_spaces (space_id,user_id,class) values (?,?,?)",array($space_id,$user_id,'steward'),'',2);  
     echo $result?"<br>created new subspace $space_name":"no such username as $steward";
     email_letter('bruno.vernier@gmail.com','michael.linton@gmail.com','OpenMoney SPACE creation',
 		 "$user_name created SPACE $space_name on OpenMoney.  {$CFG->url}/fft") ;
-  }
-  if ($steward) {
+  }else {echo "<br>you are not allowed to create space name: $space_name";}
+  if ($acceptable_space_name AND $steward) {
     $other_id = exec_sql("select id from users where user_name = ?",array($steward),"get user_id",1);
     $result  = exec_sql("insert into user_spaces (space_id,user_id,class) values (?,?,?) $dupl",
                array($space_id,$other_id,$class,$class),"inserting or updating membership for $other_id",2);  
