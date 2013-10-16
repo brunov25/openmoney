@@ -1,22 +1,23 @@
 /*
-    This file is part of Cyclos (www.cyclos.org).
+    This file is part of omlets (www.omlets.org).
     A project of the Social Trade Organisation (www.socialtrade.org).
 
-    Cyclos is free software; you can redistribute it and/or modify
+    omlets is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
     the Free Software Foundation; either version 2 of the License, or
     (at your option) any later version.
 
-    Cyclos is distributed in the hope that it will be useful,
+    omlets is distributed in the hope that it will be useful,
     but WITHOUT ANY WARRANTY; without even the implied warranty of
     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
     GNU General Public License for more details.
 
     You should have received a copy of the GNU General Public License
-    along with Cyclos; if not, write to the Free Software
+    along with omlets; if not, write to the Free Software
     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
  */
+
 body {
 	font-family: arial,helvetica, sans-serif,"lucida grande",tahoma,verdana;
 	font-size: 14px;
@@ -157,6 +158,7 @@ ul {
 .prompt-text,
 .row,
 .row-content,
+.user-row-content,
 .no-data,
 .notification,
 .loading-data,
@@ -164,7 +166,8 @@ ul {
 .datePickerDays,
 .datePickerMonthSelector,
 .version-label-field,
-.action-button-click-surface {
+.action-button-click-surface,
+.second-row {
 	width: 100%;
 }
 .number-field,
@@ -174,6 +177,10 @@ ul {
 .no-data,
 .notification,
 .radio-group {
+	display: table;
+	table-layout: fixed;
+}
+.user-row-content {
 	display: table;
 }
 .number-field,
@@ -203,6 +210,16 @@ ul {
 .row-left-column,
 .row-right-column {
 	display: table-cell;  
+}
+.row-left-column {
+}
+.row-right-column,
+.userspace-selector-label {
+	white-space: nowrap;
+}
+.innerParagraph {
+	display: inline-block;
+	margin: 0;
 }
 .Caption, 
 .prompt-text {
@@ -338,7 +355,8 @@ ul {
 }
 .dateBox-input-field,
 .form-input-field,
-.form-select-field select {
+.form-select-field select,
+.userspace-selector-label {
 	font-family: arial,helvetica,sans-serif,"lucida grande",tahoma,verdana;
 }
 .dateBox-input-field,
@@ -352,7 +370,7 @@ ul {
     -webkit-box-sizing: border-box;
 }
 .form-input-field:-moz-placeholder,
-.dateBox-input-field:-moz-placeholder {
+.dateBox-input-field:-moz-placeholder{
 	color: #AAAAAA;
     font-style: italic;
     text-align: left !important;
@@ -364,7 +382,8 @@ ul {
     text-align: left !important;
 }
 .form-input-field-readonly, 
-.example {
+.example,
+.userspace-selector-label {
 	font-style: italic;
 }
 .form-select-field {
@@ -382,7 +401,8 @@ ul {
 .row {
 	min-height: 38px;
 }
-.row-content {
+.row-content,
+.user-row-content {
 	height: 38px;
 }
 .help {
@@ -443,7 +463,8 @@ ul {
 .form-value,
 .transaction-password-label-field,
 .prompt-text,
-.loading-text {
+.loading-text,
+.userspace-selector-label {
 	color: #3C4B50;
 }
 .login-label {
@@ -499,8 +520,9 @@ ul {
 	float: left;
 }
 .image-row-left-column {
+	margin: 0 0 0 5px;
 	padding: 0 0 0 5px;
-    width: 20px;
+    width: 25px;
 }
 .loading-process {	
     margin: 0 auto 10px;    
@@ -682,6 +704,9 @@ ul {
 	font-size: 10px;
 	font-family: "lucida grande",tahoma,verdana,arial,sans-serif;
 	color: #8F908A;
+	white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 .version-container {
 	margin-right: 4px;
@@ -770,7 +795,9 @@ ul {
 .row-left-column,
 .row-right-column,
 .spinner,
-.custom-radio > .value {
+.custom-radio > .value,
+.second-row,
+.first-row {
 	vertical-align: middle;
 }
 .topmenu-heading {

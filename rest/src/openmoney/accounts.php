@@ -75,10 +75,14 @@ class accounts extends Resource
 				
 				$balance = 0.00000;
 				$balance_decimal = number_format($balance,2);
+				$trading = 0.00000;
+				$trading_decimal = number_format($trading,2);
 				$user_journal_q = @mysqli_query($db,$test = "SELECT * FROM user_journal WHERE currency='".$accounts['currency']."' AND trading_account='".$accounts['trading_name']."' AND user_id='".$this->user['id']."' ORDER BY id DESC");
 				if($user_journal = @mysqli_fetch_array($user_journal_q)){
 					$balance = floatval($user_journal['balance']);
 					$balance_decimal = number_format($balance,2);
+					$trading = floatval($user_journal['trading']);
+					$trading_decimal = number_format($trading,2);
 				}
 				
 				$default = false;
@@ -94,7 +98,9 @@ class accounts extends Resource
 																					"symbol" => $accounts['currency'],
 																					"name" => $accounts['currency']))),
 										  	      'status' => array( "balance" => $balance,
-															  		"formattedBalance" => "$balance_decimal ".$accounts['currency'],
+															  		"formattedBalance" => $balance_decimal,
+																	"trading"=>$trading,
+																	"formattedTrading"=>$trading_decimal." ".$accounts['currency'],
 															  		"availableBalance" => 0.000000,
 															  		"formattedAvailableBalance" => "0.00 ".$accounts['currency'],
 															  		"reservedAmount" => 0,
@@ -203,11 +209,16 @@ class accountStatus extends Resource
 			if($accounts = mysqli_fetch_array($accounts_q)){
 	
 				$balance = 0.00000;
-				$user_journal_q = @mysqli_query($db,$test = "SELECT * FROM user_journal WHERE currency='".$accounts['currency']."' AND trading_account='".$accounts['trading_name']."' AND user_id='".$this->user['id']."' ORDER BY id DESC");
-				$user_journal = @mysqli_fetch_array($user_journal_q);
-				$balance = floatval($user_journal['balance']);
 				$balance_decimal = number_format($balance,2);
-	
+				$trading = 0.00000;
+				$trading_decimal = number_format($trading,2);
+				$user_journal_q = @mysqli_query($db,$test = "SELECT * FROM user_journal WHERE currency='".$accounts['currency']."' AND trading_account='".$accounts['trading_name']."' AND user_id='".$this->user['id']."' ORDER BY id DESC");
+				if($user_journal = @mysqli_fetch_array($user_journal_q)){
+					$balance = floatval($user_journal['balance']);
+					$balance_decimal = number_format($balance,2);
+					$trading = floatval($user_journal['trading']);
+					$trading_decimal = number_format($trading,2);
+				}
 	
 				$default = false;
 				if(($accounts['currency_id']==1)&&($default_count==0)){
@@ -216,7 +227,9 @@ class accountStatus extends Resource
 				}
 					
 				$accounts_array = array( "balance" => $balance,
-						"formattedBalance" => "$balance_decimal ".$accounts['currency'],
+						"formattedBalance" => $balance_decimal,
+						"trading"=>$trading,
+						"formattedTrading"=>$trading_decimal." ".$accounts['currency'],
 						"availableBalance" => 0.000000,
 						"formattedAvailableBalance" => "0.00 ".$accounts['currency'],
 						"reservedAmount" => 0,
@@ -382,7 +395,9 @@ class accountHistory extends Resource
 
 				$totalCount = 0;
 				$balance = 0.00000;
-				
+				$balance_decimal = number_format($balance,2);
+				$trading = 0.00000;
+				$trading_decimal = number_format($trading,2);
 				$elements_array = array();
 				
 				$user_journal_q = @mysqli_query($db,$test = "SELECT * FROM user_journal WHERE currency='".$accounts['currency']."' AND trading_account='".$accounts['trading_name']."' AND user_id='".$this->user['id']."' ORDER BY id DESC LIMIT $currentStartEntry, $pageSize ");
@@ -550,7 +565,7 @@ class accountTransferData extends Resource
 													   "formattedDate"=>date("Y-m-d",strtotime($user_journal['created'])),
 													   "processDate"=>date("Y-m-d\TH:i:s",strtotime($user_journal['created'])).".000+0000",
 													   "formattedProcessDate"=>date("Y-m-d",strtotime($user_journal['created'])),
-													   "amount"=>floatval($user_journal['amount']-0.000001),
+													   "amount"=>floatval($user_journal['amount']),
 													   "formattedAmount"=> number_format($user_journal['amount'],2)." ".$user_journal['currency'],
 													   "transferType"=>array("id"=>$currency['id'],
 																			"name"=>$currency['currency']." exchange",
