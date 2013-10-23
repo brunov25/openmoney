@@ -58,7 +58,9 @@ ul {
 .datePickerNextButton,
 .dateBoxSelect,
 .scroll-data-image,
-.scroll-page-image {
+.scroll-page-image,
+.row-middle-header,
+.row-left-header {
 	cursor: pointer;
 	cursor: hand;
 }
@@ -66,7 +68,9 @@ ul {
 .form-input-field,
 .popup,
 .row-left-column,
-.row-right-column {
+.row-right-column,
+.row-middle-column,
+.row-fourth-column {
 	padding: 5px;
 }
 .action-button,
@@ -208,16 +212,23 @@ ul {
 .icon-container,
 .radio-group-button,
 .row-left-column,
-.row-right-column {
+.row-right-column,
+.row-middle-column,
+.row-fourth-column {
 	display: table-cell;  
 }
 .row-left-column {
 }
 .row-right-column,
-.userspace-selector-label {
+.userspace-selector-label,
+.row-left-header,
+.row-middle-header {
 	white-space: nowrap;
 }
-.innerParagraph {
+.innerParagraph,
+.innerMiddleParagraph,
+.innerFourthParagraph {
+	text-align: right;	
 	display: inline-block;
 	margin: 0;
 }
@@ -229,7 +240,6 @@ ul {
 .menu, 
 .help, 
 .icon-button,
-.row-heading,
 .version-label-field {	
 	font-size: 11px;	
 }
@@ -247,8 +257,14 @@ ul {
 .form-value,
 .action-button,
 .users,
-.Caption {
+.Caption,
+.settings-menu {
 	font-size: 12px;
+}
+.row-middle-column,
+.row-fourth-header,
+.row-right-header {
+	font-size: 0.9em;
 }
 .configuration-label-field, 
 .payment-label-field,
@@ -259,14 +275,20 @@ ul {
 .topmenu-heading, 
 .action-button,
 .row-heading,
+.row-middle-header,
+.row-middle-column,
 .row-right-column,
+.row-right-header,
+.row-fourth-header,
+.row-fourth-column,
 .form-label,
 .custom-field-label,
 .number-field-decimal-separator {		    
     font-weight: bold;
 }
 .custom-checkbox,
-.custom-radio {
+.custom-radio,
+.account-information-heading{
   	display: inline-block;
 }
 .custom-checkbox > .box {
@@ -402,7 +424,7 @@ ul {
 	min-height: 38px;
 }
 .row-content,
-.user-row-content {
+.user-row-content{
 	height: 38px;
 }
 .help {
@@ -457,6 +479,9 @@ ul {
 .Caption,
 .custom-radio > .value,
 .row-heading,
+.row-middle-column,
+.row-right-header,
+.row-fourth-header,
 .no-data,
 .users,
 .icon-button,
@@ -626,9 +651,16 @@ ul {
 }
 .number-field-decimal-wrapper input,
 .number-field-number-wrapper input,
+.row-middle-column,
+.version-label-field,
 .row-right-column,
-.version-label-field {
+.row-fourth-column,
+.settings-menu {
 	text-align: right;		
+}
+.settings-menu {
+	line-height: 3em;
+	height:100%;
 }
 .number-field-decimal-wrapper input:-moz-placeholder {
 	color: #3C4B50 !important;
@@ -708,6 +740,9 @@ ul {
     overflow: hidden;
     text-overflow: ellipsis;
 }
+.row-fourth-column {
+	color: #8F908A;
+}
 .version-container {
 	margin-right: 4px;
 }
@@ -729,6 +764,7 @@ ul {
 	color: #3C4B50;
 }
 .account-information-value {
+	text-align:right;
 	color: #444;
 }
 .top-spacing,
@@ -794,12 +830,16 @@ ul {
 .bottom-bar-button,
 .row-left-column,
 .row-right-column,
+.row-fourth-column,
+.row-middle-header,
 .spinner,
 .custom-radio > .value,
 .second-row,
-.first-row {
+.first-row,
+.row-middle-column {
 	vertical-align: middle;
 }
+
 .topmenu-heading {
 	color: #FFFFFF;
     text-shadow: 1px 1px 1px #516AA4;

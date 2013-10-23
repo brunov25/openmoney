@@ -168,7 +168,8 @@ class paymentData extends Resource
 							"reservedAmount" => number_format(0.000000,6),
 							"formattedReservedAmount" => "0.00 ".$accounts['currency'],
 							"creditLimit" => number_format(0.000000,6),
-							"formattedCreditLimit" => "0.00 ".$accounts['currency']);
+							"formattedCreditLimit" => "0.00 ".$accounts['currency'],
+							"currency" => $accounts['currency']);
 	
 					$default = false;
 					if($accounts['currency_id']==1)

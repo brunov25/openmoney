@@ -179,36 +179,40 @@ class settings extends Resource
 				//create currency
 
 				//check if there is a dot in the currency name
-				if (strpos ($currencyName,".") === false) {
-					//a dot was not found.
-
-					//check if currency exists
-					//check that a currency by that name exists.
-					$currency_name = ($userSpace['space_name'] == '') ? $currencyName : $currencyName . "." . $userSpace['space_name'];
-					$currency_q = mysqli_query($db , $test = "SELECT * FROM currencies c WHERE c.currency='" . $currency_name . "'") or die($test . mysqli_error($db));
-					if ($currency = mysqli_fetch_array( $currency_q ) ) {
-						//A currency by that name was found
-						$error = "A currency exists with that name!<br /> Please choose another currency.";
-					} else {
-						$trading_name_check_q = mysqli_query($db , $test = "SELECT *, uac.id user_account_currencies_id FROM user_account_currencies uac, user_spaces us, currencies c WHERE uac.currency_id=c.id AND uac.trading_name = '$currency_name' AND us.id = uac.user_space_id AND us.user_id != '" . $this->user['id'] . "' ORDER BY uac.id ASC") or die($test . mysqli_error($db));
-						if ($trading_name_check = mysqli_fetch_array( $trading_name_check_q ) ){
-							$error = "A trading name exists with that currency name!<br /> Please choose another currency name.";
+				if ( (strpos ($currencyName,".") === false) && (strpos ($currencyName," ") === false) ) {
+					//a dot and space was not found.
+					if (strlen ($currencyName) < 16) {
+	
+						//check if currency exists
+						//check that a currency by that name exists.
+						$currency_name = ($userSpace['space_name'] == '') ? $currencyName : $currencyName . "." . $userSpace['space_name'];
+						$currency_q = mysqli_query($db , $test = "SELECT * FROM currencies c WHERE c.currency='" . $currency_name . "'") or die($test . mysqli_error($db));
+						if ($currency = mysqli_fetch_array( $currency_q ) ) {
+							//A currency by that name was found
+							$error = "A currency exists with that name!<br /> Please choose another currency.";
 						} else {
-						
-							//check if there is a subspace name that exists for that currency name.
-							$subspace_name = ($userSpace['space_name'] == '') ? $currencyName : $currencyName . "." . $userSpace['space_name'];
-							$subspace_check_q = mysqli_query($db , $test = "SELECT * FROM spaces s WHERE s.space_name='" . $subspace_name . "'") or die($test . mysqli_error($db)); 
-							if ( $subspace = mysqli_fetch_array( $subspace_check_q ) ) {
-								$error = "A subspace exists with that currency name!<br /> Please choose another currency name.";
+							$trading_name_check_q = mysqli_query($db , $test = "SELECT *, uac.id user_account_currencies_id FROM user_account_currencies uac, user_spaces us, currencies c WHERE uac.currency_id=c.id AND uac.trading_name = '$currency_name' AND us.id = uac.user_space_id AND us.user_id != '" . $this->user['id'] . "' ORDER BY uac.id ASC") or die($test . mysqli_error($db));
+							if ($trading_name_check = mysqli_fetch_array( $trading_name_check_q ) ){
+								$error = "A trading name exists with that currency name!<br /> Please choose another currency name.";
 							} else {
-								//All conditions have been met insert the currency
-								mysqli_query($db , $test = "INSERT INTO currencies (currency, currency_steward) VALUES ('$currency_name', '".$this->user['id']."')" ) or die( $test . mysqli_error( $db ) );
-								$currencyID = mysqli_insert_id($db);
+							
+								//check if there is a subspace name that exists for that currency name.
+								$subspace_name = ($userSpace['space_name'] == '') ? $currencyName : $currencyName . "." . $userSpace['space_name'];
+								$subspace_check_q = mysqli_query($db , $test = "SELECT * FROM spaces s WHERE s.space_name='" . $subspace_name . "'") or die($test . mysqli_error($db)); 
+								if ( $subspace = mysqli_fetch_array( $subspace_check_q ) ) {
+									$error = "A subspace exists with that currency name!<br /> Please choose another currency name.";
+								} else {
+									//All conditions have been met insert the currency
+									mysqli_query($db , $test = "INSERT INTO currencies (currency, currency_steward) VALUES ('$currency_name', '".$this->user['id']."')" ) or die( $test . mysqli_error( $db ) );
+									$currencyID = mysqli_insert_id($db);
+								}
 							}
 						}
+					} else {
+						$error = "Currency name has to be less than 16 characters";
 					}
 				} else {
-					$error = "Dots are not allowed in currency names!<br /> Please choose another currency name.";
+					$error = "Dots or spaces are not allowed in currency names!<br /> Please choose another currency name.";
 				}
 			}
 

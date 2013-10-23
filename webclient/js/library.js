@@ -569,9 +569,22 @@ function resizeColumn(){
     $( ".row-right-column:not(:has(>p.innerParagraph))" ).not(".account-information-row-right-column").wrapInner(function() {
         return "<p class='innerParagraph'></p>";
     });
-    $(".row-right-column").not(".account-information-row-right-column").width(getMaxWidth(".innerParagraph"));
+    $(".row-right-column").not(".account-information-row-right-column").width(getMaxWidth(".innerParagraph")+14);
     console.log("resize column finished");
+    //middle
+    $( ".row-middle-column:not(:has(>p.innerMiddleParagraph))" ).not(".account-information-row-middle-column").wrapInner(function() {
+        return "<p class='innerMiddleParagraph'></p>";
+    });
+    $(".row-middle-column").not(".account-information-row-middle-column").width(getMaxWidth(".innerMiddleParagraph"));
+    //forth
+    $( ".row-fourth-column:not(:has(>p.innerFourthParagraph))" ).not(".account-information-row-fourth-column").wrapInner(function() {
+        return "<p class='innerFourthParagraph'></p>";
+    });
+    $(".row-fourth-column").not(".account-information-row-fourth-column").width(getMaxWidth(".innerFourthParagraph"));
     
+    $(".account-information-row-left-column").width(getMaxWidth(".account-information-heading"));
+    //$(".account-information-row-right-column").width(getMaxWidth(".account-information-row-right-column"));
+    $(".account-information-row-fourth-column").width(0);
 //    $( ".account-information-row-right-column:not(:has(>span))" ).wrapInner(function() {
 //        return "<span class='innerSpan' style='display:inline-block;margin:0;'></span>";
 //    });
@@ -588,4 +601,25 @@ function getMaxWidth(selector){
 	});
 	// assign max width to column
 	return maxWidth;
+}
+
+function getPPI(){
+	  // create an empty element
+	  var div = document.createElement("div");
+	  // give it an absolute size of one inch
+	  div.style.width="1in";
+	  // append it to the body
+	  var body = document.getElementsByTagName("body")[0];
+	  body.appendChild(div);
+	  // read the computed width
+	  var ppi = document.defaultView.getComputedStyle(div, null).getPropertyValue('width');
+	  // remove it again
+	  body.removeChild(div);
+	  // and return the value
+	  return parseFloat(ppi);
+}
+
+function getDPR() {
+	var dpr = 1; if(window.devicePixelRatio !== undefined) dpr = window.devicePixelRatio;
+	return dpr;
 }
