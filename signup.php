@@ -6,7 +6,7 @@ $firstname=isset($_POST['firstname'])?$_POST['firstname']:'';
 $lastname=isset($_POST['lastname'])?$_POST['lastname']:'';
 $email=isset($_POST['email'])?preg_replace('/[^a-zA-Z\_\-\@0-9\.\+\%\&]/','',$_POST['email']):'';
 $newpw=isset($_REQUEST['newpw'])?$_REQUEST['newpw']:'';
-
+if ($username=='') {$username=$email;}
 if ($username) {
   $space_name = $_REQUEST['space_name'];
   $space_check = exec_sql("select space_name from spaces where space_name=?",array($space_name),"check if spacename already exists",1);
@@ -48,21 +48,28 @@ if ($newpw) {
   echo "<h5>request a new password</h5><form method=post action=pw.php>email: <input type=email name=email>
         <input type=submit></form> ";
 }else {
+  $beta = ($CFG->site_type=='sandbox')?1:0;
+  //  echo "<h1>{$CFG->site_type} $beta</h1>";
+  $usernamefield = $beta==0?"<tr><td> <b>Username</b>:</td>
+     <td><input type=text name=username required=required pattern='[A-Za-z0-9][A-Za-z0-9]+' 
+     title='minimum 2 letters and numbers, no spaces nor punctuation' autofocus=autofocus placeholder='<preferred user name>'></td></tr>":"
+     <input type=hidden name=username value=''>";
+  $extra_fields = $beta==0?"<tr><td>First Name</td><td><input type=text pattern='[A-Za-z0-9]*'
+        title='use only letters and numbers' name=firstname  placeholder='<optional given name>'></td></tr>
+        <tr><td>Last Name </td><td><input type=text pattern='[A-Za-z0-9]*' title='use only letters and numbers' name=lastname 
+        placeholder='<optional family name>'></td></tr>
+        <tr><td>Phone </td><td><input type=tel pattern='[A-Za-z0-9]*' title='use only letters and numbers' name=phone 
+        placeholder='<optional phone number>'></td></tr>
+        <tr><td>Phone2 </td><td><input type=tel pattern='[A-Za-z0-9]*' title='use only letters and numbers' name=phone2 
+        placeholder='<second phone number>'></td></tr>":"
+        <input name=phone value='' type=hidden> <input name=phone2 value='' type=hidden>
+        <input name=firstname value='' type=hidden> <input name=lastname value='' type=hidden>";
   echo "<form method=post>
 <p><table width=30%>
 <tr><th colspan=2><font size=4><br />OpenMoney {$CFG->site_type} Signup Form<br /><br /></font></th></tr>
-<tr><td> <b>Username</b>:</td>
-<td><input type=text name=username required=required pattern='[A-Za-z0-9][A-Za-z0-9]+' 
-     title='minimum 2 letters and numbers, no spaces nor punctuation' autofocus=autofocus placeholder='<preferred user name>'></td></tr>
+$usernamefield
 <tr><td><b>Email address</b></td><td><input type=email required name=email placeholder='<email>'></td></tr>
-<tr><td>First Name</td><td><input type=text pattern='[A-Za-z0-9]*' title='use only letters and numbers' name=firstname
-        placeholder='<optional given name>'></td></tr>
-<tr><td>Last Name </td><td><input type=text pattern='[A-Za-z0-9]*' title='use only letters and numbers' name=lastname 
-        placeholder='<optional family name>'></td></tr>
-<tr><td>Phone </td><td><input type=tel pattern='[A-Za-z0-9]*' title='use only letters and numbers' name=phone 
-        placeholder='<optional phone number>'></td></tr>
-<tr><td>Phone2 </td><td><input type=tel pattern='[A-Za-z0-9]*' title='use only letters and numbers' name=phone2 
-        placeholder='<second phone number>'></td></tr>
+$extra_fields
 <tr><td>Space</td><td><input type=text pattern='[A-Za-z0-9\.]*' title='use only letters and numbers'  name=space_name 
         placeholder='<if known>'></td></tr>
 <tr><td>Currency</td><td><input type=text name=currency pattern='[A-Za-z0-9\.]*' title='use only letters and numbers'  
