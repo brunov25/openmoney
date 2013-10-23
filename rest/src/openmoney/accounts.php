@@ -68,10 +68,65 @@ class accounts extends Resource
 	{
 		
 			require("rest_connect.php");
+			
+			$pageSize = 25;
+			$currentPage = 0;
+			$orderBy = "c.currency";
+			$secondaryOrderBy = "uac.trading_name";
+			$orderDirection = "ASC";
+			$secondaryOrderDirection = "ASC";
+			if(isset($_GET)){
+				if (isset($_GET['pageSize']) && ($_GET['pageSize']>0) && ($_GET['pageSize']<101) ){
+					$pageSize = mysqli_real_escape_string($db, $_GET['pageSize']);
+				}
+				if (isset($_GET['currentPage'])){
+					$currentPage = mysqli_real_escape_string($db, $_GET['currentPage']);
+				}
+				if (isset ($_GET['orderBy']) ) {
+					$orderBy_q = mysqli_real_escape_string($db, $_GET['orderBy']);
+					if($orderBy_q == 'currency'){
+						$orderBy = 'c.currency';
+					} else if ($orderBy_q == 'trading_name') {
+						$orderBy = 'uac.trading_name';
+					} else if ($orderBy_q == 'balance') {
+						
+					}
+				}
+				if (isset ($_GET['orderDirection']) ) {
+					$orderDirection_q = mysqli_real_escape_string($db, $_GET['orderDirection']);
+					if ($orderDirection_q == 'ASC') {
+						$orderDirection = "ASC";
+					} else if ($orderDirection_q == 'DESC') {
+						$orderDirection = "DESC";
+					}
+				}
+				if (isset ($_GET['secondaryOrderBy']) ) {
+					$orderBy_q = mysqli_real_escape_string($db, $_GET['secondaryOrderBy']);
+					if($orderBy_q == 'currency'){
+						$secondaryOrderBy = 'c.currency';
+					} else if ($orderBy_q == 'trading_name') {
+						$secondaryOrderBy = 'uac.trading_name';
+					} else if ($orderBy_q == 'balance') {
+						
+					}
+				}
+				if (isset ($_GET['secondaryOrderDirection']) ) {
+					$orderDirection_q = mysqli_real_escape_string($db, $_GET['secondaryOrderDirection']);
+					if ($orderDirection_q == 'ASC') {
+						$secondaryOrderDirection = "ASC";
+					} else if ($orderDirection_q == 'DESC') {
+						$secondaryOrderDirection = "DESC";
+					}
+				}
+			}
+				
+			
 			$accounts_array = array();
 			$default_count = 0;
-			$accounts_q = mysqli_query($db,$test = "SELECT *, uac.id user_account_currencies_id FROM user_account_currencies uac, user_spaces us, currencies c  WHERE uac.currency_id=c.id AND uac.user_space_id=us.id AND us.user_id='".$this->user['id']."' ORDER BY uac.id ASC") or die($test . mysqli_error($db));
+			$totalCount = 0;
+			$accounts_q = mysqli_query($db,$test = "SELECT *, uac.id user_account_currencies_id FROM user_account_currencies uac, user_spaces us, currencies c  WHERE uac.currency_id=c.id AND uac.user_space_id=us.id AND us.user_id='".$this->user['id']."' ORDER BY $orderBy $orderDirection, $secondaryOrderBy $secondaryOrderDirection") or die($test . mysqli_error($db));
 			while($accounts = mysqli_fetch_array($accounts_q)){
+				$totalCount++;
 				
 				$balance = 0.00000;
 				$balance_decimal = number_format($balance,2);
@@ -99,16 +154,23 @@ class accounts extends Resource
 																					"name" => $accounts['currency']))),
 										  	      'status' => array( "balance" => $balance,
 															  		"formattedBalance" => $balance_decimal,
-																	"trading"=>$trading,
-																	"formattedTrading"=>$trading_decimal." ".$accounts['currency'],
+																	"trading" => $trading,
+																	"formattedTrading" => $trading_decimal,
 															  		"availableBalance" => 0.000000,
 															  		"formattedAvailableBalance" => "0.00 ".$accounts['currency'],
 															  		"reservedAmount" => 0,
 															  		"formattedReservedAmount" => "0.00 ".$accounts['currency'],
 															  		"creditLimit" => 0.000000,
-															  		"formattedCreditLimit" => "0.00 ".$accounts['currency'])));
+															  		"formattedCreditLimit" => "0.00 ".$accounts['currency'],
+																	"currency" => $accounts['currency'])));
 			}
-			$result = new Response(200, $accounts_array);
+			$result_array = array( "currentPage" => $currentPage,
+						"pageSize" => $pageSize,
+						"totalCount" => $totalCount,
+						"elements" => $accounts_array);
+			
+			
+			$result = new Response(200, $result_array);
 
 		return $result;
 	}
@@ -229,13 +291,14 @@ class accountStatus extends Resource
 				$accounts_array = array( "balance" => $balance,
 						"formattedBalance" => $balance_decimal,
 						"trading"=>$trading,
-						"formattedTrading"=>$trading_decimal." ".$accounts['currency'],
+						"formattedTrading"=>$trading_decimal,
 						"availableBalance" => 0.000000,
 						"formattedAvailableBalance" => "0.00 ".$accounts['currency'],
 						"reservedAmount" => 0,
 						"formattedReservedAmount" => "0.00 ".$accounts['currency'],
 						"creditLimit" => 0.000000,
-						"formattedCreditLimit" => "0.00 ".$accounts['currency']);
+						"formattedCreditLimit" => "0.00 ".$accounts['currency'],
+						"currency" => $accounts['currency']);
 	
 	
 			}
@@ -361,28 +424,28 @@ class accountHistory extends Resource
 			//$requestData = $this->request->data;
 			if(isset($_GET)){
 				if( isset($_GET['pageSize']) && ($_GET['pageSize']>0) && ($_GET['pageSize']<101) ){
-					$pageSize = $_GET['pageSize'];
+					$pageSize = mysqli_real_escape_string($db, $_GET['pageSize']);
 				}
 				if(isset($_GET['currentPage'])){
-					$currentPage = $_GET['currentPage'];
+					$currentPage = mysqli_real_escape_string($db, $_GET['currentPage']);
 				}
 				if(isset($_GET['showStatus'])){
-					$showStatus = $_GET['showStatus'];
+					$showStatus = mysqli_real_escape_string($db, $_GET['showStatus']);
 				}
 				if(isset($_GET['paymentFilterID'])){
-					$paymentFilterID = $_GET['paymentFilterID'];
+					$paymentFilterID = mysqli_real_escape_string($db, $_GET['paymentFilterID']);
 				}
 				if(isset($_GET['memberID'])){
-					$memberID = $_GET['memberID'];
+					$memberID = mysqli_real_escape_string($db, $_GET['memberID']);
 				}
 				if(isset($_GET['memberPrincipal'])){
-					$memberPrincipal = $_GET['memberPrincipal'];
+					$memberPrincipal = mysqli_real_escape_string($db, $_GET['memberPrincipal']);
 				}
 				if(isset($_GET['beginDate'])){
-					$beginDate = strtotime(str_replace("T", " ",$_GET['beginDate'])." GMT");
+					$beginDate = strtotime(str_replace("T", " ",mysqli_real_escape_string($db, $_GET['beginDate']) )." GMT");
 				}
 				if(isset($_GET['endDate'])){
-					$endDate = strtotime(str_replace("T", " ",$_GET['endDate'])." GMT");
+					$endDate = strtotime(str_replace("T", " ",mysqli_real_escape_string($db, $_GET['endDate']) )." GMT");
 				}
 				
 			}
@@ -418,7 +481,7 @@ class accountHistory extends Resource
 													   "processDate"=>date("Y-m-d\TH:i:s",strtotime($user_journal['created'])).".000+0000",
 													   "formattedProcessDate"=>date("Y-m-d",strtotime($user_journal['created'])),
 													   "amount"=>floatval($user_journal['amount']),
-													   "formattedAmount"=>$user_journal['amount']." ".$accounts['currency'],
+													   "formattedAmount"=>$user_journal['amount'],
 													   "transferType"=>array("id"=>$currency['id'],
 																			"name"=>$currency['currency']." exchange",
 																			"from"=>array("id"=>$trading_name['id'],
@@ -566,7 +629,7 @@ class accountTransferData extends Resource
 													   "processDate"=>date("Y-m-d\TH:i:s",strtotime($user_journal['created'])).".000+0000",
 													   "formattedProcessDate"=>date("Y-m-d",strtotime($user_journal['created'])),
 													   "amount"=>floatval($user_journal['amount']),
-													   "formattedAmount"=> number_format($user_journal['amount'],2)." ".$user_journal['currency'],
+													   "formattedAmount"=> number_format($user_journal['amount'],2),
 													   "transferType"=>array("id"=>$currency['id'],
 																			"name"=>$currency['currency']." exchange",
 																			"from"=>array("id"=>intval($trading_name['id']),
