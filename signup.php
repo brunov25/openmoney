@@ -54,13 +54,13 @@ if ($newpw) {
      <td><input type=text name=username required=required pattern='[A-Za-z0-9][A-Za-z0-9]+' 
      title='minimum 2 letters and numbers, no spaces nor punctuation' autofocus=autofocus placeholder='<preferred user name>'></td></tr>":"
      <input type=hidden name=username value=''>";
-  $extra_fields = $beta==0?"<tr><td>First Name</td><td><input type=text pattern='[A-Za-z0-9]*'
+  $extra_fields = $beta==0?"<tr><td>First Name</td><td><input type=text pattern='[A-Za-z0-9\s\_\-]*'
         title='use only letters and numbers' name=firstname  placeholder='<optional given name>'></td></tr>
-        <tr><td>Last Name </td><td><input type=text pattern='[A-Za-z0-9]*' title='use only letters and numbers' name=lastname 
+        <tr><td>Last Name </td><td><input type=text pattern='[A-Za-z0-9\s\_\-]*' title='use only letters and numbers' name=lastname 
         placeholder='<optional family name>'></td></tr>
-        <tr><td>Phone </td><td><input type=tel pattern='[A-Za-z0-9]*' title='use only letters and numbers' name=phone 
+        <tr><td>Phone </td><td><input type=tel pattern='[A-Za-z0-9\-]*' title='use only letters and numbers' name=phone 
         placeholder='<optional phone number>'></td></tr>
-        <tr><td>Phone2 </td><td><input type=tel pattern='[A-Za-z0-9]*' title='use only letters and numbers' name=phone2 
+        <tr><td>Phone2 </td><td><input type=tel pattern='[A-Za-z0-9\-]*' title='use only letters and numbers' name=phone2 
         placeholder='<second phone number>'></td></tr>":"
         <input name=phone value='' type=hidden> <input name=phone2 value='' type=hidden>
         <input name=firstname value='' type=hidden> <input name=lastname value='' type=hidden>";
