@@ -1,6 +1,10 @@
 <? //(c)2013 GPL by Bruno Vernier and Michael Linton
 require('header.php');
 
+$sp=isset($_REQUEST['sp'])?$_REQUEST['sp']:'';
+$default_currency=''; $default_space='';
+if ($sp=='victoria'){$default_currency='vi$'; $default_space='vic';}
+
 $username=isset($_POST['username'])?preg_replace('/[^a-zA-Z0-9\.\+\-\_\@\%\&\^\~\!\?\<\>\:\;\=\*\$\#]/','',$_POST['username']):'';
 $firstname=isset($_POST['firstname'])?$_POST['firstname']:'';
 $lastname=isset($_POST['lastname'])?$_POST['lastname']:'';
@@ -49,11 +53,10 @@ if ($newpw) {
         <input type=submit></form> ";
 }else {
   $beta = ($CFG->site_type=='sandbox')?1:0;
-  //  echo "<h1>{$CFG->site_type} $beta</h1>";
-  $usernamefield = $beta==0?"<tr><td> <b>Username</b>:</td>
+    echo "<h1>$sp</h1>";
+  $usernamefield = "<tr><td> <b>Username</b>:</td>
      <td><input type=text name=username required=required pattern='[A-Za-z0-9][A-Za-z0-9]+' 
-     title='minimum 2 letters and numbers, no spaces nor punctuation' autofocus=autofocus placeholder='<preferred user name>'></td></tr>":"
-     <input type=hidden name=username value=''>";
+     title='minimum 2 letters and numbers, no spaces nor punctuation' autofocus=autofocus placeholder='<preferred user name>'></td></tr>";
   $extra_fields = $beta==0?"<tr><td>First Name</td><td><input type=text pattern='[A-Za-z0-9\s\_\-]*'
         title='use only letters and numbers' name=firstname  placeholder='<optional given name>'></td></tr>
         <tr><td>Last Name </td><td><input type=text pattern='[A-Za-z0-9\s\_\-]*' title='use only letters and numbers' name=lastname 
@@ -71,9 +74,9 @@ $usernamefield
 <tr><td><b>Email address</b></td><td><input type=email required name=email placeholder='<email>'></td></tr>
 $extra_fields
 <tr><td>Space</td><td><input type=text pattern='[A-Za-z0-9\.]*' title='use only letters and numbers'  name=space_name 
-        placeholder='<if known>'></td></tr>
-<tr><td>Currency</td><td><input type=text name=currency pattern='[A-Za-z0-9\.]*' title='use only letters and numbers'  
-        placeholder='<if known>'></td></tr>
+        placeholder='<if known>' value='$default_space'></td></tr>
+<tr><td>Currency</td><td><input type=text name=currency pattern='[A-Za-z0-9\.\$]*' title='use only letters and numbers'  
+        placeholder='<if known>' value='$default_currency'></td></tr>
 <tr><td colspan=2><input type=submit></td></tr></table></form>";
 }
 require('footer.php');
