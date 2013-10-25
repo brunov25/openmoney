@@ -157,7 +157,7 @@ class settings extends Resource
 						
 								//check if there is a subspace name that exists for that trading name.
 								$subspace_name = ($userSpace['space_name'] == '') ? $tradingName : $tradingName . "." . $userSpace['space_name'];
-								$subspace_check_q = mysqli_query($db , $test = "SELECT * FROM spaces s WHERE s.space_name='" . $subspace_name . "'") or die($test . mysqli_error($db)); 
+								$subspace_check_q = mysqli_query($db , $test = "SELECT * FROM spaces s, user_spaces us WHERE s.id=us.space_id AND s.space_name='" . $subspace_name . "' AND us.class='steward' AND us.user_id != '" . $this->user['id'] . "' GROUP BY s.id") or die($test . mysqli_error($db)); 
 								if ( $subspace = mysqli_fetch_array( $subspace_check_q ) ) {
 									$error = "A subspace exists with that trading name!<br /> Please choose another trading name.";
 								} else {
@@ -198,7 +198,7 @@ class settings extends Resource
 							
 								//check if there is a subspace name that exists for that currency name.
 								$subspace_name = ($userSpace['space_name'] == '') ? $currencyName : $currencyName . "." . $userSpace['space_name'];
-								$subspace_check_q = mysqli_query($db , $test = "SELECT * FROM spaces s WHERE s.space_name='" . $subspace_name . "'") or die($test . mysqli_error($db)); 
+								$subspace_check_q = mysqli_query($db , $test = "SELECT * FROM spaces s, user_spaces us WHERE s.id=us.space_id AND s.space_name='" . $subspace_name . "' AND us.class='steward' AND us.user_id != '" . $this->user['id'] . "' GROUP BY s.id") or die($test . mysqli_error($db)); 
 								if ( $subspace = mysqli_fetch_array( $subspace_check_q ) ) {
 									$error = "A subspace exists with that currency name!<br /> Please choose another currency name.";
 								} else {

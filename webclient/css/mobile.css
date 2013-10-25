@@ -225,8 +225,13 @@ ul {
 .row-middle-header {
 	white-space: nowrap;
 }
+.innerLeftParagraph,
+.innerMiddleParagraph {
+	text-align:left;
+	display: inline-block;
+	margin: 0;
+}
 .innerParagraph,
-.innerMiddleParagraph,
 .innerFourthParagraph {
 	text-align: right;	
 	display: inline-block;
@@ -651,7 +656,6 @@ ul {
 }
 .number-field-decimal-wrapper input,
 .number-field-number-wrapper input,
-.row-middle-column,
 .version-label-field,
 .row-right-column,
 .row-fourth-column,
@@ -995,4 +999,7 @@ td.datePickerMonth {
 	background: -ms-linear-gradient(top,#81B354 0%,#24420A 95%); /* IE10+ */
 	background: linear-gradient(top,#81B354 0%,#24420A 95%); /* W3C */
 	filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#81B354', endColorstr='#24420A',GradientType=0); /* IE6-9 */
+}
+.hidden {
+	display:none;
 }
