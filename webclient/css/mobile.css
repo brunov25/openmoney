@@ -156,6 +156,7 @@ ul {
 .dateBox-input-field,
 .form-input-field,
 .form-select-field,
+.form-value,
 .icon-label,
 .icon-button,
 .popup table,
@@ -840,7 +841,8 @@ ul {
 .custom-radio > .value,
 .second-row,
 .first-row,
-.row-middle-column {
+.row-middle-column,
+.form-field td {
 	vertical-align: middle;
 }
 
@@ -1002,4 +1004,7 @@ td.datePickerMonth {
 }
 .hidden {
 	display:none;
+}
+.italics {
+	font-style:italic;
 }
