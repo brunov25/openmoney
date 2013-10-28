@@ -27,7 +27,9 @@ require('header.php');
     <a href="signup.php">Request a new account</a>
    <br> <a href="signup.php?newpw=1">Request a new password</a>
    <br>
-   <br> <a href="http://tinyurl.com/mjz4wbm" target="_blank">user guide to open money</a>
+   <br> <a href="http://tinyurl.com/nnb6vdp" target="_blank">user guide to open money</a>
+   <br> <a href="http://openmoney.ca/beta/webclient" target="_blank">omlets - mobile/tablet version</a>
+
   </form>
  </div>
 </div>
