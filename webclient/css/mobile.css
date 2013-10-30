@@ -60,7 +60,8 @@ ul {
 .scroll-data-image,
 .scroll-page-image,
 .row-middle-header,
-.row-left-header {
+.row-left-header,
+.row-heading {
 	cursor: pointer;
 	cursor: hand;
 }
@@ -135,6 +136,7 @@ ul {
 }
 .amount-negative {
 	color: #C89E5E;
+	white-space: nowrap;
 }
 .bottom {
 	background-color: #EDF6E5;
@@ -178,6 +180,7 @@ ul {
 .number-field,
 .top,
 .menu,
+.row,
 .row-content,
 .no-data,
 .notification,
@@ -223,7 +226,8 @@ ul {
 .row-right-column,
 .userspace-selector-label,
 .row-left-header,
-.row-middle-header {
+.row-middle-header,
+.row-heading {
 	white-space: nowrap;
 }
 .innerLeftParagraph,
@@ -269,7 +273,8 @@ ul {
 }
 .row-middle-column,
 .row-fourth-header,
-.row-right-header {
+.row-right-header,
+.row-heading {
 	font-size: 0.9em;
 }
 .configuration-label-field, 
@@ -745,7 +750,8 @@ ul {
     overflow: hidden;
     text-overflow: ellipsis;
 }
-.row-fourth-column {
+.row-right-column,
+.account-information-value {
 	color: #8F908A;
 }
 .version-container {
@@ -770,7 +776,6 @@ ul {
 }
 .account-information-value {
 	text-align:right;
-	color: #444;
 }
 .top-spacing,
 .transaction-password-label-field {
@@ -1007,4 +1012,7 @@ td.datePickerMonth {
 }
 .italics {
 	font-style:italic;
+}
+.underline {
+	text-decoration: underline;
 }

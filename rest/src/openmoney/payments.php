@@ -162,7 +162,7 @@ class paymentData extends Resource
 					$accounts_array[$accounts['user_account_currencies_id']] = array( "balance" => number_format($balance,6),
 							"formattedBalance" => $balance_decimal,
 							"trading"=>$trading,
-							"formattedTrading"=>$trading_decimal." ".$accounts['currency'],
+							"formattedTrading"=>$trading_decimal,
 							"availableBalance" => number_format(0.000000,6),
 							"formattedAvailableBalance" => "0.00 ".$accounts['currency'],
 							"reservedAmount" => number_format(0.000000,6),

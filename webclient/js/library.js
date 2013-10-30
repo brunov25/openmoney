@@ -561,11 +561,16 @@ var cStorage;
 
 
 //$(window).resize(function (){
-//	resizeColumn();
+//	$(".").width(innerWidth
+//	//resizeColumn();
 //});
+
+
 
 function resizeColumn(){
 	//alert("before resize");
+	
+	
     $( ".account-left:not(:has(>p.innerLeftParagraph))" ).wrapInner(function() {
         return "<p class='innerLeftParagraph'></p>";
     });
@@ -577,10 +582,10 @@ function resizeColumn(){
     $(".row-right-column").not(".account-information-row-right-column").width(getMaxWidth(".innerParagraph")+14);
     console.log("resize column finished");
     //middle
-    $( ".account-information-row-middle-column:not(:has(>p.innerMiddleParagraph))" ).wrapInner(function() {
+    $( ".row-middle-column:not(:has(>p.innerMiddleParagraph))" ).wrapInner(function() {
         return "<p class='innerMiddleParagraph'></p>";
     });
-    $(".account-information-row-middle-column").width(getMaxWidth(".innerMiddleParagraph"));
+    $(".row-middle-column").width(getMaxWidth(".innerMiddleParagraph"));
     //forth
     $( ".row-fourth-column:not(:has(>p.innerFourthParagraph))" ).not(".account-information-row-fourth-column").wrapInner(function() {
         return "<p class='innerFourthParagraph'></p>";
@@ -594,6 +599,8 @@ function resizeColumn(){
 //        return "<span class='innerSpan' style='display:inline-block;margin:0;'></span>";
 //    });
 //    $(".account-information-row-right-column").width(getMaxWidth(".innerSpan"));
+    
+    $( ".row" ).width( $( ".row-content" ).width() );
 }
 
 function getMaxWidth(selector){

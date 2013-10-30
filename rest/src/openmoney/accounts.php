@@ -72,9 +72,13 @@ class accounts extends Resource
 			$pageSize = 25;
 			$currentPage = 0;
 			$orderBy = "c.currency";
-			$secondaryOrderBy = "uac.trading_name";
 			$orderDirection = "ASC";
+			$secondaryOrderBy = "uac.trading_name";
 			$secondaryOrderDirection = "ASC";
+			$thirdOrderBy = "balance";
+			$thirdOrderDirection = "ASC";
+			$fourthOrderBy = "trading";
+			$fourthOrderDirection = "ASC";
 			if(isset($_GET)){
 				if (isset($_GET['pageSize']) && ($_GET['pageSize']>0) && ($_GET['pageSize']<101) ){
 					$pageSize = mysqli_real_escape_string($db, $_GET['pageSize']);
@@ -89,7 +93,9 @@ class accounts extends Resource
 					} else if ($orderBy_q == 'trading_name') {
 						$orderBy = 'uac.trading_name';
 					} else if ($orderBy_q == 'balance') {
-						
+						$orderBy = 'balance';
+					} else if ($orderBy_q == 'trading') {
+						$orderBy = 'trading';
 					}
 				}
 				if (isset ($_GET['orderDirection']) ) {
