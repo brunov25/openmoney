@@ -561,8 +561,8 @@ var cStorage;
 
 
 //$(window).resize(function (){
-//	$(".").width(innerWidth
-//	//resizeColumn();
+//
+//	resizeColumn();
 //});
 
 
@@ -600,7 +600,11 @@ function resizeColumn(){
 //    });
 //    $(".account-information-row-right-column").width(getMaxWidth(".innerSpan"));
     
-    $( ".row" ).width( $( ".row-content" ).width() );
+    resizeRow();
+}
+
+function resizeRow(){
+	$( ".row" ).width( $(window).width() );
 }
 
 function getMaxWidth(selector){

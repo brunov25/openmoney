@@ -1,11 +1,11 @@
 <?xml version='1.0' encoding='utf-8'?>
-<widget id="nl.strohalm.cyclos.mobile" version="1.1.4" xmlns="http://www.w3.org/ns/widgets" xmlns:gap="http://phonegap.com/ns/1.0">
+<widget id="org.openmoney.omlets.mobile" version="1.2.0" xmlns="http://www.w3.org/ns/widgets" xmlns:gap="http://phonegap.com/ns/1.0">
     <name>omlets</name>
     <description>
         openmoney LETSystem
     </description>
-    <author email="deefactorial@gmail.com" href="http://openmoeny.ca">
-       openmoney Team
+    <author email="deefactorial@gmail.com" href="http://openmoney.org">
+       openmoney omlets development
     </author>
     <feature name="http://api.phonegap.com/1.0/device" />
     <preference name="permissions" value="none" />

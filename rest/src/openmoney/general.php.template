@@ -38,8 +38,8 @@ class general extends Resource
 	public function saygeneral()
 	{
 
-			$result = new Response(200, array("cyclosVersion" => "3.7.4",
- 											   "applicationName" => "openmoney.ca",
+			$result = new Response(200, array("version" => "1.2.0",
+ 											   "applicationName" => "openmoney.org",
  											   "welcomeMessage" => "Welcome to the open money LETSystem",
  											   "principalType" => "USER",
  											   "credentialType" => "LOGIN_PASSWORD",

@@ -35,7 +35,7 @@ if ($username) {
     //echo "Thank you, %name! You will be notified as soon as your account %username has been manually confirmed.";
     $address = $CFG->admin_email;
     $address2 = $CFG->maintainer;
-    $confirmed = ($CFG->site_type=='Live')?"needs <a href={$CFG->url}/menu?confirm=1>confirmation</a>":"was auto-confirmed";
+    $confirmed = ($CFG->site_type=='Live')?"needs <a href={$CFG->url}/menu.php?confirm=1>confirmation</a>":"was auto-confirmed";
     $msg = "$firstname $lastname created an account $username on {$CFG->site_name} which $confirmed.     <p>OpenMoney IT Team";
     $subject = "{$CFG->site_name}: new account REQUESTED for $username";
     email_letter($address,$email,$subject,$msg);  
