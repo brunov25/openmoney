@@ -47,6 +47,9 @@ ul {
 * {
 	-webkit-tap-highlight-color: rgba(0, 0, 0, 0);
 }
+.link-field {
+	text-decoration: underline;
+}
 .action-button, 
 .bottom-bar-button, 
 .menu-button, 
@@ -245,6 +248,9 @@ ul {
 .Caption, 
 .prompt-text {
 	margin-bottom: 10px;
+}
+.main {
+	padding-right: 15px;
 }
 .custom-radio > .value,
 .menu, 
@@ -690,7 +696,7 @@ ul {
 	-moz-backface-visibility: hidden;
 	-webkit-backface-visibility: hidden;
 }
-.page-fixed {
+.page-fixed-removed {
 	-ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=40)";	
 	filter: alpha(opacity=40);
   	-moz-opacity: 0.4;

@@ -38,7 +38,7 @@ class general extends Resource
 	public function saygeneral()
 	{
 
-			$result = new Response(200, array("version" => "1.2.0",
+			$result = new Response(200, array("version" => "1.2.1",
  											   "applicationName" => "openmoney.org",
  											   "welcomeMessage" => "Welcome to the open money LETSystem",
  											   "principalType" => "USER",
