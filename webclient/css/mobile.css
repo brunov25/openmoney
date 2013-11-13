@@ -249,6 +249,9 @@ ul {
 .prompt-text {
 	margin-bottom: 10px;
 }
+.main {
+	padding-right: 15px;
+}
 .custom-radio > .value,
 .menu, 
 .help, 

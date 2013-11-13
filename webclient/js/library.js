@@ -569,7 +569,11 @@ var cStorage;
 
 function resizeColumn(){
 	//alert("before resize");
-	
+	if( /^file:\/{3}[^\/]/i.test(window.location.href) && /ios|iphone|ipod|ipad|android/i.test(navigator.userAgent) ) {
+		$('.main').css("padding-right","0");
+	} else {
+		$('.main').css("padding-right","15px");
+	}
 	
     $( ".account-left:not(:has(>p.innerLeftParagraph))" ).wrapInner(function() {
         return "<p class='innerLeftParagraph'></p>";
