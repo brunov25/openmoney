@@ -33,10 +33,6 @@ class paymentData extends Resource
 			//echo "Attempting to authenticate user.\n";
 			$users_q = mysqli_query($db,"SELECT * FROM users WHERE user_name='" . mysqli_real_escape_string($db,$_SERVER['PHP_AUTH_USER']) ."'");
 			$users = mysqli_fetch_array($users_q);
-			//echo "username:".$users['user_name']."\n";
-			//echo "password:".$_SERVER['PHP_AUTH_PW']."\n";
-			//echo "check1".password_verify($_SERVER['PHP_AUTH_PW'],$users['password2'])."\n";
-			//echo "check2".password_verify($_SERVER['PHP_AUTH_PW'],$users['password'])."\n";
 			if(password_verify($_SERVER['PHP_AUTH_PW'],$users['password2']) OR (password_verify($_SERVER['PHP_AUTH_PW'], $users['password']))){
 				//echo "verified\n";
 				$this->user = $users;
@@ -486,7 +482,19 @@ class confirmMemberPayment extends Resource
 
 
 		require("rest_connect.php");
+		require("../config.php");
 
+		function email_letter($to,$from,$subject='no subject',$msg='no msg') {
+				
+				$headers =  "From: $from\r\n";
+				//$headers .= "To: $to\r\n"; 
+				//$headers .= "Reply-To: $from\r\n";
+				//$headers .= "Return-Path: $from\r\n";
+				$headers .= "MIME-Version: 1.0\r\n";
+				$headers .= "Content-type: text/html; charset=iso-8859-1\r\n";
+				$headers .= 'X-Mailer: PHP/' . phpversion();
+				return mail($to, $subject, $msg, $headers);
+		}
 
 		/*
 			Request body: Object with the following properties:
@@ -535,10 +543,14 @@ class confirmMemberPayment extends Resource
 			
 			
 			$with_account = '';
+			$with_email = '';
 			
 			$toMemberId_q = mysqli_query($db, $test = "SELECT *, uac.id user_account_currencies_id FROM users u, user_spaces us, user_account_currencies uac WHERE uac.user_space_id=us.id AND us.user_id=u.id AND uac.id='".mysqli_real_escape_string($db,$toMemberId)."' ORDER BY uac.id ASC") or die($test . mysqli_error($db));
 			if($toMember = mysqli_fetch_array($toMemberId_q)){
 				$with_account = $toMember['trading_name'];
+				$with_email = $toMember['email'];
+				$dear = ($toMember['fname']=='')?$toMember['user_name']:$toMember['fname'] . " " . $toMember['lname'];
+				$with_email = "\"".$dear."\"<".$with_email.">";
 			} else {
 				throw new Tonic\NotAcceptableException;
 			}
@@ -548,6 +560,7 @@ class confirmMemberPayment extends Resource
 			
 
 			$currency = 'cc'; //default currency
+			
 
 			$transfer_types_array = array();
 			$transfer_types_q = mysqli_query($db, $test = "SELECT *, uac.id user_account_currencies_id  FROM user_account_currencies uac, user_spaces us, currencies c WHERE uac.id='".$transferTypeId."' AND uac.user_space_id=us.id AND uac.currency_id=c.id AND us.user_id='".$this->user['id']."'") or die($test . mysqli_error($db));
@@ -556,14 +569,20 @@ class confirmMemberPayment extends Resource
 				$currency = $transfer_types['currency'];
 				$trading_account = $transfer_types['trading_name'];
 				
+				
 			} else {
 				//return error
 				throw new Tonic\NotAcceptableException;
 			}
 
-				
+			
 			$this_user_q = mysqli_query($db, $test = "SELECT *, uac.id user_account_currencies_id FROM users u, user_spaces us, user_account_currencies uac WHERE uac.user_space_id=us.id AND us.user_id=u.id AND u.id='".$this->user['id']."' AND uac.id='".$transferTypeId."' ORDER BY uac.id ASC") or die($test . mysqli_error($db));
 			$this_user = mysqli_fetch_array($this_user_q);
+			
+			$from_email = '';
+			$from_email = $this_user['email'];
+			$from_dear = ($this_user['fname']=='')?$this_user['user_name']:$this_user['fname'] . " " . $this_user['lname'];
+			
 			
 			$this_user_balance_q = mysqli_query($db, $test = "SELECT * FROM user_journal WHERE user_id='".$this->user['id']."' AND currency='".$currency."' AND trading_account='".$this_user['trading_name']."' ORDER by id DESC");
 			$this_user_balance = mysqli_fetch_array($this_user_balance_q);
@@ -581,6 +600,13 @@ class confirmMemberPayment extends Resource
 			//note that the member names are reversed.
 			mysqli_query($db,$test = "INSERT INTO user_journal (user_id, tid, created, description, trading_account, with_account, currency, amount, balance, trading, flags) VALUES ".
 					"('".$toMember['user_id']."','$transaction_time','$transaction_date','$description','$with_account','$trading_account','$currency','$amount','".($to_member_balance['balance']+$amount)."','".($to_member_balance['trading']+$amount)."','m')") or die($test.mysqli_error($db));
+			
+			$subject = 'You have just received a payment!';
+			$msg = 'Hello ' . $dear . ',<br /><br />' . $with_account .' just received a payment from ' . $trading_account . ' for the amount of ' . $amount . ' ' . $currency . '!<br />';
+			$msg .= '<a href="'.$CFG->url.'/webclient/index.html">You can view the transaction here</a> or in your mobile application.<br/><br/>';
+			$msg .= 'Thank you,<br/>' . $CFG->url;
+				
+			email_letter($with_email,$CFG->system_email,$subject,$msg);
 				
 			$result_array = array("id"=>$transactionID,
 								  "pending"=>false);
