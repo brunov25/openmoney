@@ -1037,7 +1037,7 @@ class accessForgotPassword extends Resource
 					//update key on user table, then verify in resetPassword.php
 					mysqli_query($db, $test = "UPDATE users SET password2 = '$reset_key' WHERE email='$email'") or die($test . mysqli_error($db));
 					
-					$msg = "To Reset your password click on this link <a href='{$CFG->url}/resetPassword.php?email=$email&reset=$reset_hash'>Reset Password</a>";
+					$msg = "To Reset your password click on this link <a href='{$CFG->url}/resetPassword.php?email=".urlencode($email)."&reset=".urlencode($reset_hash)."'>Reset Password</a>";
 					$msg .= "<p>OpenMoney IT Team</p>";
 					$msg .= "If you did not initiate the forgot password link request then ignore this and your password will remain the same.";
 					
@@ -1046,6 +1046,9 @@ class accessForgotPassword extends Resource
 					
 					$sentEmail = email_letter("\"".$dear."\"<".$email.">",$CFG->system_email,$subject,$msg);
 					return new Response(200, array('sentEmail' => $sentEmail));
+				} else {
+					$error .= "Email address was not found!<br/>";
+					return new Response(200, array('errorDetails' => $error));
 				}
 			} else {
 			
@@ -1067,7 +1070,7 @@ class accessForgotPassword extends Resource
 							//update key on user table, then verify in resetPassword.php
 							mysqli_query($db, $test = "UPDATE users SET password2 = '$reset_key' WHERE user_name='$email'") or die($test . mysqli_error($db));
 							
-							$msg = "To Reset your password click on this link <a href='{$CFG->url}/resetPassword.php?username=$email&reset=$reset_hash'>Reset Password</a>";
+							$msg = "To Reset your password click on this link <a href='{$CFG->url}/resetPassword.php?username=".urlencode($email)."&reset=".urlencode($reset_hash)."'>Reset Password</a>";
 							$msg .= "<p>OpenMoney IT Team</p>";
 							$msg .= "If you did not initiate the forgot password link request then ignore this and your password will remain the same.";
 							
@@ -1075,26 +1078,27 @@ class accessForgotPassword extends Resource
 							$sentEmail = email_letter($real_email,'noreply@openmoney.org',$subject,$msg);
 							return new Response(200, array('sentEmail' => $sentEmail));
 							
+						} else {
+							$error .= "Username was not found!<br/>";
+							return new Response(200, array('errorDetails' => $error));
 						}
 							
 					} else {
-						$error .= "Invalid Email or Username!<br/>";
+						$error .= "Username has invalid size!<br/>";
 						return new Response(200, array('errorDetails' => $error));
 					}
 				} else {
 					// error pattern does not match allowed characters
-					$error .= "Invalid Email or Username!<br/>";
+					$error .= "Username has invalid characters!<br/>";
 					return new Response(200, array('errorDetails' => $error));
 				}
 			
-			
-				$error .= "Invalid Email or Username!<br/>";
-				return new Response(200, array('errorDetails' => $error));
+				
+
 			}
 			
-
-
-		return $result;
+		$error .= "Invalid Email or Username!<br/>";
+		return new Response(200, array('errorDetails' => $error));
 	}
 
 	

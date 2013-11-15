@@ -4,9 +4,13 @@ require_once('password.php');
 require_once('rest/src/openmoney/rest_connect.php');
 
 $email = isset($_GET['email'])?$_GET['email']:'';
+$email = urldecode($email);
+$email = str_replace(" ","+",$email);//plus sign gets replaced with a space
 
+$username = '';
 if ($email == '') {
 	$username = isset($_GET['username'])?$_GET['username']:'';
+	$username = urldecode($username);
 	
 	if ($username == '') {
 		$error = "Username or Email is required!";
@@ -23,7 +27,7 @@ if ($email == '') {
 $user = mysqli_fetch_array($user_q);
 $reset_key = (String)$user['password2'];
 
-if (password_verify( $reset_key, $_GET['reset']) ) {
+if (password_verify( $reset_key, urldecode($_GET['reset'])) ) {
 	//hash match show password reset form.
 	?>
 	<html>
@@ -54,8 +58,8 @@ if (password_verify( $reset_key, $_GET['reset']) ) {
 	</div>
 	<form name="resetPassword" action="resetPasswordSave.php" method="POST" onsubmit="return validate();">
 	<input type="hidden" name="reset" value="<?=$_GET['reset']?>" />
-	<input type="hidden" name="email" value="<?=$_GET['email']?>" />
-	<input type="hidden" name="username" value="<?=$_GET['username']?>" />
+	<input type="hidden" name="email" value="<?=isset($_GET['email'])?$_GET['email']:''?>" />
+	<input type="hidden" name="username" value="<?=isset($_GET['username'])?$_GET['username']:''?>" />
 		<div style="display:table;vertical-align:middle;margin:0 auto 0 auto;">
 
 			<div style="display:table-row;">
@@ -105,7 +109,10 @@ if (password_verify( $reset_key, $_GET['reset']) ) {
 	<body>
 	<div style="text-align: center">
 		<div style="display: inline-block;font-family:arial,sans-serif;color:#660000;">
-			Could Not Verify Link!
+			Could Not Verify Link!<br/>
+			Username:<?=$username?><br/>
+			Email:<?=$email?><br/>
+			Reset:<?=urldecode($_GET['reset'])?>
 		</div>
 	</div>
 	</body>
