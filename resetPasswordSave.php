@@ -9,7 +9,9 @@ if ($email == '') {
 	$username = isset($_POST['username'])?$_POST['username']:'';
 	
 	if ($username == '') {
-		$error = "Username or Email is required!";
+		$error = urlencode("Username or Email is required!");
+		header("Location: resetPassword.php?email=" . $_POST['email'] . "&reset=" . $_POST['reset'] . "&error=" . $error);
+		exit();
 	}
 	$username = mysqli_real_escape_string($db, $username);
 	$user_q = mysqli_query($db, $test = "SELECT * FROM users WHERE user_name='$username' limit 1") or die($test . mysqli_error($db));
@@ -35,9 +37,11 @@ if($user = mysqli_fetch_array($user_q)){
 	} else {
 		$error = urlencode("Could not verify link!");
 		header("Location: resetPassword.php?email=" . $user['email'] . "&reset=" . $_POST['reset'] . "&error=" . $error);
+		exit();
 	}
 } else {
 	$error = urlencode("Could find user!");
 	header("Location: resetPassword.php?email=" . $user['email'] . "&reset=" . $_POST['reset'] . "&error=" . $error);
+	exit();
 }
 
