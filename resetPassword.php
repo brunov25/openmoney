@@ -1,5 +1,5 @@
 <?php
-
+require_once('config.php');
 require_once('password.php');
 require_once('rest/src/openmoney/rest_connect.php');
 
@@ -14,6 +14,20 @@ if ($email == '') {
 	
 	if ($username == '') {
 		$error = "Username or Email is required!";
+		?>
+		<html>
+		<head>
+		</head>
+		<body>
+		<div style="text-align: center">
+			<div style="display: inline-block;font-family:arial,sans-serif;color:#660000;">
+				<?=$error?>, or <a href="mailto:<?=$CFG->maintainer?>">contact support</a><br/>
+			</div>
+		</div>
+		</body>
+		</html>
+		<?
+		exit();
 	}
 	$username = mysqli_real_escape_string($db, $username);
 	$user_q = mysqli_query($db, $test = "SELECT * FROM users WHERE user_name='$username' limit 1") or die($test . mysqli_error($db));
@@ -26,8 +40,10 @@ if ($email == '') {
 
 $user = mysqli_fetch_array($user_q);
 $reset_key = (String)$user['password2'];
+$reset_hash = urldecode($_GET['reset']);
+$reset_hash = str_replace(" ","+",$reset_hash);//plus sign gets replaced with a space
 
-if (password_verify( $reset_key, urldecode($_GET['reset'])) ) {
+if (password_verify( $reset_key, $reset_hash) ) {
 	//hash match show password reset form.
 	?>
 	<html>
@@ -100,7 +116,23 @@ if (password_verify( $reset_key, urldecode($_GET['reset'])) ) {
 	<?
 	
 } else {
-
+	function email_letter($to,$from,$subject='no subject',$msg='no msg') {
+		
+		$headers =  "From: $from\r\n";
+		$headers .= "MIME-Version: 1.0\r\n";
+		$headers .= "Content-type: text/html; charset=iso-8859-1\r\n";
+		$headers .= 'X-Mailer: PHP/' . phpversion();
+		return mail($to, $subject, $msg, $headers);
+	}
+	$debug = true;
+	if($debug) {
+		$subject = "Could Not Verify Link on $CFG->url";
+		$msg =  "Supplied Username: $username ~ System username: " . $user['user_name'] . " <br/>";
+		$msg .= "Supplied Email: $email ~ System Email: " . $user['email'] . " <br/>";
+		$msg .= "Supplied Reset: $reset_hash ~ System Reset Key: " . $user['password2'] . " <br/>";
+		email_letter($CFG->maintainer,$CFG->system_email,$subject,$msg);
+	
+	}
 
 	?>
 	<html>
@@ -109,10 +141,7 @@ if (password_verify( $reset_key, urldecode($_GET['reset'])) ) {
 	<body>
 	<div style="text-align: center">
 		<div style="display: inline-block;font-family:arial,sans-serif;color:#660000;">
-			Could Not Verify Link!<br/>
-			Username:<?=$username?><br/>
-			Email:<?=$email?><br/>
-			Reset:<?=urldecode($_GET['reset'])?>
+			Could Not Verify Link! please try again, or <a href="mailto:<?=$CFG->maintainer?>">contact support</a><br/>
 		</div>
 	</div>
 	</body>
