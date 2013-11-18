@@ -190,265 +190,274 @@ class accessRegister extends Resource
 	{
 		
 
-			require("rest_connect.php");
-			require("../config.php");
-			require("../password.php");
-						
-			function email_letter($to,$from,$subject='no subject',$msg='no msg') {
-				$headers =  "From: $from\r\n";
-				$headers .= "MIME-Version: 1.0\r\n";
-				$headers .= "Content-type: text/html; charset=iso-8859-1\r\n";
-				return mail($to, $subject, $msg, $headers);
-			}
-			
-			$requestData = $this->request->data;
+		require("rest_connect.php");
+		require("../config.php");
+		require("../password.php");
+					
+		function email_letter($to,$from,$subject='no subject',$msg='no msg') {
+			$headers =  "From: $from\r\n";
+			$headers .= "MIME-Version: 1.0\r\n";
+			$headers .= "Content-type: text/html; charset=iso-8859-1\r\n";
+			return mail($to, $subject, $msg, $headers);
+		}
+		
+		$requestData = $this->request->data;
+	
+
+		$username = "";
+		$email = "";
+		$password = "";
+		$password2 = "";
+		
+		$error = "";
+
 		
 
-			$username = "";
-			$email = "";
-			$password = "";
-			$password2 = "";
-			
-			$error = "";
-			
+		if(isset($requestData->username)){
+			$username = mysqli_real_escape_string($db, $requestData->username);
+		} else {
+			$error .= "Username is required!<br/>";
+			return new Response(200, array('errorDetails' => $error));
+		}
+		if(isset($requestData->email)){
+			$email = mysqli_real_escape_string($db, $requestData->email);
+		} else {
+			$error .= "Email is required!<br/>";
+			return new Response(200, array('errorDetails' => $error));
+		}
+		if(isset($requestData->password)){
+			$password = mysqli_real_escape_string($db, $requestData->password);
+		} else {
+			$error .= "Password is required!<br/>";
+			return new Response(200, array('errorDetails' => $error));
+		}
+		if(isset($requestData->password2)){
+			$password2 = mysqli_real_escape_string($db, $requestData->password2);
+		}
+		
+		
+		
+		$allowInternational = false;
+		if (defined('PCRE_VERSION')) {
+			if (intval(PCRE_VERSION) >= 7) { // constant available since PHP 5.2.4
+				$allowInternational = true;
+			}
 
-			if(isset($requestData->username)){
-				$username = mysqli_real_escape_string($db, $requestData->username);
-			} else {
-				$error .= "Username is required!<br/>";
-				return new Response(200, array('errorDetails' => $error));
-			}
-			if(isset($requestData->email)){
-				$email = mysqli_real_escape_string($db, $requestData->email);
-			} else {
-				$error .= "Email is required!<br/>";
-				return new Response(200, array('errorDetails' => $error));
-			}
-			if(isset($requestData->password)){
-				$password = mysqli_real_escape_string($db, $requestData->password);
-			} else {
-				$error .= "Password is required!<br/>";
-				return new Response(200, array('errorDetails' => $error));
-			}
-			if(isset($requestData->password2)){
-				$password2 = mysqli_real_escape_string($db, $requestData->password2);
-			}
-			
-			
-			
-			$allowInternational = false;
-			if (defined('PCRE_VERSION')) {
-				if (intval(PCRE_VERSION) >= 7) { // constant available since PHP 5.2.4
-					$allowInternational = true;
-				}
-			}
-			if (!$allowInternational) {
-				$error .= "Your php version is too old!!! update php > 5.2.4<br/>";
-				return new Response(200, array('errorDetails' => $error));
-			}
-			
-			
-			$init_space = $CFG->default_space;
-			
-			$usernamePattern = "/^[\p{L}\p{N}_\-\.]+$/u"; //International Letters, Numbers, Underscores and hyphens only
-			$usernamePatternNumberOfCharacters = "/^[\p{L}\p{N}_\-\.]{1,30}$/u"; //international Letters, Numbers, underscore and hyphen 3 to 30 characters
-			if( preg_match( $usernamePattern, $username) ) {
-				//valid username check number of chars
-				if( preg_match( $usernamePatternNumberOfCharacters, $username) ){
-					//username has vaild characters
-					
-					$usernameCheck_q = mysqli_query($db, $test = "SELECT * FROM users WHERE user_name='$username'")  or die($test . mysqli_error($db));
-					if($usernameCheck_q = mysqli_fetch_array($usernameCheck_q)){
-						$error .= "Username already exists! Please choose another Username.<br/>";
-						return new Response(200, array('errorDetails' => $error));
-					}
-						
-					$usernameCheck_q = mysqli_query($db, $test = "SELECT * FROM currencies WHERE currency='$username'")  or die($test . mysqli_error($db));
-					if($usernameCheck_q = mysqli_fetch_array($usernameCheck_q)){
-						$error .= "Username exists as currency! Please choose another Username.<br/>";
-						return new Response(200, array('errorDetails' => $error));
-					}
-						
-					$usernameCheck_q = mysqli_query($db, $test = "SELECT * FROM user_account_currencies WHERE trading_name='$username'")  or die($test . mysqli_error($db));
-					if($usernameCheck_q = mysqli_fetch_array($usernameCheck_q)){
-						$error .= "Username exists as trading name! Please choose another Username.<br/>";
-						return new Response(200, array('errorDetails' => $error));
-					}
-					
-					$usernameCheck_q = mysqli_query($db, $test = "SELECT * FROM spaces WHERE space_name='$username'")  or die($test . mysqli_error($db));
-					if($usernameCheck_q = mysqli_fetch_array($usernameCheck_q)){
-						$error .= "Username exists as space name! Please choose another Username.<br/>";
-						return new Response(200, array('errorDetails' => $error));
-					}
-					
-					$dotPattern = "/^([\p{L}\p{N}_-]+\.)+([\p{L}\p{N}_-]+)$/u";
-					if( preg_match( $dotPattern, $username, $matches) ) {
-						$user_name = $matches[0]; //contains dot
-						$match = '';
-						for($i=count($matches)-1;$i > 1;$i--){
-							//concatenate match to beginning of string.
-							$match = $matches[$i] . $match;
-							//do a space check to make sure it exists first.
-							$usernameCheck_q = mysqli_query($db, $test = "SELECT * FROM spaces WHERE space_name='$match'")  or die($test . mysqli_error($db));
-							if(!($usernameCheck = mysqli_fetch_array($usernameCheck_q))){
-								$error .= "$match subspace does not exist!<br/> Please choose another Username.<br/>";
-								return new Response(200, array('errorDetails' => $error));
-							}
-						}
-						$init_space = $match;	
-						//$error .= "pattern did match subspace! Username:".$user_name." Subspace:".$init_space." Please choose another Username.<br/>";
-						//return new Response(200, array('errorDetails' => $error));
-					} else {
-						//$error .= "pattern didn't match subspace! Please choose another Username.<br/>";
-						//return new Response(200, array('errorDetails' => $error));
-					}
-					
-					
-				} else {
-					$error .= "Username has too many characters!<br/>";
-					return new Response(200, array('errorDetails' => $error));
-				}
-			} else {
-				// error pattern does not match allowed characters
-				$error .= "Username contains invalid characters!<br/>International Letters, Numbers, Underscores and hyphens only";
-				return new Response(200, array('errorDetails' => $error));
-			}
-			
+		}
+		if (!$allowInternational) {
+			$error .= "Your php version is too old!!! update php > 5.2.4<br/>";
+			return new Response(200, array('errorDetails' => $error));
+		}
+		
+		
+		$init_space = $CFG->default_space;
+		
+		$usernamePattern = "/^[\p{L}\p{N}_\-\.]+$/u"; //International Letters, Numbers, Underscores and hyphens only
+		$usernamePatternNumberOfCharacters = "/^[\p{L}\p{N}_\-\.]{1,30}$/u"; //international Letters, Numbers, underscore and hyphen 3 to 30 characters
+		if( preg_match( $usernamePattern, $username) ) {
+			//valid username check number of chars
+			if( preg_match( $usernamePatternNumberOfCharacters, $username) ){
+				//username has vaild characters
 
-			
-			
-			
-			$emailPattern = "/^([\p{L}\p{N}\+_\.-]+)@([\p{N}\p{L}\.-]+)\.([\p{L}\.]{2,6})$/u";
-			if( preg_match( $emailPattern, $email) ) {
-				//valid email
-				$emailCheck_q = mysqli_query($db, $test = "SELECT * FROM users WHERE email='$email'")  or die($test . mysqli_error($db));
-				if($usernameCheck_q = mysqli_fetch_array($emailCheck_q)){
-					$error .= "Email already exists! Please choose another Email.<br/>";
-					return new Response(200, array('errorDetails' => $error));
-				}
-			} else {
-				$error .= "Email address contains invalid characters!<br/>"; //International Letters, Numbers, Underscores, hyphens, plus and dots only
-				return new Response(200, array('errorDetails' => $error));
-			}
-			
-
-			
-			if( strlen($password) > 0 ) {
-				if ($password != $password2) {
-					$error .= "Passwords do not match!<br/>";
-					return new Response(200, array('errorDetails' => $error));
-				}
-			} else {
-				//password is too short
-				$error .= "password is too short!<br/>";
-				return new Response(200, array('errorDetails' => $error));
-			}
-			
-			if( $error == '' ) {
-				//no error found insert user
-
-
-				$password_hash = password_hash($password, PASSWORD_BCRYPT);
 				
-				$init_currency = $CFG->default_currency;
-				$confirmed = ($CFG->site_type!='Live')?'1':'0';
-				$user_q = mysqli_query($db, $test = "INSERT INTO users (`user_name`, `email`, `password`, `password2`, `init_space`, `init_curr`, `confirmed`) VALUES ('$username', '$email', '$password_hash', '$password_hash', '$init_space', '$init_currency', '$confirmed')") or die($test . mysqli_error($db));
-				$userID = mysqli_insert_id($db);
-				
-				if ($confirmed) {
+				$usernameCheck_q = mysqli_query($db, $test = "SELECT * FROM users WHERE user_name='$username'")  or die($test . mysqli_error($db));
+				if($usernameCheck_q = mysqli_fetch_array($usernameCheck_q)){
+					$error .= "Username already exists! Please choose another Username.<br/>";
+					return new Response(200, array('errorDetails' => $error));
+				}
 					
-					//make user a user of initial space
-					$init_space_q = mysqli_query($db, $test= "SELECT * FROM spaces WHERE space_name='$init_space' ORDER BY id ASC") or die($test . mysqli_error($db));
-					if($initSpace = mysqli_fetch_array($init_space_q)){
-						
-						$spaceID = $initSpace['id'];
-						$user_space_q = mysqli_query($db, $test = "INSERT INTO user_spaces (`user_id`,`space_id`,`class`) VALUES ('$userID', '$spaceID', 'user')") or die($test . mysqli_error($db));
-						$userSpaceID = mysqli_insert_id($db);
-						
-						if ($userSpaceID > 0) {
-							$user_currency_q = mysqli_query($db, $test = "SELECT * FROM currencies WHERE currency='$init_currency' ORDER BY id ASC") or die($test . mysqli_error($db));
-							if($userCurrency = mysqli_fetch_array($user_currency_q)){
-								$currencyID = $userCurrency['id'];
-								$user_account_currencies_q = mysqli_query($db, $test = "INSERT INTO user_account_currencies (`trading_name`, `user_space_id`, `currency_id`) VALUES ('$username','$userSpaceID','$currencyID') ") or die($test . mysqli_error($db));
-								$userAccountCurrenciesID = mysqli_insert_id($db);
-								
-								if( $userAccountCurrenciesID > 0 ){
-									// user account created
-									
-								} else {
-									$error .= "Failed to insert trading name!!! Contact system administration!";
-									//reverse inserts
-									mysqli_query($db , $test = "DELETE FROM user_spaces WHERE id='$userSpaceID'") or die($test . mysqli_error($db));
-									mysqli_query($db , $test = "DELETE FROM users WHERE id='$userID'") or die($test . mysqli_error($db));
-									return new Response(200, array('errorDetails' => $error));
-								}
-								
-							} else {
-								$error .= "Failed to find default user currency!!! Contact system administration!";
-								//reverse inserts
-								mysqli_query($db , $test = "DELETE FROM user_spaces WHERE id='$userSpaceID'") or die($test . mysqli_error($db));
-								mysqli_query($db , $test = "DELETE FROM users WHERE id='$userID'") or die($test . mysqli_error($db));
-								return new Response(200, array('errorDetails' => $error));
-							}
-							
-						} else {
-							$error .= "Failed to insert user into default space!!! Contact system administration!";
-							//reverse inserts
-							mysqli_query($db , $test = "DELETE FROM users WHERE id='$userID'") or die($test . mysqli_error($db));
+				$usernameCheck_q = mysqli_query($db, $test = "SELECT * FROM currencies WHERE currency='$username'")  or die($test . mysqli_error($db));
+				if($usernameCheck_q = mysqli_fetch_array($usernameCheck_q)){
+					$error .= "Username exists as currency! Please choose another Username.<br/>";
+					return new Response(200, array('errorDetails' => $error));
+				}
+					
+				$usernameCheck_q = mysqli_query($db, $test = "SELECT * FROM user_account_currencies WHERE trading_name='$username'")  or die($test . mysqli_error($db));
+				if($usernameCheck_q = mysqli_fetch_array($usernameCheck_q)){
+					$error .= "Username exists as trading name! Please choose another Username.<br/>";
+					return new Response(200, array('errorDetails' => $error));
+				}
+				
+				$usernameCheck_q = mysqli_query($db, $test = "SELECT * FROM spaces WHERE space_name='$username'")  or die($test . mysqli_error($db));
+				if($usernameCheck_q = mysqli_fetch_array($usernameCheck_q)){
+					$error .= "Username exists as space name! Please choose another Username.<br/>";
+					return new Response(200, array('errorDetails' => $error));
+				}
+				
+				$dotPattern = "/^([\p{L}\p{N}_-]+\.)+([\p{L}\p{N}_-]+)$/u";
+				if( preg_match( $dotPattern, $username, $matches) ) {
+					$user_name = $matches[0]; //contains dot
+					$match = '';
+					for($i=count($matches)-1;$i > 1;$i--){
+						//concatenate match to beginning of string.
+						$match = $matches[$i] . $match;
+						//do a space check to make sure it exists first.
+						$usernameCheck_q = mysqli_query($db, $test = "SELECT * FROM spaces WHERE space_name='$match'")  or die($test . mysqli_error($db));
+						if(!($usernameCheck = mysqli_fetch_array($usernameCheck_q))){
+							$error .= "$match subspace does not exist!<br/> Please choose another Username.<br/>";
 							return new Response(200, array('errorDetails' => $error));
 						}
+					}
+					$init_space = $match;	
+					//$error .= "pattern did match subspace! Username:".$user_name." Subspace:".$init_space." Please choose another Username.<br/>";
+					//return new Response(200, array('errorDetails' => $error));
+				} else {
+					//$error .= "pattern didn't match subspace! Please choose another Username.<br/>";
+					//return new Response(200, array('errorDetails' => $error));
+				}
+				
+				
+			} else {
+				$error .= "Username has too many characters!<br/>";
+				return new Response(200, array('errorDetails' => $error));
+			}
+		} else {
+			// error pattern does not match allowed characters
+			$error .= "Username contains invalid characters!<br/>International Letters, Numbers, Underscores and hyphens only";
+			return new Response(200, array('errorDetails' => $error));
+		}
+		
+
+		
+		
+		
+		$emailPattern = "/^([\p{L}\p{N}\+_\.-]+)@([\p{N}\p{L}\.-]+)\.([\p{L}\.]{2,6})$/u";
+		if( preg_match( $emailPattern, $email) ) {
+			//valid email
+			$emailCheck_q = mysqli_query($db, $test = "SELECT * FROM users WHERE email='$email'")  or die($test . mysqli_error($db));
+			if($usernameCheck_q = mysqli_fetch_array($emailCheck_q)){
+				$error .= "Email already exists! Please choose another Email.<br/>";
+				return new Response(200, array('errorDetails' => $error));
+			}
+		} else {
+			$error .= "Email address contains invalid characters!<br/>"; //International Letters, Numbers, Underscores, hyphens, plus and dots only
+			return new Response(200, array('errorDetails' => $error));
+		}
+		
+
+		
+		if( strlen($password) > 0 ) {
+			if ($password != $password2) {
+				$error .= "Passwords do not match!<br/>";
+				return new Response(200, array('errorDetails' => $error));
+			}
+		} else {
+			//password is too short
+			$error .= "password is too short!<br/>";
+			return new Response(200, array('errorDetails' => $error));
+		}
+		$confirmed = false;
+		
+		if( $error == '' ) {
+			//no error found insert user
+
+
+			$password_hash = password_hash($password, PASSWORD_BCRYPT);
+			
+			$init_currency = $CFG->default_currency;
+			$confirmed = ($CFG->site_type!='Live')?'1':'0';
+			if (!$confirmed) { $password_hash = $password2_hash = ''; }
+			$user_q = mysqli_query($db, $test = "INSERT INTO users (`user_name`, `email`, `password`, `password2`, `init_space`, `init_curr`, `confirmed`) VALUES ('$username', '$email', '$password_hash', '$password_hash', '$init_space', '$init_currency', '$confirmed')") or die($test . mysqli_error($db));
+			$userID = mysqli_insert_id($db);
+				
+			//make user a user of initial space
+			$init_space_q = mysqli_query($db, $test= "SELECT * FROM spaces WHERE space_name='$init_space' ORDER BY id ASC") or die($test . mysqli_error($db));
+			if($initSpace = mysqli_fetch_array($init_space_q)){
+				
+				$spaceID = $initSpace['id'];
+				$user_space_q = mysqli_query($db, $test = "INSERT INTO user_spaces (`user_id`,`space_id`,`class`) VALUES ('$userID', '$spaceID', 'user')") or die($test . mysqli_error($db));
+				$userSpaceID = mysqli_insert_id($db);
+				
+				if ($userSpaceID > 0) {
+					$user_currency_q = mysqli_query($db, $test = "SELECT * FROM currencies WHERE currency='$init_currency' ORDER BY id ASC") or die($test . mysqli_error($db));
+					if($userCurrency = mysqli_fetch_array($user_currency_q)){
+						$currencyID = $userCurrency['id'];
+						$user_account_currencies_q = mysqli_query($db, $test = "INSERT INTO user_account_currencies (`trading_name`, `user_space_id`, `currency_id`) VALUES ('$username','$userSpaceID','$currencyID') ") or die($test . mysqli_error($db));
+						$userAccountCurrenciesID = mysqli_insert_id($db);
 						
-					} else {
-						$error .= "Could not find default space !!! Contact system administration!";
-						//reverse inserts
-						mysqli_query($db , $test = "DELETE FROM users WHERE id='$userID'") or die($test . mysqli_error($db));
-						return new Response(200, array('errorDetails' => $error));
-					}	
-					
-					if ($error == '') {
-						//create personal space
-						$created = date("Y-m-d H:i:s");
-						$space_create_q = mysqli_query($db, $test = "INSERT INTO spaces (`space_name`,`created`) VALUES ('$username', '$created') ") or die($test . mysqli_error($db));
-						$spaceID = mysqli_insert_id($db);
-						
-						if ($spaceID > 0) {
-								
-							//make user a steward of their space
-								
-							$user_space_q = mysqli_query($db, $test = "INSERT INTO user_spaces (`user_id`,`space_id`,`class`) VALUES ('$userID', '$spaceID', 'steward')") or die($test . mysqli_error($db));
-							if( $userSpaceID = mysqli_insert_id($db) ){
-									
-							} else {
-								$error .= "Could not make user a steward of personal space!!! Contact system administration!";
-								//reverse inserts
-								mysqli_query($db , $test = "DELETE FROM user_spaces WHERE id='$userSpaceID'") or die($test . mysqli_error($db));
-								mysqli_query($db , $test = "DELETE FROM users WHERE id='$userID'") or die($test . mysqli_error($db));
-								mysqli_query($db , $test = "DELETE FROM spaces WHERE id='$spaceID'") or die($test . mysqli_error($db));
-								return new Response(200, array('errorDetails' => $error));
-							}
-								
+						if( $userAccountCurrenciesID > 0 ){
+							// user account created
+							
 						} else {
-							$error .= "Could not create personal space!!! Contact system administration!";
+							$error .= "Failed to insert trading name!!! Contact system administration!";
 							//reverse inserts
 							mysqli_query($db , $test = "DELETE FROM user_spaces WHERE id='$userSpaceID'") or die($test . mysqli_error($db));
 							mysqli_query($db , $test = "DELETE FROM users WHERE id='$userID'") or die($test . mysqli_error($db));
 							return new Response(200, array('errorDetails' => $error));
 						}
+						
+					} else {
+						$error .= "Failed to find default user currency!!! Contact system administration!";
+						//reverse inserts
+						mysqli_query($db , $test = "DELETE FROM user_spaces WHERE id='$userSpaceID'") or die($test . mysqli_error($db));
+						mysqli_query($db , $test = "DELETE FROM users WHERE id='$userID'") or die($test . mysqli_error($db));
+						return new Response(200, array('errorDetails' => $error));
 					}
+					
+				} else {
+					$error .= "Failed to insert user into default space!!! Contact system administration!";
+					//reverse inserts
+					mysqli_query($db , $test = "DELETE FROM users WHERE id='$userID'") or die($test . mysqli_error($db));
+					return new Response(200, array('errorDetails' => $error));
+				}
+				
+			} else {
+				$error .= "Could not find default space !!! Contact system administration!";
+				//reverse inserts
+				mysqli_query($db , $test = "DELETE FROM users WHERE id='$userID'") or die($test . mysqli_error($db));
+				return new Response(200, array('errorDetails' => $error));
+			}	
+			
+			if ($error == '') {
+				//create personal space
+				$created = date("Y-m-d H:i:s");
+				$space_create_q = mysqli_query($db, $test = "INSERT INTO spaces (`space_name`,`created`) VALUES ('$username', '$created') ") or die($test . mysqli_error($db));
+				$spaceID = mysqli_insert_id($db);
+				
+				if ($spaceID > 0) {
+						
+					//make user a steward of their space
+						
+					$user_space_q = mysqli_query($db, $test = "INSERT INTO user_spaces (`user_id`,`space_id`,`class`) VALUES ('$userID', '$spaceID', 'steward')") or die($test . mysqli_error($db));
+					if( $userSpaceID = mysqli_insert_id($db) ){
+							
+					} else {
+						$error .= "Could not make user a steward of personal space!!! Contact system administration!";
+						//reverse inserts
+						mysqli_query($db , $test = "DELETE FROM user_spaces WHERE id='$userSpaceID'") or die($test . mysqli_error($db));
+						mysqli_query($db , $test = "DELETE FROM users WHERE id='$userID'") or die($test . mysqli_error($db));
+						mysqli_query($db , $test = "DELETE FROM spaces WHERE id='$spaceID'") or die($test . mysqli_error($db));
+						return new Response(200, array('errorDetails' => $error));
+					}
+						
+				} else {
+					$error .= "Could not create personal space!!! Contact system administration!";
+					//reverse inserts
+					mysqli_query($db , $test = "DELETE FROM user_spaces WHERE id='$userSpaceID'") or die($test . mysqli_error($db));
+					mysqli_query($db , $test = "DELETE FROM users WHERE id='$userID'") or die($test . mysqli_error($db));
+					return new Response(200, array('errorDetails' => $error));
 				}
 			}
 			
-			if ($error == '') {
-				$address = $CFG->admin_email;
-				$address2 = $CFG->maintainer;
-				$confirmed = ($CFG->site_type=='Live')?"needs <a href={$CFG->url}/menu.php?confirm=1>confirmation</a>":"was auto-confirmed";
-				$msg = $email . " created an account $username on {$CFG->site_name} which $confirmed.<p>OpenMoney IT Team</p>";
-				$subject = "{$CFG->site_name}: new account REQUESTED for $username ";
-				email_letter($address,$CFG->system_email,$subject,$msg);
-				email_letter($address2,$CFG->system_email,$subject,$msg);
-			}
-			
-			if ($error == '') {
+		}
+		
+		if ($error == '') {
+			$address = $CFG->admin_email;
+			$address2 = $CFG->maintainer;
+			$confirmed = ($CFG->site_type=='Live')?"needs <a href={$CFG->url}/menu.php?confirm=1>confirmation</a>":"was auto-confirmed";
+			$msg = $email . " created an account $username on {$CFG->site_name} which $confirmed.<p>OpenMoney IT Team</p>";
+			$subject = "{$CFG->site_name}: new account REQUESTED for $username ";
+			email_letter($address,$CFG->system_email,$subject,$msg);
+			email_letter($address2,$CFG->system_email,$subject,$msg);
+		}
+		
+		if ($error != '') {
+			$result = new Response(200, array('errorDetails' => $error));
+		} else {
+		
+			if ($CFG->site_type=='Live') {
+				$result = new Response(200, array('registrationRequiresApproval' => true));	
+			} else {
 				$accounts_array = array();
 				$default_count = 0;
 				$accounts_q = mysqli_query($db,$test = "SELECT *, uac.id user_account_currencies_id FROM user_account_currencies uac, user_spaces us, currencies c  WHERE uac.currency_id=c.id AND uac.user_space_id=us.id AND us.user_id='".$userID."' ORDER BY uac.id ASC") or die($test . mysqli_error($db));
@@ -496,12 +505,13 @@ class accessRegister extends Resource
 								'canMakeMemberPayments' => true,
 								'canMakeSystemPayments' => false,
 								'decimalCount' => 2,
-								'decimalSeparator' => "."
+								'decimalSeparator' => ".",
+								'registrationRequiresApproval' => false
 						));
-			
-			} else {
-				$result = new Response(200, array('errorDetails' => $error));
-			}
+			} 
+		
+		} 	
+		
 		return $result;
 	}
 
@@ -891,6 +901,7 @@ class accessUpdateProfile extends Resource
 			}
 			
 			if ($error == '') {
+			
 				$accounts_array = array();
 				$default_count = 0;
 				$accounts_q = mysqli_query($db,$test = "SELECT *, uac.id user_account_currencies_id FROM user_account_currencies uac, user_spaces us, currencies c  WHERE uac.currency_id=c.id AND uac.user_space_id=us.id AND us.user_id='".$this->user['id']."' ORDER BY uac.id ASC") or die($test . mysqli_error($db));
