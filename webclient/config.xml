@@ -1,5 +1,5 @@
 <?xml version='1.0' encoding='utf-8'?>
-<widget id="org.openmoney.omlets.mobile" version="1.2.1" xmlns="http://www.w3.org/ns/widgets" xmlns:gap="http://phonegap.com/ns/1.0">
+<widget id="org.openmoney.omlets.mobile" version="1.2.2" xmlns="http://www.w3.org/ns/widgets" xmlns:gap="http://phonegap.com/ns/1.0">
     <name>omlets</name>
     <description>
         openmoney LETSystem
@@ -7,7 +7,16 @@
     <author email="deefactorial@gmail.com" href="http://openmoney.org">
        openmoney omlets development
     </author>
+    
+    <gap:platform name="ios" /> 
+	<gap:platform name="android" /> 
+	<gap:platform name="winphone" />
+	
     <feature name="http://api.phonegap.com/1.0/device" />
+    <feature name="http://api.phonegap.com/1.0/network"/> 
+    <feature name="http://api.phonegap.com/1.0/file"/> 
+    
+    <preference name="phonegap-version" value="3.1.0" />
     <preference name="permissions" value="none" />
     <preference name="orientation" value="default" />
     <preference name="target-device" value="universal" />
@@ -48,4 +57,8 @@
     <gap:splash gap:platform="ios" height="768" src="res/screen/ios/screen-ipad-landscape.png" width="1024" />
     <gap:splash gap:platform="winphone" src="res/screen/windows-phone/screen-portrait.jpg" />
     <access origin="*" />
+    <gap:plugin name="org.apache.cordova.console" /> 
+	<gap:plugin name="org.apache.cordova.device" /> 
+	<gap:plugin name="org.apache.cordova.device-orientation" /> 
+	<gap:plugin name="org.apache.cordova.device-motion" />
 </widget>
