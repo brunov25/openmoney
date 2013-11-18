@@ -210,6 +210,7 @@ class accessRegister extends Resource
 		$password2 = "";
 		
 		$error = "";
+
 		
 
 		if(isset($requestData->username)){
@@ -241,6 +242,7 @@ class accessRegister extends Resource
 			if (intval(PCRE_VERSION) >= 7) { // constant available since PHP 5.2.4
 				$allowInternational = true;
 			}
+
 		}
 		if (!$allowInternational) {
 			$error .= "Your php version is too old!!! update php > 5.2.4<br/>";
@@ -256,6 +258,7 @@ class accessRegister extends Resource
 			//valid username check number of chars
 			if( preg_match( $usernamePatternNumberOfCharacters, $username) ){
 				//username has vaild characters
+
 				
 				$usernameCheck_q = mysqli_query($db, $test = "SELECT * FROM users WHERE user_name='$username'")  or die($test . mysqli_error($db));
 				if($usernameCheck_q = mysqli_fetch_array($usernameCheck_q)){
