@@ -487,9 +487,6 @@ class confirmMemberPayment extends Resource
 		function email_letter($to,$from,$subject='no subject',$msg='no msg') {
 				
 				$headers =  "From: $from\r\n";
-				//$headers .= "To: $to\r\n"; 
-				//$headers .= "Reply-To: $from\r\n";
-				//$headers .= "Return-Path: $from\r\n";
 				$headers .= "MIME-Version: 1.0\r\n";
 				$headers .= "Content-type: text/html; charset=iso-8859-1\r\n";
 				$headers .= 'X-Mailer: PHP/' . phpversion();
@@ -603,6 +600,7 @@ class confirmMemberPayment extends Resource
 			
 			$subject = 'You have just received a payment!';
 			$msg = 'Hello ' . $dear . ',<br /><br />' . $with_account .' just received a payment from ' . $trading_account . ' for the amount of ' . $amount . ' ' . $currency . '!<br />';
+			$msg .= '<b>Transaction Description:</b><i>' . $description . '</i><br/>';
 			$msg .= '<a href="'.$CFG->url.'/webclient/index.html">You can view the transaction here</a> or in your mobile application.<br/><br/>';
 			$msg .= 'Thank you,<br/>' . $CFG->url;
 				

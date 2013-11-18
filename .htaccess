@@ -1,5 +1,5 @@
 <IfModule mod_headers.c>
     Header set Access-Control-Allow-Origin "*"
-    Header set Access-Control-Allow-Methods "GET,PUT,DELETE,POST,OPTIONS"
-    Header set Access-Control-Allow-Headers "Cache-Control, Pragma, Origin, Authorization, Content-Type, X-Requested-With"
+    Header set Access-Control-Allow-Methods "HEAD,GET,PUT,DELETE,POST,OPTIONS"
+    Header set Access-Control-Allow-Headers "Accept, Cache-Control, Pragma, Origin, Authorization, Content-Type, X-Requested-With"
 </IfModule>

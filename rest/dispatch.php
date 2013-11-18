@@ -22,6 +22,8 @@ $app = new Tonic\Application($config);
 
 $request = new Tonic\Request();
 
+
+
 #echo $request; die;
 
 try {
@@ -29,8 +31,11 @@ try {
     $resource = $app->getResource($request);
 
     #echo $resource; die;
+    
+    
 
     $response = $resource->exec();
+
 
 } catch (Tonic\NotFoundException $e) {
     $response = new Tonic\Response(404, $e->getMessage());
@@ -39,9 +44,12 @@ try {
     $response = new Tonic\Response(401, $e->getMessage());
     $response->wwwAuthenticate = 'Basic realm="My Realm"';
 
+} catch (Tonic\MethodNotAllowedException $e) {
+    $response = new Tonic\Response($e->getCode(), $e->getMessage());
+    $response->allow = $resource->allowedMethods();
 } catch (Tonic\Exception $e) {
     $response = new Tonic\Response($e->getCode(), $e->getMessage());
-}
+} 
 
 #echo $response;
 

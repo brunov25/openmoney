@@ -196,9 +196,6 @@ class accessRegister extends Resource
 						
 			function email_letter($to,$from,$subject='no subject',$msg='no msg') {
 				$headers =  "From: $from\r\n";
-				$headers .= "To: $to\r\n"; 
-				$headers .= "Reply-To: $from\r\n";
-				$headers .= "Return-Path: $from\r\n";
 				$headers .= "MIME-Version: 1.0\r\n";
 				$headers .= "Content-type: text/html; charset=iso-8859-1\r\n";
 				return mail($to, $subject, $msg, $headers);
@@ -251,10 +248,10 @@ class accessRegister extends Resource
 			}
 			
 			
+			$init_space = $CFG->default_space;
 			
-			
-			$usernamePattern = "/^[\p{L}\p{N}_-]+$/u"; //international Letters, Numbers, underscore and hyphen
-			$usernamePatternNumberOfCharacters = "/^[\p{L}\p{N}_-]{3,16}$/u"; //international Letters, Numbers, underscore and hyphen 3 to 16 characters
+			$usernamePattern = "/^[\p{L}\p{N}_\-\.]+$/u"; //International Letters, Numbers, Underscores and hyphens only
+			$usernamePatternNumberOfCharacters = "/^[\p{L}\p{N}_\-\.]{1,30}$/u"; //international Letters, Numbers, underscore and hyphen 3 to 30 characters
 			if( preg_match( $usernamePattern, $username) ) {
 				//valid username check number of chars
 				if( preg_match( $usernamePatternNumberOfCharacters, $username) ){
@@ -283,13 +280,37 @@ class accessRegister extends Resource
 						$error .= "Username exists as space name! Please choose another Username.<br/>";
 						return new Response(200, array('errorDetails' => $error));
 					}
+					
+					$dotPattern = "/^([\p{L}\p{N}_-]+\.)+([\p{L}\p{N}_-]+)$/u";
+					if( preg_match( $dotPattern, $username, $matches) ) {
+						$user_name = $matches[0]; //contains dot
+						$match = '';
+						for($i=count($matches)-1;$i > 1;$i--){
+							//concatenate match to beginning of string.
+							$match = $matches[$i] . $match;
+							//do a space check to make sure it exists first.
+							$usernameCheck_q = mysqli_query($db, $test = "SELECT * FROM spaces WHERE space_name='$match'")  or die($test . mysqli_error($db));
+							if(!($usernameCheck = mysqli_fetch_array($usernameCheck_q))){
+								$error .= "$match subspace does not exist!<br/> Please choose another Username.<br/>";
+								return new Response(200, array('errorDetails' => $error));
+							}
+						}
+						$init_space = $match;	
+						//$error .= "pattern did match subspace! Username:".$user_name." Subspace:".$init_space." Please choose another Username.<br/>";
+						//return new Response(200, array('errorDetails' => $error));
+					} else {
+						//$error .= "pattern didn't match subspace! Please choose another Username.<br/>";
+						//return new Response(200, array('errorDetails' => $error));
+					}
+					
+					
 				} else {
-					$error .= "Username has not enough or too many characters!<br/>";
+					$error .= "Username has too many characters!<br/>";
 					return new Response(200, array('errorDetails' => $error));
 				}
 			} else {
 				// error pattern does not match allowed characters
-				$error .= "Username contains invalid characters!<br/>";
+				$error .= "Username contains invalid characters!<br/>International Letters, Numbers, Underscores and hyphens only";
 				return new Response(200, array('errorDetails' => $error));
 			}
 			
@@ -297,7 +318,7 @@ class accessRegister extends Resource
 			
 			
 			
-			$emailPattern = "/^([\p{L}\p{N}\+_\.-]+)@([\d\p{L}\.-]+)\.([\p{L}\.]{2,6})$/u";
+			$emailPattern = "/^([\p{L}\p{N}\+_\.-]+)@([\p{N}\p{L}\.-]+)\.([\p{L}\.]{2,6})$/u";
 			if( preg_match( $emailPattern, $email) ) {
 				//valid email
 				$emailCheck_q = mysqli_query($db, $test = "SELECT * FROM users WHERE email='$email'")  or die($test . mysqli_error($db));
@@ -306,7 +327,7 @@ class accessRegister extends Resource
 					return new Response(200, array('errorDetails' => $error));
 				}
 			} else {
-				$error .= "Email address contains invalid characters!<br/>";
+				$error .= "Email address contains invalid characters!<br/>"; //International Letters, Numbers, Underscores, hyphens, plus and dots only
 				return new Response(200, array('errorDetails' => $error));
 			}
 			
@@ -328,7 +349,7 @@ class accessRegister extends Resource
 
 
 				$password_hash = password_hash($password, PASSWORD_BCRYPT);
-				$init_space = $CFG->default_space;
+				
 				$init_currency = $CFG->default_currency;
 				$confirmed = ($CFG->site_type!='Live')?'1':'0';
 				$user_q = mysqli_query($db, $test = "INSERT INTO users (`user_name`, `email`, `password`, `password2`, `init_space`, `init_curr`, `confirmed`) VALUES ('$username', '$email', '$password_hash', '$password_hash', '$init_space', '$init_currency', '$confirmed')") or die($test . mysqli_error($db));
@@ -603,8 +624,8 @@ class accessUpdateProfile extends Resource
 			if(isset($requestData->firstname)){
 				$firstname = mysqli_real_escape_string($db, $requestData->firstname);
 				
-				$namePattern = "/^['-\p{L}]+$/u"; // international letters
-				$namePatternNumberOfCharacters = "/^['-\p{L}]{2,32}$/u"; // 2-32 international letters
+				$namePattern = "/^['-\p{L}\s]+$/u"; // international letters
+				$namePatternNumberOfCharacters = "/^['-\p{L}\s]{2,32}$/u"; // 2-32 international letters
 				if( preg_match( $namePattern, $firstname) ) {
 					if( preg_match( $namePatternNumberOfCharacters, $firstname) ) {
 						// first name is valid
@@ -622,8 +643,8 @@ class accessUpdateProfile extends Resource
 			if(isset($requestData->lastname)){
 				$lastname = mysqli_real_escape_string($db, $requestData->lastname);
 				
-				$namePattern = "/^['-\p{L}]+$/u"; // international letters
-				$namePatternNumberOfCharacters = "/^['-\p{L}]{2,32}$/u"; // 3-32 international letters
+				$namePattern = "/^['-\p{L}\s]+$/u"; // international letters
+				$namePatternNumberOfCharacters = "/^['-\p{L}\s]{2,32}$/u"; // 3-32 international letters
 				if( preg_match( $namePattern, $lastname) ) {
 					if( preg_match( $namePatternNumberOfCharacters, $lastname) ) {
 						// first name is valid
@@ -674,8 +695,8 @@ class accessUpdateProfile extends Resource
 			
 			if( $username != $this->user['user_name'] ) {
 			
-				$usernamePattern = "/^[\p{L}\p{N}_-]+$/u"; //international Letters, Numbers, underscore and hyphen
-				$usernamePatternNumberOfCharacters = "/^[\p{L}\p{N}_-]{3,16}$/u"; //international Letters, Numbers, underscore and hyphen 3 to 16 characters
+				$usernamePattern = "/^[\p{L}\p{N}_-\.]+$/u"; //international Letters, Numbers, underscore and hyphen
+				$usernamePatternNumberOfCharacters = "/^[\p{L}\p{N}_-\.]{3,30}$/u"; //international Letters, Numbers, underscore and hyphen 3 to 16 characters
 				if( preg_match( $usernamePattern, $username) ) {
 					//valid username check number of chars
 					if( preg_match( $usernamePatternNumberOfCharacters, $username) ){
@@ -703,6 +724,28 @@ class accessUpdateProfile extends Resource
 						if($usernameCheck_q = mysqli_fetch_array($usernameCheck_q)){
 							$error .= "Username exists as space name! Please choose another Username.<br/>";
 							return new Response(200, array('errorDetails' => $error));
+						}
+						
+						$dotPattern = "/^([\p{L}\p{N}_-]+\.)+([\p{L}\p{N}_-]+)$/u";
+						if( preg_match( $dotPattern, $username, $matches) ) {
+							$user_name = $matches[0]; //contains dot
+							$match = '';
+							for($i=count($matches)-1;$i > 1;$i--){
+								//concatenate match to beginning of string.
+								$match = $matches[$i] . $match;
+								//do a space check to make sure it exists first.
+								$usernameCheck_q = mysqli_query($db, $test = "SELECT * FROM spaces WHERE space_name='$match'")  or die($test . mysqli_error($db));
+								if(!($usernameCheck = mysqli_fetch_array($usernameCheck_q))){
+									$error .= "$match subspace does not exist!<br/> Please choose another Username.<br/>";
+									return new Response(200, array('errorDetails' => $error));
+								}
+							}
+							$init_space = $match;	
+							//$error .= "pattern did match subspace! Username:".$user_name." Subspace:".$init_space." Please choose another Username.<br/>";
+							//return new Response(200, array('errorDetails' => $error));
+						} else {
+							//$error .= "pattern didn't match subspace! Please choose another Username.<br/>";
+							//return new Response(200, array('errorDetails' => $error));
 						}
 					} else {
 						$error .= "Username has not enough or too many characters!<br/>";
@@ -756,6 +799,8 @@ class accessUpdateProfile extends Resource
 					$password_hash = password_hash($password, PASSWORD_BCRYPT);
 					$user_q = mysqli_query($db, $test = "UPDATE users SET password='$password_hash', password2='$password_hash' WHERE id='" . $this->user['id'] . "'") or die($test . mysqli_error($db));
 				}
+				
+				//TODO: if space change in username add user to space!
 				
 				$user_q = mysqli_query($db, $test = "UPDATE users SET fname='$firstname', lname='$lastname', user_name='$username', email='$email' WHERE id='" . $this->user['id'] . "'") or die($test . mysqli_error($db));
 
@@ -981,9 +1026,6 @@ class accessForgotPassword extends Resource
 			function email_letter($to,$from,$subject='no subject',$msg='no msg') {
 				
 				$headers =  "From: $from\r\n";
-				//$headers .= "To: $to\r\n"; 
-				//$headers .= "Reply-To: $from\r\n";
-				//$headers .= "Return-Path: $from\r\n";
 				$headers .= "MIME-Version: 1.0\r\n";
 				$headers .= "Content-type: text/html; charset=iso-8859-1\r\n";
 				$headers .= 'X-Mailer: PHP/' . phpversion();
@@ -1024,7 +1066,7 @@ class accessForgotPassword extends Resource
 			
 			
 			
-			$emailPattern = "/^([\p{L}\p{N}\+_\.-]+)@([\d\p{L}\.-]+)\.([\p{L}\.]{2,6})$/u";
+			$emailPattern = "/^([\p{L}\p{N}\+_\.-]+)@([\p{N}\p{L}\.-]+)\.([\p{L}\.]{2,6})$/u";
 			if( preg_match( $emailPattern, $email) ) {
 				//valid email
 				$emailCheck_q = mysqli_query($db, $test = "SELECT * FROM users WHERE email='$email'")  or die($test . mysqli_error($db));
@@ -1051,15 +1093,16 @@ class accessForgotPassword extends Resource
 					return new Response(200, array('errorDetails' => $error));
 				}
 			} else {
-			
-				$usernamePattern = "/^[\p{L}\p{N}_-]+$/u"; //international Letters, Numbers, underscore and hyphen
-				$usernamePatternNumberOfCharacters = "/^[\p{L}\p{N}_-]{3,16}$/u"; //international Letters, Numbers, underscore and hyphen 3 to 16 characters
-				if( preg_match( $usernamePattern, $email) ) {
+				//if it's not an email then maybe it's a username!
+				$username = $email;
+				$usernamePattern = "/^[\p{L}\p{N}_-\.]+$/u"; //international Letters, Numbers, underscore and hyphen
+				$usernamePatternNumberOfCharacters = "/^[\p{L}\p{N}_-\.]{1,30}$/u"; //international Letters, Numbers, underscore and hyphen 1 to 30 characters
+				if( preg_match( $usernamePattern, $username) ) {
 					//valid username check number of chars
-					if( preg_match( $usernamePatternNumberOfCharacters, $email) ){
+					if( preg_match( $usernamePatternNumberOfCharacters, $username) ){
 						//username has vaild characters
 						
-						$usernameCheck_q = mysqli_query($db, $test = "SELECT * FROM users WHERE user_name='$email'")  or die($test . mysqli_error($db));
+						$usernameCheck_q = mysqli_query($db, $test = "SELECT * FROM users WHERE user_name='$username'")  or die($test . mysqli_error($db));
 						if($usernameCheck = mysqli_fetch_array($usernameCheck_q)){
 						
 							$real_email = $usernameCheck['email'];
@@ -1068,14 +1111,14 @@ class accessForgotPassword extends Resource
 							$reset_hash = password_hash($reset_key, PASSWORD_BCRYPT);
 							
 							//update key on user table, then verify in resetPassword.php
-							mysqli_query($db, $test = "UPDATE users SET password2 = '$reset_key' WHERE user_name='$email'") or die($test . mysqli_error($db));
+							mysqli_query($db, $test = "UPDATE users SET password2 = '$reset_key' WHERE user_name='$username'") or die($test . mysqli_error($db));
 							
-							$msg = "To Reset your password click on this link <a href='{$CFG->url}/resetPassword.php?username=".urlencode($email)."&reset=".urlencode($reset_hash)."'>Reset Password</a>";
+							$msg = "To Reset your password click on this link <a href='{$CFG->url}/resetPassword.php?username=".urlencode($username)."&reset=".urlencode($reset_hash)."'>Reset Password</a>";
 							$msg .= "<p>OpenMoney IT Team</p>";
 							$msg .= "If you did not initiate the forgot password link request then ignore this and your password will remain the same.";
 							
 							$subject = "{$CFG->site_name}: Forgotten password reset REQUESTED for $email";
-							$sentEmail = email_letter($real_email,'noreply@openmoney.org',$subject,$msg);
+							$sentEmail = email_letter($real_email,$CFG->system_email,$subject,$msg);
 							return new Response(200, array('sentEmail' => $sentEmail));
 							
 						} else {
