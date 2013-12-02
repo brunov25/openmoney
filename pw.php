@@ -1,106 +1,119 @@
-<? //(c)GPL bruno and michael, based on https://raw.github.com/ircmaxell/password_compat/
+<?
+// (c)GPL bruno and michael, based on https://raw.github.com/ircmaxell/password_compat/
+require_once ('password.php');
+require_once ('connect.php');
 
-require_once('password.php');
-require_once('connect.php');
-
-$user_email = isset($_REQUEST['email'])?$_REQUEST['email']:'';
+$user_email = isset ( $_REQUEST ['email'] ) ? $_REQUEST ['email'] : '';
 $chars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
 $length = 8;
-$new_pw = substr(str_shuffle($chars),0,$length);
-$new_pw_hash = password_hash($new_pw, PASSWORD_BCRYPT);
+$new_pw = substr ( str_shuffle ( $chars ), 0, $length );
+$new_pw_hash = password_hash ( $new_pw, PASSWORD_BCRYPT );
 
-$confirm = isset($_REQUEST['confirm'])?$_REQUEST['confirm']:'';
-if ($user_email AND !$confirm) { //NEW PASSWORD
-  $subject = "OpenMoney: new password";
-  $msg = "you requested a new password for your OpenMoney account.  Here it is: <b>$new_pw</b> . 
+$confirm = isset ( $_REQUEST ['confirm'] ) ? $_REQUEST ['confirm'] : '';
+if ($user_email and ! $confirm) { // NEW PASSWORD
+	$subject = "OpenMoney: new password";
+	$msg = "you requested a new password for your OpenMoney account.  Here it is: <b>$new_pw</b> . 
           <br>You can still use your old one.  <a href={$CFG->url}>Open Money</a>
           <br>We recommend you click on Settings and change your password to something secret and memorable for you";
-  $update = exec_sql("update users set password= ? where email = ? and confirmed>'0'",
-                     array($new_pw_hash, $user_email),"creating password",3);
-  if($update AND email_letter($user_email, $CFG->system_email, $subject, $msg)) { 
-   echo "<br>new password sent to $user_email<p><a href={$CFG->url}/index.php>back</a>"; 
-  }else {
-   echo "<br>If you have any troubles creating a new password for your account, please contact {$CFG->admin_email} or {$CFG->maintainer}";  
-   //echo "problems creating new password - contact {$CFG->maintainer} or {$CFG->admin_email} $update";
-  }
+	$update = exec_sql ( "update users set password= ? where email = ? and confirmed>'0'", array ($new_pw_hash, $user_email), "creating password", 3 );
+	if ($update and email_letter ( $user_email, $CFG->system_email, $subject, $msg )) {
+		echo "<br>new password sent to $user_email<p><a href={$CFG->url}/index.php>back</a>";
+	} else {
+		echo "<br>If you have any troubles creating a new password for your account, please contact {$CFG->admin_email} or {$CFG->maintainer}";
+		// echo "problems creating new password - contact {$CFG->maintainer} or {$CFG->admin_email} $update";
+	}
 }
-$sandbox = ($CFG->site_type!='Live')?1:0;  //is this a live site or a sandbox?
-$live = ($CFG->site_type=='Live' AND is_admin())?1:0;  //is this a live site or a sandbox?
+
+$sandbox = ($CFG->site_type != 'Live') ? 1 : 0; // is this a live site or a sandbox?
+$live = ($CFG->site_type == 'Live' and is_admin ()) ? 1 : 0; // is this a live site or a sandbox?
 
 if ($confirm) {
-  $unconfirmed_users = exec_sql("select * from users where confirmed>'0' and password2=''",array(),"new password-less members");
-  foreach($unconfirmed_users as $row) {
-    $username = $row['user_name'];
-    $userid = $row['id'];
-    $space_name = isset($_REQUEST['space_name'])?$_REQUEST['space_name']:'';
-    $space_id = exec_sql("select id from spaces where space_name = ?",array($space_name),'space_id',1); 
-    $space_id = $space_id?$space_id:1; //default to the first space
-    $dupl = "ON DUPLICATE KEY UPDATE id=id"; //to deal with duplicates on unique keys
-    // only in sandbox are private spaces based on username created automatically
-    $spaceid = $sandbox?exec_sql("insert into spaces (space_name) values (?) $dupl",array($username),
-			"creating unique space for $username",2):'';
-    $userspaceid = $sandbox?exec_sql("insert into user_spaces (space_id,user_id,class) values (?,?,'steward') $dupl",
-                        array($spaceid,$userid),"making $username a steward of his own space",2):'';
-    // make user a member of a chosen SPACE and CURRENCY
-    $space_base = explode('.',$space_name,2);
-    $space_allow = 0;
-    if (array_key_exists(2,$space_base)) {
-      $space_allow = exec_sql("select id from spaces where space_name = ?",array($space_name),'space allow',1);
-      $space_allow = $space_allow OR exec_sql("select id from spaces where space_name = ?",array($space_base[1]),'space allow',1);
-      $space_allow = $space_allow AND strlen($space_name)>=2 ;// top level spaces must be at least 2 characters long
-    }
-    $address = $row['email'];
-    if ($space_allow) {
-      $spaceid = exec_sql("insert into spaces (space_name) values (?) $dupl",array($space_name),
- 			      "creating unique space for $space_name",2);
-      $userspaceid = exec_sql("insert into user_spaces (space_id,user_id,class) values (?,?,'user') $dupl",array($spaceid,$userid),
-				  "making $username a steward of his own space",2);
-      $subject = "OpenMoney: new SPACE for $username";
-      $msg2 = "$username created SPACE $spacename on {$CFG->site_Xname} {$CFG->url} ";
-      email_letter($CFG->admin_email,$CFG->system_email,$subject,$msg2);
-    } //else {echo "<br>NOT CREATING SPACE: $space_name (top level: ".$space_base[1].") because it is un-authorized" ;}
-    // insert into currency if in LIVE system
-    $currency = isset($_REQUEST['currency'])?$_REQUEST['currency']:$CFG->default_currency;
-    $currency_id = exec_sql("select id from currencies where currency = ?",array($currency),'currency_id',1); 
-    if ($live and !$currency_id) { 
-      $currency_id =  exec_sql("insert into currencies (currency,currency_steward) values (?,?)",array($currency,$userid),'c id',2);
-    }
-    $currency_id = $currency_id?$currency_id:1; //default to the first currency
-    $insert1 = exec_sql("insert into user_spaces (space_id,user_id,class) values (?,?,'user') $dupl",
- 			array($space_id,$userid),"inserting $username into user_space ",2);
-    $insert2 = exec_sql("insert into user_account_currencies (user_space_id,trading_name,currency_id) values (?,?,?) $dupl",
- 			array($insert1,$username,$currency_id),"inserting $username into user_account_currencies",2);
-    $new_pw = substr(str_shuffle($chars),0,$length);
-    $new_pw_hash = password_hash($new_pw, PASSWORD_BCRYPT);
-    $fname = $row['fname'];
-    $msg = "Hello $fname <p>Your account on OpenMoney has been confirmed. <p> please go to {$CFG->url} 
-     <p>your username is now: <b>$username</b> <br>and your password is <b>$new_pw</b> <p> Please change it right away by clicking on 
-       settings in the top menu <p>( {$CFG->url}/settings.php )<p> Welcome to OpenMoney - Michael Linton"; 
-    $welcome = exec_sql("select welcome from spaces where space_name=?",array($row['init_space']),'welcome',1);
-    if ($welcome) {
-      $msg = str_replace('%firstname',"$fname",$welcome);
-      $msg = str_replace('%username',"$username",$msg);
-      $msg = str_replace('%password',"$new_pw",$msg);
-    }    
-    //echo "<p>welcome message = $msg";
-    $msg2 = "$username confirmed for an account on OpenMoney {$CFG->url} ";
-    $subject = "OpenMoney: new account for $username confirmed";
-    if(email_letter($address, $CFG->system_email, $subject, $msg)) { echo "<br>sending password email to $address"; }
-    $id = $row['id'];
-    $update = exec_sql("update users set password2= ? where id = ?",array($new_pw_hash, $id),"creating password",2);
-    email_letter($CFG->admin_email,$CFG->system_email,$subject,$msg2);
-  }
-  echo "<br><a href=main.php>back</a>";
-  exit;
+	
+	$row = exec_sql ( "SELECT * FROM users WHERE id = ? LIMIT 1", array ( $_REQUEST ['id']), 'id');
+	$row = $row[0];
+	$username = $row ['user_name'];
+	$userid = $row ['id'];
+	$space_name = isset ( $_REQUEST ['space_name'] ) ? $_REQUEST ['space_name'] : '';
+	$space_id = exec_sql ( "select id from spaces where space_name = ?", array ($space_name), 'space_id', 1 );
+	$space_id = $space_id ? $space_id : 1; // default to the first space
+	$dupl = "ON DUPLICATE KEY UPDATE id=id"; // to deal with duplicates on unique keys
+	                                         // only in sandbox are private spaces based on username created automatically
+	$spaceid = $sandbox ? exec_sql ( "insert into spaces (space_name) values (?) $dupl", array ($username), "creating unique space for $username", 2 ) : '';
+	$userspaceid = $sandbox ? exec_sql ( "insert into user_spaces (space_id,user_id,class) values (?,?,'steward') $dupl", array ($spaceid, $userid), "making $username a steward of his own space", 2 ) : '';
+	// make user a member of a chosen SPACE and CURRENCY
+	$space_base = explode ( '.', $space_name, 2 );
+	$space_allow = 0;
+	if (array_key_exists ( 2, $space_base )) {
+		$space_allow = exec_sql ( "select id from spaces where space_name = ?", array ($space_name), 'space allow', 1 );
+		$space_allow = $space_allow or exec_sql ( "select id from spaces where space_name = ?", array ($space_base [1]), 'space allow', 1 );
+		$space_allow = $space_allow and strlen ( $space_name ) >= 2; // top level spaces must be at least 2 characters long
+	}
+	$address = $row ['email'];
+	if ($space_allow) {
+		$spaceid = exec_sql ( "insert into spaces (space_name) values (?) $dupl", array ($space_name), "creating unique space for $space_name", 2 );
+		$userspaceid = exec_sql ( "insert into user_spaces (space_id,user_id,class) values (?,?,'user') $dupl", array ($spaceid, $userid), "making $username a steward of his own space", 2 );
+		$subject = "OpenMoney: new SPACE for $username";
+		$msg2 = "$username created SPACE $spacename on {$CFG->site_Xname} {$CFG->url} ";
+		email_letter ( $CFG->admin_email, $CFG->system_email, $subject, $msg2 );
+	} // else {echo "<br>NOT CREATING SPACE: $space_name (top level: ".$space_base[1].") because it is un-authorized" ;}
+	  // insert into currency if in LIVE system
+	$currency = isset ( $_REQUEST ['currency'] ) ? $_REQUEST ['currency'] : $CFG->default_currency;
+	$currency_id = exec_sql ( "select id from currencies where currency = ?", array ($currency), 'currency_id', 1 );
+	if ($live and ! $currency_id) {
+		$currency_id = exec_sql ( "insert into currencies (currency,currency_steward) values (?,?)", array ($currency, $userid), 'c id', 2 );
+	}
+	$currency_id = $currency_id ? $currency_id : 1; // default to the first currency
+	$insert1 = exec_sql ( "insert into user_spaces (space_id,user_id,class) values (?,?,'user') $dupl", array ($space_id, $userid), "inserting $username into user_space ", 2 );
+	$insert2 = exec_sql ( "insert into user_account_currencies (user_space_id,trading_name,currency_id) values (?,?,?) $dupl", array ($insert1, $username, $currency_id), "inserting $username into user_account_currencies", 2 );
+	
+	//set the user as confirmed
+	$confirmation = exec_sql ( "update users set confirmed = 1 where id = ?", array ($_REQUEST ['id']), 'id', 2 );
+	
+	$subject = "OpenMoney: new account for $username confirmed";
+	//if the password is blank generate a new one
+	if ($row['password2'] == '') {
+		$new_pw = substr ( str_shuffle ( $chars ), 0, $length );
+		$new_pw_hash = password_hash ( $new_pw, PASSWORD_BCRYPT );
+		$id = $row ['id'];
+		$update = exec_sql ( "update users set password2= ? where id = ?", array ($new_pw_hash, $id), "creating password", 2 );
+		
+		$fname = $row ['fname'];
+		$msg = "Hello $fname <p>Your account on OpenMoney has been confirmed. <p> please go to {$CFG->url}
+		<p>your username is now: <b>$username</b> <br>and your password is <b>$new_pw</b> <p> Please change it right away by clicking on
+		settings in the top menu <p>( {$CFG->url}/settings.php )<p> Welcome to OpenMoney - Michael Linton";
+		$welcome = exec_sql ( "select welcome from spaces where space_name=?", array ($row ['init_space']), 'welcome', 1 );
+		if ($welcome) {
+			$msg = str_replace ( '%firstname', "$fname", $welcome );
+			$msg = str_replace ( '%username', "$username", $msg );
+			$msg = str_replace ( '%password', "$new_pw", $msg );
+		}
+		if (email_letter ( $address, $CFG->system_email, $subject, $msg )) {
+			echo "<br>sending password email to $address";
+		}
+	} else {
+		$fname = $row ['fname'];
+		$name = $fname?$fname:$username;
+		$msg = "Hello $name <p>Your account on OpenMoney has been confirmed. <p> please go to {$CFG->url}/webclient
+		<p>your username is now: <b>$username</b> <br> Welcome to OpenMoney - Michael Linton";
+		if (email_letter ( $address, $CFG->system_email, $subject, $msg )) {
+			echo "<br>sending notification email to $address";
+		}
+	}
+
+	$msg2 = "$username confirmed for an account on OpenMoney {$CFG->url} ";
+	email_letter ( $CFG->admin_email, $CFG->system_email, $subject, $msg2 );
+	
+	echo "<br><a href=menu.php?confirm=1>back</a>";
+	exit ();
 }
 
 // check if all passwords are hashed
-$blank_passwords = exec_sql("SELECT * FROM users WHERE password2='' and confirmed>'0'",array(),"blank passwords");
-foreach($blank_passwords as $row){
-  $old_pw = $row['password'];
-  $id = $row['id'];
-  $new_pw = password_hash($old_pw, PASSWORD_BCRYPT);
-  $update1 = exec_sql("update users set password2=? WHERE id=?",array($new_pw,$id),"updating blank passwords",2);
-  echo "<br>$id: new_pw";
+$blank_passwords = exec_sql ( "SELECT * FROM users WHERE password2='' and confirmed>'0'", array (), "blank passwords" );
+foreach ( $blank_passwords as $row ) {
+	$old_pw = $row ['password'];
+	$id = $row ['id'];
+	$new_pw = password_hash ( $old_pw, PASSWORD_BCRYPT );
+// 	$update1 = exec_sql ( "update users set password2=? WHERE id=?", array ($new_pw, $id), "updating blank passwords", 2 );
+	echo "<br>There are unhashed passwords: $id: new_pw";
 }
 ?>
