@@ -78,9 +78,9 @@ if ($confirm) {
 		$update = exec_sql ( "update users set password2= ? where id = ?", array ($new_pw_hash, $id), "creating password", 2 );
 		
 		$fname = $row ['fname'];
-		$msg = "Hello $fname <p>Your account on OpenMoney has been confirmed. <p> please go to {$CFG->url}
-		<p>your username is now: <b>$username</b> <br>and your password is <b>$new_pw</b> <p> Please change it right away by clicking on
-		settings in the top menu <p>( {$CFG->url}/settings.php )<p> Welcome to OpenMoney - Michael Linton";
+		$msg = "Hello $fname <p>Your account on OpenMoney has been confirmed. </p><p> please go to {$CFG->url}/webclient
+		<p>your username is now: <b>$username</b> <br>and your password is <b>$new_pw</b> </p><p> Please change it right away by clicking on
+		settings tab then the menu item profile settings </p> Welcome to OpenMoney - Michael Linton";
 		$welcome = exec_sql ( "select welcome from spaces where space_name=?", array ($row ['init_space']), 'welcome', 1 );
 		if ($welcome) {
 			$msg = str_replace ( '%firstname', "$fname", $welcome );
