@@ -10,12 +10,10 @@
 	#Un-comment and edit if placed in anything but the DocumentRoot
 	#RewriteBase /path/in/DocumentRoot
 	RewriteBase /
-
 	
 	RewriteCond %{REQUEST_FILENAME} !-f
 	RewriteCond %{REQUEST_FILENAME} !-d [OR]
 	RewriteCond %{REQUEST_FILENAME} ""
-
 
 	#RewriteRule ^(.*)$ dispatch.php [L]
 	#RewriteRule ^(.*)$ /path/in/DocumentRoot/rest/dispatch.php [L]
