@@ -253,8 +253,8 @@ class accessRegister extends Resource {
 		
 		$init_space = $CFG->default_space;
 		
-		$usernamePattern = "/^[\p{L}\p{N}_\-\.]+$/u"; // International Letters, Numbers, Underscores and hyphens only
-		$usernamePatternNumberOfCharacters = "/^[\p{L}\p{N}_\-\.]{1,30}$/u"; // international Letters, Numbers, underscore and hyphen 3 to 30 characters
+		$usernamePattern = "/^[\.\p{L}\p{N}_-]+$/u"; // International Letters, Numbers, Underscores and hyphens only
+		$usernamePatternNumberOfCharacters = "/^[\.\p{L}\p{N}_-]{1,30}$/u"; // international Letters, Numbers, underscore and hyphen 3 to 30 characters
 		if (preg_match ( $usernamePattern, $username )) {
 			// valid username check number of chars
 			if (preg_match ( $usernamePatternNumberOfCharacters, $username )) {
@@ -292,29 +292,55 @@ class accessRegister extends Resource {
 					) );
 				}
 				
-				$dotPattern = "/^([\p{L}\p{N}_-]+\.)+([\p{L}\p{N}_-]+)$/u";
-				if (preg_match ( $dotPattern, $username, $matches )) {
-					$user_name = $matches [0]; // contains dot
-					$match = '';
-					for($i = count ( $matches ) - 1; $i > 1; $i --) {
-						// concatenate match to beginning of string.
-						$match = $matches [$i] . $match;
-						// do a space check to make sure it exists first.
-						$usernameCheck_q = mysqli_query ( $db, $test = "SELECT * FROM spaces WHERE space_name='$match'" ) or die ( $test . mysqli_error ( $db ) );
-						if (! ($usernameCheck = mysqli_fetch_array ( $usernameCheck_q ))) {
-							$error .= "$match subspace does not exist!<br/> Please choose another Username.<br/>";
-							return new Response ( 200, array (
-									'errorDetails' => $error 
-							) );
-						}
+				$username_array = preg_split ( "/\./" , $username);
+				//$name = $username_array[0];
+				$init_space = '';
+				$i = 0;
+				foreach($username_array as $subusername){
+					if ($i > 0) {
+						$init_space .= $subusername . ".";
 					}
-					$init_space = $match;
-					// $error .= "pattern did match subspace! Username:".$user_name." Subspace:".$init_space." Please choose another Username.<br/>";
-					// return new Response(200, array('errorDetails' => $error));
-				} else {
-					// $error .= "pattern didn't match subspace! Please choose another Username.<br/>";
-					// return new Response(200, array('errorDetails' => $error));
+					$i++;
 				}
+				
+				// remove last character.
+				if(strlen($init_space) > 0) {
+					$init_space = substr($init_space,0,strlen($init_space)-1);
+				}
+				
+				//check that init_space exists
+				$usernameCheck_q = mysqli_query ( $db, $test = "SELECT * FROM spaces WHERE space_name='$init_space'" ) or die ( $test . mysqli_error ( $db ) );
+				if (! ($usernameCheck = mysqli_fetch_array ( $usernameCheck_q ))) {
+					$error .= "$init_space subspace does not exist!<br/> Please choose another Username.<br/>";
+					return new Response ( 200, array (
+							'errorDetails' => $error
+					) );
+				}
+				
+				
+// 				$dotPattern = "/^([\p{L}\p{N}-]+\.)+([\p{L}\p{N}-]+)$/u";
+// 				if (preg_match ( $dotPattern, $username, $matches )) {
+// 					$user_name = $matches [0]; // contains dot
+// 					$match = '';
+// 					for($i = count ( $matches ) - 1; $i > 1; $i --) {
+// 						// concatenate match to beginning of string.
+// 						$match = $matches [$i] . $match;
+// 						// do a space check to make sure it exists first.
+// 						$usernameCheck_q = mysqli_query ( $db, $test = "SELECT * FROM spaces WHERE space_name='$match'" ) or die ( $test . mysqli_error ( $db ) );
+// 						if (! ($usernameCheck = mysqli_fetch_array ( $usernameCheck_q ))) {
+// 							$error .= "$match subspace does not exist!<br/> Please choose another Username.<br/>";
+// 							return new Response ( 200, array (
+// 									'errorDetails' => $error 
+// 							) );
+// 						}
+// 					}
+// 					$init_space = $match;
+// 					// $error .= "pattern did match subspace! Username:".$user_name." Subspace:".$init_space." Please choose another Username.<br/>";
+// 					// return new Response(200, array('errorDetails' => $error));
+// 				} else {
+// 					// $error .= "pattern didn't match subspace! Please choose another Username.<br/>";
+// 					// return new Response(200, array('errorDetails' => $error));
+// 				}
 			} else {
 				$error .= "Username has too many characters!<br/>";
 				return new Response ( 200, array (
@@ -329,7 +355,7 @@ class accessRegister extends Resource {
 			) );
 		}
 		
-		$emailPattern = "/^([\p{L}\p{N}\+_\.-]+)@([\p{N}\p{L}\.-]+)\.([\p{L}\.]{2,6})$/u";
+		$emailPattern = "/^([\.\p{L}\p{N}\+_-]+)@([\.\p{N}\p{L}-]+)\.([\p{L}\.]{2,6})$/u";
 		if (preg_match ( $emailPattern, $email )) {
 			// valid email
 			$emailCheck_q = mysqli_query ( $db, $test = "SELECT * FROM users WHERE email='$email'" ) or die ( $test . mysqli_error ( $db ) );
@@ -760,8 +786,8 @@ class accessUpdateProfile extends Resource {
 		
 		if ($username != $this->user ['user_name']) {
 			
-			$usernamePattern = "/^[\p{L}\p{N}_-\.]+$/u"; // international Letters, Numbers, underscore and hyphen
-			$usernamePatternNumberOfCharacters = "/^[\p{L}\p{N}_-\.]{3,30}$/u"; // international Letters, Numbers, underscore and hyphen 3 to 16 characters
+			$usernamePattern = "/^[\.\p{L}\p{N}_-]+$/u"; // international Letters, Numbers, underscore and hyphen
+			$usernamePatternNumberOfCharacters = "/^[\.\p{L}\p{N}_-]{3,30}$/u"; // international Letters, Numbers, underscore and hyphen 3 to 30 characters
 			if (preg_match ( $usernamePattern, $username )) {
 				// valid username check number of chars
 				if (preg_match ( $usernamePatternNumberOfCharacters, $username )) {
@@ -799,29 +825,54 @@ class accessUpdateProfile extends Resource {
 						) );
 					}
 					
-					$dotPattern = "/^([\p{L}\p{N}_-]+\.)+([\p{L}\p{N}_-]+)$/u";
-					if (preg_match ( $dotPattern, $username, $matches )) {
-						$user_name = $matches [0]; // contains dot
-						$match = '';
-						for($i = count ( $matches ) - 1; $i > 1; $i --) {
-							// concatenate match to beginning of string.
-							$match = $matches [$i] . $match;
-							// do a space check to make sure it exists first.
-							$usernameCheck_q = mysqli_query ( $db, $test = "SELECT * FROM spaces WHERE space_name='$match'" ) or die ( $test . mysqli_error ( $db ) );
-							if (! ($usernameCheck = mysqli_fetch_array ( $usernameCheck_q ))) {
-								$error .= "$match subspace does not exist!<br/> Please choose another Username.<br/>";
-								return new Response ( 200, array (
-										'errorDetails' => $error 
-								) );
-							}
+					$username_array = preg_split ( "/\./" , $username);
+					//$name = $username_array[0];
+					$init_space = '';
+					$i = 0;
+					foreach($username_array as $subusername){
+						if ($i > 0) {
+							$init_space .= $subusername . ".";
 						}
-						$init_space = $match;
-						// $error .= "pattern did match subspace! Username:".$user_name." Subspace:".$init_space." Please choose another Username.<br/>";
-						// return new Response(200, array('errorDetails' => $error));
-					} else {
-						// $error .= "pattern didn't match subspace! Please choose another Username.<br/>";
-						// return new Response(200, array('errorDetails' => $error));
+						$i++;
 					}
+					
+					// remove last character.
+					if(strlen($init_space) > 0) {
+						$init_space = substr($init_space,0,strlen($init_space)-1);
+					}
+					
+					//check that init_space exists
+					$usernameCheck_q = mysqli_query ( $db, $test = "SELECT * FROM spaces WHERE space_name='$init_space'" ) or die ( $test . mysqli_error ( $db ) );
+					if (! ($usernameCheck = mysqli_fetch_array ( $usernameCheck_q ))) {
+						$error .= "$init_space subspace does not exist!<br/> Please choose another Username.<br/>";
+						return new Response ( 200, array (
+								'errorDetails' => $error
+						) );
+					}
+					
+// 					$dotPattern = "/^([\p{L}\p{N}_-]+\.)+([\p{L}\p{N}_-]+)$/u";
+// 					if (preg_match ( $dotPattern, $username, $matches )) {
+// 						$user_name = $matches [0]; // contains dot
+// 						$match = '';
+// 						for($i = count ( $matches ) - 1; $i > 1; $i --) {
+// 							// concatenate match to beginning of string.
+// 							$match = $matches [$i] . $match;
+// 							// do a space check to make sure it exists first.
+// 							$usernameCheck_q = mysqli_query ( $db, $test = "SELECT * FROM spaces WHERE space_name='$match'" ) or die ( $test . mysqli_error ( $db ) );
+// 							if (! ($usernameCheck = mysqli_fetch_array ( $usernameCheck_q ))) {
+// 								$error .= "$match subspace does not exist!<br/> Please choose another Username.<br/>";
+// 								return new Response ( 200, array (
+// 										'errorDetails' => $error 
+// 								) );
+// 							}
+// 						}
+// 						$init_space = $match;
+// 						// $error .= "pattern did match subspace! Username:".$user_name." Subspace:".$init_space." Please choose another Username.<br/>";
+// 						// return new Response(200, array('errorDetails' => $error));
+// 					} else {
+// 						// $error .= "pattern didn't match subspace! Please choose another Username.<br/>";
+// 						// return new Response(200, array('errorDetails' => $error));
+// 					}
 				} else {
 					$error .= "Username has not enough or too many characters!<br/>";
 					return new Response ( 200, array (
@@ -837,7 +888,7 @@ class accessUpdateProfile extends Resource {
 			}
 		}
 		
-		$emailPattern = "/^([\p{L}\p{N}\+_\.-]+)@([\d\p{L}\.-]+)\.([\p{L}\.]{2,6})$/u";
+		$emailPattern = "/^([\.\p{L}\p{N}\+_-]+)@([\.\p{N}\p{L}-]+)\.([\p{L}\.]{2,6})$/u";
 		if (preg_match ( $emailPattern, $email )) {
 			// valid email
 			$emailCheck_q = mysqli_query ( $db, $test = "SELECT * FROM users WHERE email='$email' AND id!='" . $this->user ['id'] . "'" ) or die ( $test . mysqli_error ( $db ) );
@@ -884,7 +935,6 @@ class accessUpdateProfile extends Resource {
 			}
 			
 			// TODO: if space change in username add user to space!
-			
 			$user_q = mysqli_query ( $db, $test = "UPDATE users SET fname='$firstname', lname='$lastname', user_name='$username', email='$email' WHERE id='" . $this->user ['id'] . "'" ) or die ( $test . mysqli_error ( $db ) );
 			
 			// TODO: add two fields for default space and default currency
@@ -1155,7 +1205,7 @@ class accessForgotPassword extends Resource {
 			) );
 		}
 		
-		$emailPattern = "/^([\p{L}\p{N}\+_\.-]+)@([\p{N}\p{L}\.-]+)\.([\p{L}\.]{2,6})$/u";
+		$emailPattern = "/^([\.\p{L}\p{N}\+_-]+)@([\.\p{N}\p{L}-]+)\.([\p{L}\.]{2,6})$/u";
 		if (preg_match ( $emailPattern, $email )) {
 			// valid email
 			$emailCheck_q = mysqli_query ( $db, $test = "SELECT * FROM users WHERE email='$email'" ) or die ( $test . mysqli_error ( $db ) );
@@ -1188,8 +1238,8 @@ class accessForgotPassword extends Resource {
 		} else {
 			// if it's not an email then maybe it's a username!
 			$username = $email;
-			$usernamePattern = "/^[\p{L}\p{N}_-\.]+$/u"; // international Letters, Numbers, underscore and hyphen
-			$usernamePatternNumberOfCharacters = "/^[\p{L}\p{N}_-\.]{1,30}$/u"; // international Letters, Numbers, underscore and hyphen 1 to 30 characters
+			$usernamePattern = "/^[\.\p{L}\p{N}_-]+$/u"; // international Letters, Numbers, underscore, hyphen and dot
+			$usernamePatternNumberOfCharacters = "/^[\.\p{L}\p{N}_-]{1,30}$/u"; // international Letters, Numbers, underscore and hyphen 1 to 30 characters
 			if (preg_match ( $usernamePattern, $username )) {
 				// valid username check number of chars
 				if (preg_match ( $usernamePatternNumberOfCharacters, $username )) {
