@@ -3,7 +3,7 @@
 require_once ('header.php');
 
 if (! is_admin ()) {
-	header ( 'main.php' );
+  header ( 'Location: main.php' );
 }
 $_SESSION ['time'] = time ();
 

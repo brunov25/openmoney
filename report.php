@@ -45,7 +45,7 @@ foreach ($last_transactions as $last) {
            <td align=right bgcolor=bisque>$trading</td>
   </tr>";
 }
-
+$data2='';
 if ($trader) {
   $all_transactions = exec_sql("select *,currency, trading_account, trading from user_journal j where currency=? 
                         and (trading_account=?)

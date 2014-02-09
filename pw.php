@@ -15,7 +15,8 @@ if ($user_email and ! $confirm) { // NEW PASSWORD
 	$msg = "you requested a new password for your OpenMoney account.  Here it is: <b>$new_pw</b> . 
           <br>You can still use your old one.  <a href={$CFG->url}>Open Money</a>
           <br>We recommend you click on Settings and change your password to something secret and memorable for you";
-	$update = exec_sql ( "update users set password= ? where email = ? and confirmed>'0'", array ($new_pw_hash, $user_email), "creating password", 3 );
+	$update = exec_sql ( "update users set password= ? where email = ? and confirmed>'0'", 
+		     array ($new_pw_hash, $user_email), "creating password", 3 );
 	if ($update and email_letter ( $user_email, $CFG->system_email, $subject, $msg )) {
 		echo "<br>new password sent to $user_email<p><a href={$CFG->url}/index.php>back</a>";
 	} else {
@@ -67,7 +68,8 @@ if ($confirm) {
 	$insert2 = exec_sql ( "insert into user_account_currencies (user_space_id,trading_name,currency_id) values (?,?,?) $dupl", array ($insert1, $username, $currency_id), "inserting $username into user_account_currencies", 2 );
 	
 	//set the user as confirmed
-	$confirmation = exec_sql ( "update users set confirmed = 1 where id = ?", array ($_REQUEST ['id']), 'id', 2 );
+	$confirmation = exec_sql ( "update users set confirmed = 1, created=? where id = ?", 
+				   array (date("Y-m-d H:i:s"),$_REQUEST ['id']), 'id', 2 );
 	
 	$subject = "OpenMoney: new account for $username confirmed";
 	//if the password is blank generate a new one

@@ -105,7 +105,7 @@ if (array_key_exists('submit',$_REQUEST) and $_REQUEST['submit']=='save') {
     }
 }
 // deal with special cases
-if (!array_key_exists('sort',$_REQUEST)) {$sort='id';}
+if (!array_key_exists('sort',$_REQUEST)) {$sort='id desc';}
 else {$sort=$_REQUEST['sort'];}
 if (!array_key_exists('limitnum',$_REQUEST)) {$limitnum=20;}
 else {$limitnum=$_REQUEST['limitnum'];}
